@@ -18,8 +18,8 @@ public class Dimension
 	protected int chunkZOffset;
 	protected boolean[][] regionRenderFlags;
 	protected boolean[][] chunkRenderFlags;
-	protected Block[][] renderGrid;
-	protected int colorGrid[][];
+	protected FileIntMatrix colorGrid;
+	private byte[][] yVals;
 	protected File directory;
 	
 	/**
@@ -142,10 +142,18 @@ public class Dimension
 	public void createRenderGrid()
 	{
 		File[] regions;
-		renderGrid = new Block[blockWidth][blockHeight];
-		colorGrid = new int[blockWidth][blockHeight];
+		
+		try
+		{
+			File gridLoc = File.createTempFile("gen", ".txt");
+			colorGrid = new FileIntMatrix(gridLoc, blockWidth, blockHeight);
+		}
+		catch (Exception e)
+		{
+			
+		}
 		chunkRenderFlags = new boolean[chunkWidth][chunkHeight];
-		regionRenderFlags = new boolean[chunkWidth / 32][chunkHeight / 32];
+		yVals = new byte[blockWidth][blockHeight];
 		
 		regions = directory.listFiles();
 		
@@ -165,6 +173,9 @@ public class Dimension
 					try
 					{
 						CompoundTag chunkTag = region.getChunk(chunkX, chunkZ);
+						if (chunkTag == null)
+							continue;
+						
 						int chunkVersion = chunkTag.getInt("DataVersion");
 						Chunk chunk;
 						
@@ -177,24 +188,115 @@ public class Dimension
 						int gridZ = (chunk.getZ() + chunkZOffset * REGION_SIZE) * Chunk.CHUNK_SIZE;
 						
 						chunkRenderFlags[gridX / 16][gridZ / 16] = true;
-						int[][] chunkMap = chunk.getTopColors();
+						int[][][] chunkMap = chunk.getTopColors();
+						
+						if (chunkMap == null)
+							continue;
+						
+						int xPos;
+						int zPos;
+						int curColor;
 						
 						for (int blockX = 0; blockX < Chunk.CHUNK_SIZE; blockX++)
 						{
+							xPos = gridX + blockX;
 							for (int blockZ = 0; blockZ < Chunk.CHUNK_SIZE; blockZ++)
 							{
-								int xPos = gridX + blockX;
-								int zPos = gridZ + blockZ;
-								colorGrid[xPos][zPos] = chunkMap[blockX][blockZ];
+								zPos = gridZ + blockZ;
+								
+								curColor = chunkMap[blockX][blockZ][0];
+								yVals[xPos][zPos] = (byte)(chunkMap[blockX][blockZ][1] - 128);
+								
+								colorGrid.set(xPos, zPos, curColor);
 							}
 						}
 					}
 					catch (Exception e) 
 					{
-						//e.printStackTrace();
+						e.printStackTrace();
 					}
 				}
 			}
+		}
+		
+		System.out.println("Applying shading");
+		applyShading();
+	}
+	
+	public void applyShading()
+	{
+		int width = colorGrid.getRows() - 1;
+		int height = colorGrid.getCols();
+		int aboveY;
+		int rightY;
+		int curY = 0;
+		int a, r, g, b, curColor;
+		
+		for (int z = 1; z < height; z++)
+		{
+			for (int x = 1; x < width; x++)
+			{
+				if (!getChunkRenderFlag(x / 16, z / 16))
+				{
+					x += 15;
+					continue;
+				}
+				try
+				{
+					
+					rightY = yVals[x + 1][z];
+					aboveY = yVals[x][z - 1];
+					curY = yVals[x][z];
+					
+					if (curY < aboveY || curY < rightY)
+					{
+						curColor = colorGrid.get(x, z);
+						
+						a = (curColor & 0xFF000000);
+						r = (int) (((curColor & 0x00FF0000) >>> 16) * .85f);
+						g = (int) (((curColor & 0x0000FF00) >>> 8) * .85f);
+						b = (int) ((curColor & 0x000000FF) * .85f);
+						
+						if (r < 0)
+							r = 0;
+						if (g < 0)
+							g = 0;
+						if (b < 0)
+							b = 0;
+						
+						curColor = a | (r << 16) | (g << 8) | b;
+						
+						colorGrid.set(x, z, curColor);
+					}
+					else if (curY > aboveY || curY > rightY)
+					{
+						curColor = colorGrid.get(x, z);
+						
+						a = (curColor & 0xFF000000);
+						r = (int) (((curColor & 0x00FF0000) >>> 16) * 1.15f);
+						g = (int) (((curColor & 0x0000FF00) >>> 8) * 1.15f);
+						b = (int) ((curColor & 0x000000FF) * 1.15f);
+						
+						if (r > 255)
+							r = 255;
+						if (g > 255)
+							g = 255;
+						if (b > 255)
+							b = 255;
+						
+						curColor = a | (r << 16) | (g << 8) | b;
+						
+						colorGrid.set(x, z, curColor);
+					}
+				}
+				catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+			}
+			
+			if (z % 100 == 0)
+				System.out.println("Applied to " + z + "/" + height);
 		}
 	}
 	
@@ -256,32 +358,32 @@ public class Dimension
 		return blockHeight;
 	}
 	
-	public Block getBlockAt(int x, int z)
-	{
-		if (renderGrid == null || x >= renderGrid.length || z >= renderGrid.length)
-			return null;
-		return renderGrid[x][z];
-	}
-	
 	public int getBlockColorAt(int x, int z)
 	{
-		return colorGrid[x][z];
-		
-		/*Block block = getBlockAt(x, z);
-		if (block == null)
-			return 0;
-		return Block.getBlockColor(block.getBlockID(), block.getMetaData());*/
+		try
+		{
+			return colorGrid.get(x, z);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		return 0;
 	}
 
 	public boolean getChunkRenderFlag(int x, int z)
 	{
-		return true;
-		//return chunkRenderFlags[x][z];
+		return chunkRenderFlags[x][z];
 	}
 	
 	public int getChunkXOffset()
 	{
 		return chunkXOffset;
+	}
+	
+	public int getYCoord(int color)
+	{
+		return color>>>24;
 	}
 	
 	public int getChunkZOffset()
