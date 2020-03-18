@@ -213,17 +213,20 @@ public class Chunk
 	 * each x, z column.
 	 * @return int array of the colors for the top-most blocks of each x, z column
 	 */
-	public int[][] getTopColors()
+	public int[][][] getTopColors()
 	{
-		int[][]result = new int[CHUNK_SIZE][CHUNK_SIZE];
+		int[][][] result = new int[CHUNK_SIZE][CHUNK_SIZE][2];
 		
 		for (int x = 0; x < CHUNK_SIZE; x++)
 		{
 			for (int z = 0; z < CHUNK_SIZE; z++)
 			{
 				Block block = getBlock(x, z);
+				int y = getTopBlockY(x, z);
 				int color = Block.getBlockColor(block.getBlockID(), block.getMetaData());
-				result[x][z] = color;
+				
+				result[x][z][0] = color;
+				result[x][z][1] = y;
 			}
 		}
 		
@@ -248,5 +251,23 @@ public class Chunk
 		return levelTag.getInt("zPos");
 	}
 	
-	
+	public int getTopBlockY(int x, int z)
+	{
+		for(int y = worldHeight - 1; y > 0; y--) 
+			if(Block.isBlockVisible(blocks[x][y][z])) 
+				return y;
+		
+		return 0;
+	}
+
+	public int setAlphaToY(int color, int y)
+	{
+		int result;
+		
+		result = (color & 0x00FFFFFF);
+		y <<= 24;
+		result |= y;
+		
+		return result;
+	}
 }

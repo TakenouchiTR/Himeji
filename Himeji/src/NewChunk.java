@@ -49,11 +49,6 @@ public class NewChunk extends Chunk
 		
 		//boolean calcLight = levelTag.getBoolean("LightPopulated"); 
 		
-		int xPos = levelTag.getInt("xPos");
-		int zPos = levelTag.getInt("zPos");
-		if (xPos == 159 && zPos == -58)
-			System.out.println();
-		
 		for(int i = 0; i < sections.length; i++) 
 		{
 			sections[i] = new Section((CompoundTag)sectionTags.get(i));
@@ -129,16 +124,21 @@ public class NewChunk extends Chunk
 	}
 	
 	@Override
-	public int[][] getTopColors()
+	public int[][][] getTopColors()
 	{
-		int[][]result = new int[CHUNK_SIZE][CHUNK_SIZE];
+		int[][][] result = new int[CHUNK_SIZE][CHUNK_SIZE][2];
+		
+		if (blocks == null)
+			return null;
 		
 		for (int x = 0; x < CHUNK_SIZE; x++)
 		{
 			for (int z = 0; z < CHUNK_SIZE; z++)
 			{
-				int color = Block.getBlockColor(getStringBlock(x, z));
-				result[x][z] = color;
+				int y = getTopBlockY(x, z);
+				int color = Block.getBlockColor(blocks[x][y][z]);
+				result[x][z][0] = color;
+				result[x][z][1] = y;
 			}
 		}
 		
@@ -149,16 +149,47 @@ public class NewChunk extends Chunk
 	{
 		String blockName;
 		int[] idMeta;
-		
 		// starting at the top of the map and going down
 		for(int y = worldHeight - 1; y > 0; y--) 
 		{
 			blockName = blocks[x][y][z];
 			idMeta = Block.getIdMeta(blockName);
-			if (Block.isBlockVisible(idMeta[0]))
-				return blockName;
+			if (idMeta != null)
+			{
+				if (Block.isBlockVisible(idMeta[0]))
+				{
+					return blockName;
+				}
+			}
+			else
+			{
+				return "minecraft:air";
+			}
+			
 		}
 		return "minecraft:air";
 	}
 	
+	@Override
+	public int getTopBlockY(int x, int z)
+	{
+		for(int y = worldHeight - 1; y > 0; y--) 
+		{
+			String blockName = blocks[x][y][z];
+			int[] idMeta = Block.getIdMeta(blockName);
+			if (idMeta != null)
+			{
+				if (Block.isBlockVisible(idMeta[0]))
+				{
+					return y;
+				}
+			}
+			else
+			{
+				return 0;
+			}
+			
+		}
+		return 0;
+	}
 }
