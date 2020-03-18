@@ -44,7 +44,11 @@ public class Region
 		CompoundTag result = null;
 		
 		if(file.hasChunk(x, z)) 
-			result = NbtIo.read(file.getChunkDataInputStream(x, z));
+		{
+			DataInputStream dis = file.getChunkDataInputStream(x, z);
+				if (dis != null)
+					result = NbtIo.read(dis);
+		}
 		
 		return result;
 	}
