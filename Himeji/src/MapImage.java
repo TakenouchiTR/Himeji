@@ -27,7 +27,10 @@ public class MapImage
 			for (int z = 0; z < height; z++)
 			{
 				if (!dim.getChunkRenderFlag(x / 16, z / 16))
+				{
+					z += 15;
 					continue;
+				}
 				
 				int rgb = dim.getBlockColorAt(x, z);
 				
@@ -35,8 +38,8 @@ public class MapImage
 					output.setRGB(x, z, rgb);
 			}
 			
-			if (Himeji.SHOW_ALL_EVENTS)
-				System.out.println("rendering block row " + x);
+			if (x % 100 == 0 && Himeji.SHOW_ALL_EVENTS)
+				System.out.println("rendering " + x + "/" + width);
 		}
 		
 		try
