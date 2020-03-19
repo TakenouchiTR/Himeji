@@ -12,6 +12,7 @@ public class NewChunk extends Chunk
 	private int worldHeight;
 	private String[][][] blocks;
 	private int[][][] biome;
+	private int biomeHeight;
 	private Section[] sections;
 	
 	public NewChunk(CompoundTag baseTag) 
@@ -19,6 +20,7 @@ public class NewChunk extends Chunk
 		super();
 		
 		levelTag = baseTag.getCompound("Level");
+		int dataVersion = levelTag.getInt("DataVersion");
 		
 		ListTag<? extends Tag> sectionTags = levelTag.getList("Sections");
 		
@@ -33,7 +35,6 @@ public class NewChunk extends Chunk
 		
 		sections = new Section[sectionTags.size() - 1];
 		blocks = new String[CHUNK_SIZE][worldHeight][CHUNK_SIZE];
-		biome = new int[CHUNK_SIZE / 4][256 / 4][CHUNK_SIZE / 4];
 		
 		for(int x = 0; x < CHUNK_SIZE; x++) 
 		{
@@ -42,17 +43,6 @@ public class NewChunk extends Chunk
 				for(int y = 0; y < worldHeight; y++) 
 				{
 					blocks[x][y][z] = "minecraft:air";
-				}
-			}
-		}
-		
-		for (int x = 0; x < CHUNK_SIZE / 4; x++)
-		{
-			for (int y = 0; y < 256 / 4; y++)
-			{
-				for (int z = 0; z < CHUNK_SIZE / 4; z++)
-				{
-					biome[x][y][z] = 0;
 				}
 			}
 		}
@@ -80,12 +70,13 @@ public class NewChunk extends Chunk
 			}
 		}
 		
-		Tag biomeTag = levelTag.get("Biomes");
 		int dataLoc = 0;
-		
-		if (biomeTag instanceof IntArrayTag)
+		int[] biomeData = levelTag.getIntArray("Biomes");
+			
+		if (biomeData.length == 1024)
 		{
-			int[] biomeData = levelTag.getIntArray("Biomes");
+			biome = new int[CHUNK_SIZE / 4][256 / 4][CHUNK_SIZE / 4];
+			biomeHeight = 4;
 			
 			for (int y = 0; y < 256 / 4; y++)
 			{
@@ -98,15 +89,19 @@ public class NewChunk extends Chunk
 					}
 				}
 			}
+			
 		}
-		else if (biomeTag instanceof ByteArrayTag)
+		else
 		{
-			byte[] biomeData = levelTag.getByteArray("Biomes");
-			for(int x = 0; x < CHUNK_SIZE; x++) 
+			biome = new int[CHUNK_SIZE][1][CHUNK_SIZE];
+			biomeHeight = 256;
+			
+			for(int z = 0; z < CHUNK_SIZE; z++) 
 			{
-				for(int z = 0; z < CHUNK_SIZE; z++) 
+				for(int x = 0; x < CHUNK_SIZE; x++) 
 				{
-					//biome[x][z] = getPositiveByte(biomeData[getIndex(x, z)]);
+					biome[x][0][z] = biomeData[dataLoc];
+					dataLoc++;
 				}
 			}
 		}
@@ -151,12 +146,14 @@ public class NewChunk extends Chunk
 			{
 				int y = getTopBlockY(x, z);
 				int dy = getTopBlockYIgnoreWater(x, z);
-				int color = Block.getBlockColor(blocks[x][dy][z], biome[x / 4][dy / 4][z / 4]);
+				int color = Block.getBlockColor(blocks[x][dy][z], 
+						biome[x / (CHUNK_SIZE / biome.length)][dy / biomeHeight][z / biome.length]);
 				
 				//Adds a blue effect to blocks under water
 				if (y != dy)
 				{
-					int waterColor = Block.getBlockColor(8, 0, biome[x / 4][y / 64][z / 4]);
+					int waterColor = Block.getBlockColor(8, 0, 
+							biome[x / biome.length][y / biomeHeight][z / biome.length]);
 					int a = 0;
 					int r = 0;
 					int g = 0;
