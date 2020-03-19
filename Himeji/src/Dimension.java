@@ -318,7 +318,7 @@ public class Dimension
 									if (upChunk == null)
 										upYVal = curYVal;
 									else
-										upYVal = upChunk.getTopBlockY(blockX, Chunk.CHUNK_SIZE - 1);
+										upYVal = upChunk.getTopBlockYIgnoreWater(blockX, Chunk.CHUNK_SIZE - 1);
 								}
 								else
 								{
@@ -330,7 +330,7 @@ public class Dimension
 									if (rightChunk == null)
 										rightYVal = curYVal;
 									else
-										rightYVal = rightChunk.getTopBlockY(0, blockZ);
+										rightYVal = rightChunk.getTopBlockYIgnoreWater(0, blockZ);
 								}
 								else
 								{
