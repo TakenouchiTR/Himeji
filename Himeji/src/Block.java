@@ -10,7 +10,12 @@ public class Block
 {
 	public static final int MAX_BLOCK_ID = 260;
 	private static boolean[] blockVisibility; 
+	private static int[][] biomeBlocks;
+	private static int[][] biomeGrass;
 	private static int[][] blockColors;
+	private static int[] foliageColors;
+	private static int[] grassColors;
+	private static int[] waterColors;
 	private static Dictionary<String, int[]> blockDict;
 	private int blockID;
 	private int metadata;
@@ -67,6 +72,280 @@ public class Block
 		blockVisibility[177] = false; //Wall banner
 		blockVisibility[198] = false; //End rod
 		blockVisibility[255] = false; //Structure Block
+	}
+	
+	public static void setBiomeBlocks() 
+	{
+		biomeBlocks = new int[7][2];
+		
+		biomeBlocks[0][0] = 18;   //Leaves
+		biomeBlocks[0][1] = 0;
+		biomeBlocks[1][0] = 18;
+		biomeBlocks[1][1] = 1;
+		biomeBlocks[2][0] = 18;
+		biomeBlocks[2][1] = 2;
+		biomeBlocks[3][0] = 18;
+		biomeBlocks[3][1] = 3;
+		biomeBlocks[4][0] = 161;
+		biomeBlocks[4][1] = 0;
+		biomeBlocks[5][0] = 161;
+		biomeBlocks[5][1] = 1;
+		biomeBlocks[6][0] = 106;  //Vines
+		biomeBlocks[6][1] = 0;
+	}
+	
+	public static void setBiomeGrass()
+	{
+		biomeGrass = new int[4][2];
+		
+		biomeBlocks[0][0] = 2;    //Grass Block
+		biomeBlocks[0][1] = 0;
+		biomeBlocks[1][0] = 31;   //Grass
+		biomeBlocks[1][1] = 0;
+		biomeBlocks[2][0] = 31;   //Fern
+		biomeBlocks[2][1] = 1;
+		biomeBlocks[3][0] = 175;  //Tall Grass
+		biomeBlocks[3][1] = 3;
+	}
+	
+	public static void setBiomeColors()
+	{
+		int length = 173;
+		foliageColors = new int[length];
+		grassColors = new int[length];
+		waterColors = new int[length];
+		
+		foliageColors[Biome.OCEAN.id] = 0xFF5AB027;
+		grassColors[Biome.OCEAN.id] = 0xFF73C252;
+		waterColors[Biome.OCEAN.id] = 0xFF1F8FBE;
+		foliageColors[Biome.PLAINS.id] = 0xFF1ABF00;
+		grassColors[Biome.PLAINS.id] = 0xFF47CD33;
+		waterColors[Biome.PLAINS.id] = 0xFF36599C;
+		foliageColors[Biome.DESERT.id] = 0xFFAEA42A;
+		grassColors[Biome.DESERT.id] = 0xFFBFB755;
+		waterColors[Biome.DESERT.id] = 0xFF36599C;
+		foliageColors[Biome.MOUNTAINS.id] = 0xFF659B78;
+		grassColors[Biome.MOUNTAINS.id] = 0xFF73C05F;
+		waterColors[Biome.MOUNTAINS.id] = 0xFF36599C;
+		foliageColors[Biome.FOREST.id] = 0xFF67AE2C;
+		grassColors[Biome.FOREST.id] = 0xFF78C152;
+		waterColors[Biome.FOREST.id] = 0xFF36599C;
+		foliageColors[Biome.TAIGA.id] = 0xFF6B9793;
+		grassColors[Biome.TAIGA.id] = 0xFF80B497;
+		waterColors[Biome.TAIGA.id] = 0xFF36599C;
+		foliageColors[Biome.SWAMP.id] = 0xFF4C763C;
+		grassColors[Biome.SWAMP.id] = 0xFF4C763C;
+		waterColors[Biome.SWAMP.id] = 0xFF77804F;
+		foliageColors[Biome.RIVER.id] = 0xFF5AB027;
+		grassColors[Biome.RIVER.id] = 0xFF73C252;
+		waterColors[Biome.RIVER.id] = 0xFF36599C;
+		foliageColors[Biome.NETHER_WASTES.id] = 0xFFAEA42A;
+		grassColors[Biome.NETHER_WASTES.id] = 0xFFBFB755;
+		waterColors[Biome.NETHER_WASTES.id] = 0xFF36599C;
+		foliageColors[Biome.THE_END.id] = 0xFF8DAA22;
+		grassColors[Biome.THE_END.id] = 0xFFA2BD4E;
+		waterColors[Biome.THE_END.id] = 0xFF36599C;
+		foliageColors[Biome.FROZEN_OCEAN.id] = 0xFF659B78;
+		grassColors[Biome.FROZEN_OCEAN.id] = 0xFF73C05F;
+		waterColors[Biome.FROZEN_OCEAN.id] = 0xFF182B80;
+		foliageColors[Biome.FROZEN_RIVER.id] = 0xFF659B78;
+		grassColors[Biome.FROZEN_RIVER.id] = 0xFF73C05F;
+		waterColors[Biome.FROZEN_RIVER.id] = 0xFF36599C;
+		foliageColors[Biome.SNOWY_TUNDRA.id] = 0xFF659B78;
+		grassColors[Biome.SNOWY_TUNDRA.id] = 0xFF73C05F;
+		waterColors[Biome.SNOWY_TUNDRA.id] = 0xFF36599C;
+		foliageColors[Biome.SNOWY_MOUNTAINS.id] = 0xFF659B78;
+		grassColors[Biome.SNOWY_MOUNTAINS.id] = 0xFF73C05F;
+		waterColors[Biome.SNOWY_MOUNTAINS.id] = 0xFF36599C;
+		foliageColors[Biome.MUSHROOM_FIELDS.id] = 0xFF2EBB06;
+		grassColors[Biome.MUSHROOM_FIELDS.id] = 0xFF4CCC35;
+		waterColors[Biome.MUSHROOM_FIELDS.id] = 0xFF36599C;
+		foliageColors[Biome.MUSHROOM_FIELD_SHORE .id] = 0xFF2EBB06;
+		grassColors[Biome.MUSHROOM_FIELD_SHORE .id] = 0xFF4CCC35;
+		waterColors[Biome.MUSHROOM_FIELD_SHORE .id] = 0xFF36599C;
+		foliageColors[Biome.BEACH.id] = 0xFF5AB027;
+		grassColors[Biome.BEACH.id] = 0xFF73C252;
+		waterColors[Biome.BEACH.id] = 0xFF36599C;
+		foliageColors[Biome.DESERT_HILLS.id] = 0xFFAEA42A;
+		grassColors[Biome.DESERT_HILLS.id] = 0xFFBFB755;
+		waterColors[Biome.DESERT_HILLS.id] = 0xFF36599C;
+		foliageColors[Biome.WOODED_HILLS.id] = 0xFF67AE2C;
+		grassColors[Biome.WOODED_HILLS.id] = 0xFF78C152;
+		waterColors[Biome.WOODED_HILLS.id] = 0xFF36599C;
+		foliageColors[Biome.TAIGA_HILLS.id] = 0xFF6B9793;
+		grassColors[Biome.TAIGA_HILLS.id] = 0xFF80B497;
+		waterColors[Biome.TAIGA_HILLS.id] = 0xFF36599C;
+		foliageColors[Biome.MOUNTAIN_EDGE.id] = 0xFF659B78;
+		grassColors[Biome.MOUNTAIN_EDGE.id] = 0xFF73C05F;
+		waterColors[Biome.MOUNTAIN_EDGE.id] = 0xFF36599C;
+		foliageColors[Biome.JUNGLE.id] = 0xFF1ABF00;
+		grassColors[Biome.JUNGLE.id] = 0xFF44B70C;
+		waterColors[Biome.JUNGLE.id] = 0xFF36599C;
+		foliageColors[Biome.JUNGLE_HILLS.id] = 0xFF1ABF00;
+		grassColors[Biome.JUNGLE_HILLS.id] = 0xFF44B70C;
+		waterColors[Biome.JUNGLE_HILLS.id] = 0xFF36599C;
+		foliageColors[Biome.JUNGLE_EDGE.id] = 0xFF1ABF00;
+		grassColors[Biome.JUNGLE_EDGE.id] = 0xFF44B70C;
+		waterColors[Biome.JUNGLE_EDGE.id] = 0xFF36599C;
+		foliageColors[Biome.DEEP_OCEAN.id] = 0xFF5AB027;
+		grassColors[Biome.DEEP_OCEAN.id] = 0xFF73C252;
+		waterColors[Biome.DEEP_OCEAN.id] = 0xFF1F8FBE;
+		foliageColors[Biome.STONE_SHORE.id] = 0xFF659B78;
+		grassColors[Biome.STONE_SHORE.id] = 0xFF73C05F;
+		waterColors[Biome.STONE_SHORE.id] = 0xFF36599C;
+		foliageColors[Biome.SNOWY_BEACH.id] = 0xFF659B78;
+		grassColors[Biome.SNOWY_BEACH.id] = 0xFF73C05F;
+		waterColors[Biome.SNOWY_BEACH.id] = 0xFF36599C;
+		foliageColors[Biome.BIRCH_FOREST.id] = 0xFF70AF19;
+		grassColors[Biome.BIRCH_FOREST.id] = 0xFF89C146;
+		waterColors[Biome.BIRCH_FOREST.id] = 0xFF36599C;
+		foliageColors[Biome.BIRCH_FOREST_HILLS.id] = 0xFF70AF19;
+		grassColors[Biome.BIRCH_FOREST_HILLS.id] = 0xFF89C146;
+		waterColors[Biome.BIRCH_FOREST_HILLS.id] = 0xFF36599C;
+		foliageColors[Biome.DARK_FOREST.id] = 0xFF28340A;
+		grassColors[Biome.DARK_FOREST.id] = 0xFF28340A;
+		waterColors[Biome.DARK_FOREST.id] = 0xFF36599C;
+		foliageColors[Biome.SNOWY_TAIGA.id] = 0xFF6B9793;
+		grassColors[Biome.SNOWY_TAIGA.id] = 0xFF80B497;
+		waterColors[Biome.SNOWY_TAIGA.id] = 0xFF36599C;
+		foliageColors[Biome.SNOWY_TAIGA_HILLS.id] = 0xFF6B9793;
+		grassColors[Biome.SNOWY_TAIGA_HILLS.id] = 0xFF80B497;
+		waterColors[Biome.SNOWY_TAIGA_HILLS.id] = 0xFF36599C;
+		foliageColors[Biome.GIANT_TREE_TAIGA.id] = 0xFF6B9793;
+		grassColors[Biome.GIANT_TREE_TAIGA.id] = 0xFF80B497;
+		waterColors[Biome.GIANT_TREE_TAIGA.id] = 0xFF36599C;
+		foliageColors[Biome.GIANT_TREE_TAIGA_HILLS.id] = 0xFF6B9793;
+		grassColors[Biome.GIANT_TREE_TAIGA_HILLS.id] = 0xFF80B497;
+		waterColors[Biome.GIANT_TREE_TAIGA_HILLS.id] = 0xFF36599C;
+		foliageColors[Biome.WOODED_MOUNTAINS.id] = 0xFF659B78;
+		grassColors[Biome.WOODED_MOUNTAINS.id] = 0xFF73C05F;
+		waterColors[Biome.WOODED_MOUNTAINS.id] = 0xFF36599C;
+		foliageColors[Biome.SAVANNA.id] = 0xFFAEA42A;
+		grassColors[Biome.SAVANNA.id] = 0xFFBFB755;
+		waterColors[Biome.SAVANNA.id] = 0xFF36599C;
+		foliageColors[Biome.SAVANNA_PLATEAU.id] = 0xFFAEA42A;
+		grassColors[Biome.SAVANNA_PLATEAU.id] = 0xFFBFB755;
+		waterColors[Biome.SAVANNA_PLATEAU.id] = 0xFF36599C;
+		foliageColors[Biome.BADLANDS.id] = 0xFF9E814D;
+		grassColors[Biome.BADLANDS.id] = 0xFF90814D;
+		waterColors[Biome.BADLANDS.id] = 0xFF36599C;
+		foliageColors[Biome.WOODED_BADLANDS_PLATEAU.id] = 0xFF9E814D;
+		grassColors[Biome.WOODED_BADLANDS_PLATEAU.id] = 0xFF90814D;
+		waterColors[Biome.WOODED_BADLANDS_PLATEAU.id] = 0xFF36599C;
+		foliageColors[Biome.BADLANDS_PLATEAU.id] = 0xFF9E814D;
+		grassColors[Biome.BADLANDS_PLATEAU.id] = 0xFF90814D;
+		waterColors[Biome.BADLANDS_PLATEAU.id] = 0xFF36599C;
+		foliageColors[Biome.SMALL_END_ISLANDS.id] = 0xFF8DAA22;
+		grassColors[Biome.SMALL_END_ISLANDS.id] = 0xFFA2BD4E;
+		waterColors[Biome.SMALL_END_ISLANDS.id] = 0xFF36599C;
+		foliageColors[Biome.END_MIDLANDS.id] = 0xFF8DAA22;
+		grassColors[Biome.END_MIDLANDS.id] = 0xFFA2BD4E;
+		waterColors[Biome.END_MIDLANDS.id] = 0xFF36599C;
+		foliageColors[Biome.END_HIGHLANDS.id] = 0xFF8DAA22;
+		grassColors[Biome.END_HIGHLANDS.id] = 0xFFA2BD4E;
+		waterColors[Biome.END_HIGHLANDS.id] = 0xFF36599C;
+		foliageColors[Biome.END_BARRENS.id] = 0xFF8DAA22;
+		grassColors[Biome.END_BARRENS.id] = 0xFFA2BD4E;
+		waterColors[Biome.END_BARRENS.id] = 0xFF36599C;
+		foliageColors[Biome.WARM_OCEAN.id] = 0xFF4EB513;
+		grassColors[Biome.WARM_OCEAN.id] = 0xFF6BC63E;
+		waterColors[Biome.WARM_OCEAN.id] = 0xFF1F8FBE;
+		foliageColors[Biome.LUKEWARM_OCEAN.id] = 0xFF5AB027;
+		grassColors[Biome.LUKEWARM_OCEAN.id] = 0xFF73C252;
+		waterColors[Biome.LUKEWARM_OCEAN.id] = 0xFF1F8FBE;
+		foliageColors[Biome.COLD_OCEAN.id] = 0xFF6B9793;
+		grassColors[Biome.COLD_OCEAN.id] = 0xFF80B497;
+		waterColors[Biome.COLD_OCEAN.id] = 0xFF182B80;
+		foliageColors[Biome.DEEP_WARM_OCEAN.id] = 0xFF4EB513;
+		grassColors[Biome.DEEP_WARM_OCEAN.id] = 0xFF6BC63E;
+		waterColors[Biome.DEEP_WARM_OCEAN.id] = 0xFF1F8FBE;
+		foliageColors[Biome.DEEP_LUKEWARM_OCEAN.id] = 0xFF5AB027;
+		grassColors[Biome.DEEP_LUKEWARM_OCEAN.id] = 0xFF73C252;
+		waterColors[Biome.DEEP_LUKEWARM_OCEAN.id] = 0xFF1F8FBE;
+		foliageColors[Biome.DEEP_COLD_OCEAN.id] = 0xFF6B9793;
+		grassColors[Biome.DEEP_COLD_OCEAN.id] = 0xFF80B497;
+		waterColors[Biome.DEEP_COLD_OCEAN.id] = 0xFF182B80;
+		foliageColors[Biome.DEEP_FROZON_OCEAN.id] = 0xFF6B9793;
+		grassColors[Biome.DEEP_FROZON_OCEAN.id] = 0xFF80B497;
+		waterColors[Biome.DEEP_FROZON_OCEAN.id] = 0xFF182B80;
+		foliageColors[Biome.THE_VOID.id] = 0xFF9CA825;
+		grassColors[Biome.THE_VOID.id] = 0xFFAFBA50;
+		waterColors[Biome.THE_VOID.id] = 0xFF36599C;
+		foliageColors[Biome.SUNFLOWER_PLAINS.id] = 0xFF1ABF00;
+		grassColors[Biome.SUNFLOWER_PLAINS.id] = 0xFF47CD33;
+		waterColors[Biome.SUNFLOWER_PLAINS.id] = 0xFF36599C;
+		foliageColors[Biome.DESERT_LAKES.id] = 0xFFAEA42A;
+		grassColors[Biome.DESERT_LAKES.id] = 0xFFBFB755;
+		waterColors[Biome.DESERT_LAKES.id] = 0xFF36599C;
+		foliageColors[Biome.GRAVELLY_MOUNTAINS.id] = 0xFF659B78;
+		grassColors[Biome.GRAVELLY_MOUNTAINS.id] = 0xFF73C05F;
+		waterColors[Biome.GRAVELLY_MOUNTAINS.id] = 0xFF36599C;
+		foliageColors[Biome.FLOWER_FOREST.id] = 0xFF67AE2C;
+		grassColors[Biome.FLOWER_FOREST.id] = 0xFF78C152;
+		waterColors[Biome.FLOWER_FOREST.id] = 0xFF36599C;
+		foliageColors[Biome.TAIGA_MOUNTAINS.id] = 0xFF6B9793;
+		grassColors[Biome.TAIGA_MOUNTAINS.id] = 0xFF80B497;
+		waterColors[Biome.TAIGA_MOUNTAINS.id] = 0xFF36599C;
+		foliageColors[Biome.SWAMP_HILLS.id] = 0xFF4C763C;
+		grassColors[Biome.SWAMP_HILLS.id] = 0xFF4C763C;
+		waterColors[Biome.SWAMP_HILLS.id] = 0xFF77804F;
+		foliageColors[Biome.ICE_SPIKES.id] = 0xFF6B9793;
+		grassColors[Biome.ICE_SPIKES.id] = 0xFF80B497;
+		waterColors[Biome.ICE_SPIKES.id] = 0xFF36599C;
+		foliageColors[Biome.MODIFIED_JUNGLE.id] = 0xFF1ABF00;
+		grassColors[Biome.MODIFIED_JUNGLE.id] = 0xFF44B70C;
+		waterColors[Biome.MODIFIED_JUNGLE.id] = 0xFF36599C;
+		foliageColors[Biome.MODIFIED_JUNGLE_EDGE.id] = 0xFF1ABF00;
+		grassColors[Biome.MODIFIED_JUNGLE_EDGE.id] = 0xFF44B70C;
+		waterColors[Biome.MODIFIED_JUNGLE_EDGE.id] = 0xFF36599C;
+		foliageColors[Biome.TALL_BIRCH_FOREST.id] = 0xFF70AF19;
+		grassColors[Biome.TALL_BIRCH_FOREST.id] = 0xFF89C146;
+		waterColors[Biome.TALL_BIRCH_FOREST.id] = 0xFF36599C;
+		foliageColors[Biome.TALL_BIRCH_HILLS.id] = 0xFF70AF19;
+		grassColors[Biome.TALL_BIRCH_HILLS.id] = 0xFF89C146;
+		waterColors[Biome.TALL_BIRCH_HILLS.id] = 0xFF36599C;
+		foliageColors[Biome.DARK_FOREST_HILLS.id] = 0xFF28340A;
+		grassColors[Biome.DARK_FOREST_HILLS.id] = 0xFF28340A;
+		waterColors[Biome.DARK_FOREST_HILLS.id] = 0xFF36599C;
+		foliageColors[Biome.SNOWY_TAIGA_MOUNTAINS.id] = 0xFF6B9793;
+		grassColors[Biome.SNOWY_TAIGA_MOUNTAINS.id] = 0xFF80B497;
+		waterColors[Biome.SNOWY_TAIGA_MOUNTAINS.id] = 0xFF36599C;
+		foliageColors[Biome.GIANT_SPRUCE_TAIGA.id] = 0xFF6B9793;
+		grassColors[Biome.GIANT_SPRUCE_TAIGA.id] = 0xFF80B497;
+		waterColors[Biome.GIANT_SPRUCE_TAIGA.id] = 0xFF36599C;
+		foliageColors[Biome.GIANT_SPRUCE_TAIGA_HILLS.id] = 0xFF6B9793;
+		grassColors[Biome.GIANT_SPRUCE_TAIGA_HILLS.id] = 0xFF80B497;
+		waterColors[Biome.GIANT_SPRUCE_TAIGA_HILLS.id] = 0xFF36599C;
+		foliageColors[Biome.MODIFIED_GRAVELLY_MOUNTAINS.id] = 0xFF659B78;
+		grassColors[Biome.MODIFIED_GRAVELLY_MOUNTAINS.id] = 0xFF73C05F;
+		waterColors[Biome.MODIFIED_GRAVELLY_MOUNTAINS.id] = 0xFF36599C;
+		foliageColors[Biome.SHATTERED_SAVANNA.id] = 0xFFAEA42A;
+		grassColors[Biome.SHATTERED_SAVANNA.id] = 0xFFBFB755;
+		waterColors[Biome.SHATTERED_SAVANNA.id] = 0xFF36599C;
+		foliageColors[Biome.SHATTERED_SAVANNA_PLATEAU.id] = 0xFFAEA42A;
+		grassColors[Biome.SHATTERED_SAVANNA_PLATEAU.id] = 0xFFBFB755;
+		waterColors[Biome.SHATTERED_SAVANNA_PLATEAU.id] = 0xFF36599C;
+		foliageColors[Biome.ERODED_BADLANDS.id] = 0xFF9E814D;
+		grassColors[Biome.ERODED_BADLANDS.id] = 0xFF90814D;
+		waterColors[Biome.ERODED_BADLANDS.id] = 0xFF36599C;
+		foliageColors[Biome.MODIFIED_WOODED_BADLANDS_PLATEAU.id] = 0xFF9E814D;
+		grassColors[Biome.MODIFIED_WOODED_BADLANDS_PLATEAU.id] = 0xFF90814D;
+		waterColors[Biome.MODIFIED_WOODED_BADLANDS_PLATEAU.id] = 0xFF36599C;
+		foliageColors[Biome.BAMBOO_JUNGLE.id] = 0xFF1ABF00;
+		grassColors[Biome.BAMBOO_JUNGLE.id] = 0xFF44B70C;
+		waterColors[Biome.BAMBOO_JUNGLE.id] = 0xFF36599C;
+		foliageColors[Biome.BAMBOO_JUNGLE_HILLS.id] = 0xFF1ABF00;
+		grassColors[Biome.BAMBOO_JUNGLE_HILLS.id] = 0xFF44B70C;
+		waterColors[Biome.BAMBOO_JUNGLE_HILLS.id] = 0xFF36599C;
+		foliageColors[Biome.SOUL_SAND_VALLEY.id] = 0xFFAEA42A;
+		grassColors[Biome.SOUL_SAND_VALLEY.id] = 0xFFBFB755;
+		waterColors[Biome.SOUL_SAND_VALLEY.id] = 0xFF36599C;
+		foliageColors[Biome.CRIMSON_FOREST.id] = 0xFFAEA42A;
+		grassColors[Biome.CRIMSON_FOREST.id] = 0xFFBFB755;
+		waterColors[Biome.CRIMSON_FOREST.id] = 0xFF36599C;
+		foliageColors[Biome.WARPED_FOREST.id] = 0xFFAEA42A;
+		grassColors[Biome.WARPED_FOREST.id] = 0xFFBFB755;
+		waterColors[Biome.WARPED_FOREST.id] = 0xFF36599C;
 	}
 	
 	/**
@@ -1334,25 +1613,99 @@ public class Block
 		return false;
 	}
 
+	public static int getFoliageColor(int biome)
+	{
+		return foliageColors[biome];
+	}
+	
+	public static int getGrassColor(int biome)
+	{
+		return grassColors[biome];
+	}
+	
+	public static int getWaterColor(int biome)
+	{
+		return waterColors[biome];
+	}
+	
+	public static boolean hasFoliageColor(int id, int meta)
+	{
+		for (int i = 0; i < biomeBlocks.length; i++)
+			if (id == biomeBlocks[i][0] && meta == biomeBlocks[i][1])
+				return true;
+		
+		return false;
+	}
+
+	public static boolean hasGrassColor(int id, int meta)
+	{
+		for (int i = 0; i < biomeGrass.length; i++)
+			if (id == biomeGrass[i][0] && meta == biomeGrass[i][1])
+				return true;
+		
+		return false;
+	}
+	
+	
 	/**
 	 * Gets the color of a block to be rendered using the pre-flattening block ID and metadata.
 	 * @param id   Pre-flattening block ID
 	 * @param meta Pre-flattening block metadata
 	 * @return     int representation of an ARGB value
 	 */
-	public static int getBlockColor(int id, int meta)
+	public static int getBlockColor(int id, int meta, int biome)
 	{
-		try
-		{
 		if (id >= blockColors.length || blockColors[id].length == 0)
 			return 0;
-		}
-		catch (Exception e) 
+		
+		int color;
+		int secondColor = 0;
+		boolean blend = false;
+		
+		color = blockColors[id][Math.min(meta, blockColors[id].length - 1)];
+		
+		if (hasFoliageColor(id, meta))
 		{
-			e.printStackTrace();
+			secondColor = getFoliageColor(biome);
+			blend = true;
+		}
+		else if (hasGrassColor(id, meta))
+		{
+			secondColor = getGrassColor(biome);
+			blend = true;
+		}
+		else if (id == 8 || id == 9)
+		{
+			secondColor = getWaterColor(biome);
+			blend = true;
 		}
 		
-		return blockColors[id][Math.min(meta, blockColors[id].length - 1)]; 
+		if (blend)
+		{
+			int a = 0;
+			int r = 0;
+			int g = 0;
+			int b = 0;
+			
+			a = 0xFF000000;
+			r += (color & 0x00FF0000) >>> 16;
+			r += ((secondColor & 0x00FF0000) >>> 16) * 2;
+			g += (color & 0x0000FF00) >>> 8;
+			g += ((secondColor & 0x0000FF00) >>> 8) * 2;
+			b += (color & 0x000000FF);
+			b += (secondColor & 0x000000FF) * 2;
+			
+			r /= 3;
+			g /= 3;
+			b /= 3;
+			
+			r <<= 16;
+			g <<= 8;
+					
+			color = a | r | g | b;
+		}
+		
+		return color;
 	}
 	
 	/**
@@ -1360,12 +1713,12 @@ public class Block
 	 * @param id   Post-flattening block ID
 	 * @return     int representation of an ARGB value
 	 */
-	public static int getBlockColor(String id)
+	public static int getBlockColor(String id, int biome)
 	{
 		if (id == null)
 			return 0;
 		int[] idMeta = blockDict.get(id);
-		return getBlockColor(idMeta[0], idMeta[1]);
+		return getBlockColor(idMeta[0], idMeta[1], biome);
 	}
 	
 	public static int[] getIdMeta(String name)
