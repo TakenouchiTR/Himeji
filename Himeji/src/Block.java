@@ -8,7 +8,7 @@ import java.util.Hashtable;
 
 public class Block 
 {
-	public static final int MAX_BLOCK_ID = 260;
+	public static final int MAX_BLOCK_ID = 297;
 	private static boolean[] blockVisibility; 
 	private static int[][] biomeBlocks;
 	private static int[][] biomeGrass;
@@ -362,7 +362,8 @@ public class Block
 									-4737095,        //Andesite
 									-2894890,        //P. Andesite
 									-10066330,       //Diorite
-									-6645094};       //P. Diorite 
+									-6645094,        //P. Diorite 
+									-5197648};       //Smooth Stone
 		blockColors[2] = new int[] {-13256686};      //Grass Block
 		blockColors[3] = new int[] {-8825542,        //Dirt
 									-10994648,       //Coarse Dirt
@@ -410,7 +411,22 @@ public class Block
 									 -3028581,       //Cut (old Smooth) Sandstone
 									 -3028581};      //Smooth Sandstone
 		blockColors[25] = new int[] {-6592949};      //Note Block
-		blockColors[26] = new int[] {-7727594};      //Bed
+		blockColors[26] = new int[] {-6806752,       //Red Bed
+				 					 -820454,        //Orange Bed
+				 					 -3319610,       //Magenta Bed
+				 					 -13524016,      //Light Blue Bed
+				 					 -404678,        //Yellow Bed
+				 					 -10047721,      //Lime Bed
+				 					 -1144921,       //Pink Bed
+				 					 -12040120,      //Gray Bed
+				 					 -15369079,      //Light Gray Bed
+				 					 -8902231,       //Cyan Bed
+				 					 -13223524,      //Purple Bed
+				 					 -10076382,      //Blue Bed
+				 					 -11640035,      //Brown Bed
+				 					 -11508196,      //Green Bed
+				 					 -1,             //White Bed
+				 					 -15921907};     //Black Bed
 		blockColors[27] = new int[] {-2246612};      //Powered Rails
 		blockColors[28] = new int[] {-10203350};     //Detector Rail
 		blockColors[29] = new int[] {-9325465};      //Sticky Piston
@@ -446,7 +462,10 @@ public class Block
 				 					 -2198753,       //Orange Tulip
 				 					 -789517,        //White Tulip
 				 					 -797453,        //Pink Tulip
-				 					 -526345};       //Oxeye Daisy////////////////////////////////////////////
+				 					 -526345,        //Oxeye Daisy
+				 					 0xFF392C25,     //Wither Rose
+				 					 0xFFEFEFF1,     //Lily of the Valley
+				 					 0xFF577AEA};    //Cornflower
 		blockColors[39] = new int[] {-7246507};      //Brown Mushroom
 		blockColors[40] = new int[] {-3924698};      //Red Mushroom
 		blockColors[41] = new int[] {-131495};       //Gold Block
@@ -503,7 +522,9 @@ public class Block
 		blockColors[58] = new int[] {-5279162};      //Crafting Table
 		blockColors[59] = new int[] {-7166970};      //Wheat Crop
 		blockColors[60] = new int[] {-12244715};     //Farmland
-		blockColors[61] = new int[] {-9868951};      //Furnace
+		blockColors[61] = new int[] {-9868951,       //Furnace
+									 0xFF48474A,     //Blast Furnace
+									 0xFF767676};    //Smoker
 		blockColors[62] = new int[] {-9868951};      //Burning Furnace
 		blockColors[63] = new int[] {-6323123,       //Oak Sign
 				  					 -8956107,       //Spruce Sign
@@ -543,7 +564,8 @@ public class Block
 		blockColors[83] = new int[] {-5579916};      //Sugarcane
 		blockColors[84] = new int[] {-7053500};      //Jukebox
 		blockColors[85] = new int[] {-6323123};      //Oak Fence
-		blockColors[86] = new int[] {-1863651};      //Pumpkin
+		blockColors[86] = new int[] {-1863651,       //Carved Pumpkin
+									 -1863651};      //Pumpkin
 		blockColors[87] = new int[] {-8174267};      //Netherrack
 		blockColors[88] = new int[] {-8822445};      //Soul Sand
 		blockColors[89] = new int[] {-17314};        //Glowstone
@@ -589,8 +611,10 @@ public class Block
 		blockColors[101] = new int[] {-10724260};    //Iron Bars
 		blockColors[102] = new int[] {-4131330};     //Glass Pane
 		blockColors[103] = new int[] {-6710493};     //Melon Block
-		blockColors[104] = new int[] {-9918402};     //Melon Stem
-		blockColors[105] = new int[] {-9918402};     //Pumpkin Stem
+		blockColors[104] = new int[] {-9918402       //Melon Stem
+									  -9918402};     //Attached Melon Stem
+		blockColors[105] = new int[] {-9918402       //Pumpkin Stem
+									  -9918402};     //Attached Pumpkin Stem
 		blockColors[106] = new int[] {-15188984};    //Vines
 		blockColors[107] = new int[] {-6323123};     //Oak Fence Gate
 		blockColors[108] = new int[] {-5086386};     //Brick Stairs
@@ -657,8 +681,21 @@ public class Block
 				 					  -4815517,      //Jungle Button
 				 					  -4693450,      //Acacia Button
 				 					  -12640976};    //Dark Oak Button
-		blockColors[144] = new int[] {-11908534};    //Mob Head
-		blockColors[145] = new int[] {-12763843};    //Anvil
+		blockColors[144] = new int[] {-11908534,     //Skeleton Skull
+									  -11908534,     //Skeleton Wall Skull
+									  0xFF202020,    //Wither Skeleton Skull
+									  0xFF202020,    //Wither Skeleton Wall Skull
+									  0xFF59BC4B,    //Creeper Head
+									  0xFF59BC4B,    //Creeper Wall Head
+									  0xFF141414,    //Dragon Head
+									  0xFF141414,    //Dragon Wall Head
+									  0xFF271706,    //Player Head
+									  0xFF271706,    //Player Wall Head
+									  0xFF477331,    //Zombie Head
+									  0xFF477331};   //Zombie Wall Head
+		blockColors[145] = new int[] {-12763843,     //Anvil
+									  -12763843,     //Chipped Anvil
+									  -12763843};    //Damaged Anvil
 		blockColors[146] = new int[] {-5539539};     //Trapped Chest
 		blockColors[147] = new int[] {-131495};      //Light Weighted Pressure Plate
 		blockColors[148] = new int[] {-1447447};     //Heavy Weighted Pressure Plate
@@ -739,15 +776,46 @@ public class Block
 				 					  -15921907};    //Black Carpet
 		blockColors[172] = new int[] {-6988990};     //Hardened Clay
 		blockColors[173] = new int[] {-15395563};    //Coal Block
-		blockColors[174] = new int[] {-5979915};     //Packed Ice
+		blockColors[174] = new int[] {-5979915,      //Packed Ice
+									  0xFF76A8F9};   //Blue Ice
 		blockColors[175] = new int[] {-2062559,      //Sunflower
 									  -4547138,      //Lilac
 									  -11964609,     //Double Tallgrass
 									  -13678808,     //Large Fern
 									  -588017,       //Rose Bush
 									  -1720841};     //Peony
-		blockColors[176] = new int[] {-1};           //Free-standing Banner
-		blockColors[177] = new int[] {-1};           //Wall-mounted Banner
+		blockColors[176] = new int[] {-1,            //White Banner
+				 					  -820454,       //Orange Banner
+				 					  -3319610,      //Magenta Banner
+				 					  -13524016,     //Light Blue Banner
+				 					  -404678,       //Yellow Banner
+				 					  -10047721,     //Lime Banner
+				 					  -1144921,      //Pink Banner
+				 					  -12040120,     //Gray Banner
+				 					  -15369079,     //Light Gray Banner
+				 					  -8902231,      //Cyan Banner
+				 					  -13223524,     //Purple Banner
+				 					  -10076382,     //Blue Banner
+				 					  -11640035,     //Brown Banner
+				 					  -11508196,     //Green Banner
+				 					  -6806752,      //Red Banner
+				 					  -15921907};    //Black Banner
+		blockColors[177] = new int[] {-1,            //White Wall Banner
+				 					  -820454,       //Orange Wall Banner
+				 					  -3319610,      //Magenta Wall Banner
+				 					  -13524016,     //Light Blue Wall Banner
+				 					  -404678,       //Yellow Wall Banner
+				 					  -10047721,     //Lime Wall Banner
+				 					  -1144921,      //Pink Wall Banner
+				 					  -12040120,     //Gray Wall Banner
+				 					  -15369079,     //Light Gray Wall Banner
+				 					  -8902231,      //Cyan Wall Banner
+				 					  -13223524,     //Purple Wall Banner
+				 					  -10076382,     //Blue Wall Banner
+				 					  -11640035,     //Brown Wall Banner
+				 					  -11508196,     //Green Wall Banner
+				 					  -6806752,      //Red Wall Banner
+				 					  -15921907};    //Black Wall Banner
 		blockColors[178] = new int[] {-7825490};     //Inverted Daylight Sensor (Depreciated)
 		blockColors[179] = new int[] {-5416929,      //Red Sandstone      
 									  -5416929,      //Chiseled Red Sandstone
@@ -802,7 +870,7 @@ public class Block
 		blockColors[226] = new int[] {-11382190};    //Gray Shulker Box
 		blockColors[227] = new int[] {-6052957};     //Light Gray Shulker Box
 		blockColors[228] = new int[] {-12285788};    //Cyan Shulker Box
-		blockColors[229] = new int[] {-6854761};     //Purple Shulker Box
+		blockColors[229] = new int[] {0xFF721FA6};   //Purple Shulker Box
 		blockColors[230] = new int[] {-10128951};    //Blue Shulker Box
 		blockColors[231] = new int[] {-7507875};     //Brown Shulker Box
 		blockColors[232] = new int[] {-9469356};     //Green Shulker Box
@@ -894,6 +962,100 @@ public class Block
 									  -3028581,      //Smooth Sandstone Stairs
 									  -5416929,      //Red Sandstone Stairs
 									  -7368817};     //Stone Stairs
+		blockColors[260] = new int[] {0xFF489B1B,    //Seagrass
+									  0xFF489B1B};   //Tall Seagrass
+		blockColors[261] = new int[] {0xFF74A435,    //Bamboo
+				  					  0xFF489B1B};   //Bamboo Sapling
+		blockColors[262] = new int[] {0xFF58AC2D,    //Kelp
+				  					  0xFF58AC2D};   //Kelp Plant
+		blockColors[263] = new int[] {0xFFCAAC79};   //Mushroom Stem
+		blockColors[264] = new int[] {-9868951};     //Observer
+		blockColors[265] = new int[] {0xFFAB7E4A};   //Scaffold
+		blockColors[266] = new int[] {0xFF565C1B};   //Sea Pickle
+		blockColors[267] = new int[] {0xFF956595};   //Shulker Box
+		blockColors[268] = new int[] {0xFF936C3C};   //Barrel
+		blockColors[269] = new int[] {0xFFF9E447};   //Bell
+		blockColors[270] = new int[] {0xFFDF7DB6,    //Brain Coral
+									  0xFFDF7DB6,    //Brain Coral Block
+									  0xFFDF7DB6,    //Brain Coral Fan
+									  0xFFDF7DB6};   //Brain Coral Wall Fan
+		blockColors[271] = new int[] {0xFFCA2DBB,    //Bubble Coral
+				  					  0xFFCA2DBB,    //Bubble Coral Block
+				  					  0xFFCA2DBB,    //Bubble Coral Fan
+				  					  0xFFCA2DBB};   //Bubble Coral Wall Fan
+		blockColors[272] = new int[] {0xFFA61C2B,    //Fire Coral
+									  0xFFA61C2B,    //Fire Coral Block
+									  0xFFA61C2B,    //Fire Coral Fan
+									  0xFFA61C2B};   //Fire Coral Wall Fan
+		blockColors[273] = new int[] {0xFFD9CB41,    //Horn Coral
+				  					  0xFFD9CB41,    //Horn Coral Block
+				  					  0xFFD9CB41,    //Horn Coral Fan
+				  					  0xFFD9CB41};   //Horn Coral Wall Fan
+		blockColors[274] = new int[] {0xFF335DDD,    //Tube Coral
+				  					  0xFF335DDD,    //Tube Coral Block
+				  					  0xFF335DDD,    //Tube Coral Fan
+				  					  0xFF335DDD};   //Tube Coral Wall Fan
+		blockColors[275] = new int[] {0xFF8D8581,    //Dead Brain Coral
+									  0xFF8D8581,    //Dead Brain Coral Block
+									  0xFF8D8581,    //Dead Brain Coral Fan
+									  0xFF8D8581};   //Dead Brain Coral Wall Fan
+		blockColors[276] = new int[] {0xFF8D8581,    //Dead Bubble Coral
+									  0xFF8D8581,    //Dead Bubble Coral Block
+									  0xFF8D8581,    //Dead Bubble Coral Fan
+									  0xFF8D8581};   //Dead Bubble Coral Wall Fan
+		blockColors[277] = new int[] {0xFF8D8581,    //Dead Fire Coral
+									  0xFF8D8581,    //Dead Fire Coral Block
+									  0xFF8D8581,    //Dead Fire Coral Fan
+									  0xFF8D8581};   //Dead Fire Coral Wall Fan
+		blockColors[278] = new int[] {0xFF8D8581,    //Dead Horn Coral
+									  0xFF8D8581,    //Dead Horn Coral Block
+									  0xFF8D8581,    //Dead Horn Coral Fan
+									  0xFF8D8581};   //Dead Horn Coral Wall Fan
+		blockColors[279] = new int[] {0xFF8D8581,    //Dead Tube Coral
+									  0xFF8D8581,    //Dead Tube Coral Block
+									  0xFF8D8581,    //Dead Tube Coral Fan
+									  0xFF8D8581};   //Dead Tube Coral Wall Fan
+		blockColors[280] = new int[] {-13810027};    //Bubble Stream
+		blockColors[281] = new int[] {0xFFECE4CC};   //Turtle Egg
+		blockColors[282] = new int[] {0xFFDA9B52};   //Campfire
+		blockColors[283] = new int[] {0xFF472A0E};   //Cartography Table
+		blockColors[284] = new int[] {0xFF996739};   //Composter
+		blockColors[285] = new int[] {0xFFA2967F};   //Conduit
+		blockColors[286] = new int[] {0xFF243118};   //Dried Kelp Block
+		blockColors[288] = new int[] {0xFF868686};   //Grindstone
+		blockColors[289] = new int[] {0xFFD4BFD4};   //Jigsaw Block
+		blockColors[290] = new int[] {0xFF444D63};   //Lantern
+		blockColors[291] = new int[] {0xFFBD9455};   //Lecturn
+		blockColors[292] = new int[] {0xFF7E6E61};   //Loom
+		blockColors[293] = new int[] {0xFF2A2B33};   //Smithing Table
+		blockColors[294] = new int[] {0xFF7C7C7C};   //Stone Cutter
+		blockColors[295] = new int[] {0xFF29653F};   //Sweet Berry Bush
+		blockColors[296] = new int[] {0xFF7A4232,    //Potted Plants (I'm being lazy)
+									  0xFF7A4232,
+									  0xFF7A4232,
+									  0xFF7A4232,
+									  0xFF7A4232,
+									  0xFF7A4232,
+									  0xFF7A4232,
+									  0xFF7A4232,
+									  0xFF7A4232,
+									  0xFF7A4232,
+									  0xFF7A4232,
+									  0xFF7A4232,
+									  0xFF7A4232,
+									  0xFF7A4232,
+									  0xFF7A4232,
+									  0xFF7A4232,
+									  0xFF7A4232,
+									  0xFF7A4232,
+									  0xFF7A4232,
+									  0xFF7A4232,
+									  0xFF7A4232,
+									  0xFF7A4232,
+									  0xFF7A4232,
+									  0xFF7A4232,
+									  0xFF7A4232};
+		
 	}
 	
 	/**
@@ -926,17 +1088,17 @@ public class Block
 		blockDict.put("minecraft:andesite_stairs", new int[] {259, 2} );
 		blockDict.put("minecraft:andesite_wall", new int[] {139, 3} );
 		blockDict.put("minecraft:anvil", new int[] {145, 0} );
-		blockDict.put("minecraft:attached_melon_stem", new int[] {0, 0} );
-		blockDict.put("minecraft:attached_pumpkin_stem", new int[] {0, 0} );
+		blockDict.put("minecraft:attached_melon_stem", new int[] {104, 1} );
+		blockDict.put("minecraft:attached_pumpkin_stem", new int[] {105, 1} );
 		blockDict.put("minecraft:azure_bluet", new int[] {38, 3} );
-		blockDict.put("minecraft:bamboo", new int[] {0, 0} );
-		blockDict.put("minecraft:bamboo_sapling", new int[] {0, 0} );
-		blockDict.put("minecraft:barrel", new int[] {0, 0} );
+		blockDict.put("minecraft:bamboo", new int[] {261, 0} );
+		blockDict.put("minecraft:bamboo_sapling", new int[] {261, 1} );
+		blockDict.put("minecraft:barrel", new int[] {268, 0} );
 		blockDict.put("minecraft:barrier", new int[] {166, 0} );
 		blockDict.put("minecraft:beacon", new int[] {138, 0} );
 		blockDict.put("minecraft:bedrock", new int[] {7, 0} );
 		blockDict.put("minecraft:beetroots", new int[] {207, 0} );
-		blockDict.put("minecraft:bell", new int[] {0, 0} );
+		blockDict.put("minecraft:bell", new int[] {269, 0} );
 		blockDict.put("minecraft:birch_button", new int[] {143, 2} );
 		blockDict.put("minecraft:birch_door", new int[] {194, 0} );
 		blockDict.put("minecraft:birch_fence_gate", new int[] {184, 0} );
@@ -952,8 +1114,8 @@ public class Block
 		blockDict.put("minecraft:birch_trapdoor", new int[] {96, 2} );
 		blockDict.put("minecraft:birch_wall_sign", new int[] {68, 2} );
 		blockDict.put("minecraft:birch_wood", new int[] {256, 2} );
-		blockDict.put("minecraft:black_banner", new int[] {0, 0} );
-		blockDict.put("minecraft:black_bed", new int[] {26, 0} );
+		blockDict.put("minecraft:black_banner", new int[] {176, 15} );
+		blockDict.put("minecraft:black_bed", new int[] {26, 15} );
 		blockDict.put("minecraft:black_carpet", new int[] {171, 15} );
 		blockDict.put("minecraft:black_concrete_powder", new int[] {252, 15} );
 		blockDict.put("minecraft:black_concrete", new int[] {251, 15} );
@@ -962,36 +1124,36 @@ public class Block
 		blockDict.put("minecraft:black_stained_glass", new int[] {95, 15} );
 		blockDict.put("minecraft:black_stained_glass_pane", new int[] {160, 15} );
 		blockDict.put("minecraft:black_terracotta", new int[] {159, 15} );
-		blockDict.put("minecraft:black_wall_banner", new int[] {0, 0} );
+		blockDict.put("minecraft:black_wall_banner", new int[] {177, 15} );
 		blockDict.put("minecraft:black_wool", new int[] {35, 15} );
-		blockDict.put("minecraft:blast_furnace", new int[] {0, 0} );
-		blockDict.put("minecraft:blue_banner", new int[] {0, 0} );
-		blockDict.put("minecraft:blue_bed", new int[] {26, 0} );
+		blockDict.put("minecraft:blast_furnace", new int[] {61, 1} );
+		blockDict.put("minecraft:blue_banner", new int[] {176, 11} );
+		blockDict.put("minecraft:blue_bed", new int[] {26, 11} );
 		blockDict.put("minecraft:blue_carpet", new int[] {171, 11} );
 		blockDict.put("minecraft:blue_concrete_powder", new int[] {252, 11} );
 		blockDict.put("minecraft:blue_concrete", new int[] {251, 11} );
 		blockDict.put("minecraft:blue_glazed_terracotta", new int[] {246, 0} );
-		blockDict.put("minecraft:blue_ice", new int[] {0, 0} );
+		blockDict.put("minecraft:blue_ice", new int[] {174, 1} );
 		blockDict.put("minecraft:blue_orchid", new int[] {38, 1} );
 		blockDict.put("minecraft:blue_shulker_box", new int[] {230, 0} );
 		blockDict.put("minecraft:blue_stained_glass", new int[] {95, 11} );
 		blockDict.put("minecraft:blue_stained_glass_pane", new int[] {160, 11} );
 		blockDict.put("minecraft:blue_terracotta", new int[] {159, 11} );
-		blockDict.put("minecraft:blue_wall_banner", new int[] {0, 0} );
+		blockDict.put("minecraft:blue_wall_banner", new int[] {177, 11} );
 		blockDict.put("minecraft:blue_wool", new int[] {35, 11} );
 		blockDict.put("minecraft:bone_block", new int[] {216, 0} );
 		blockDict.put("minecraft:bookshelf", new int[] {47, 0} );
-		blockDict.put("minecraft:brain_coral", new int[] {0, 0} );
-		blockDict.put("minecraft:brain_coral_block", new int[] {0, 0} );
-		blockDict.put("minecraft:brain_coral_fan", new int[] {0, 0} );
-		blockDict.put("minecraft:brain_coral_wall_fan", new int[] {0, 0} );
+		blockDict.put("minecraft:brain_coral", new int[] {270, 0} );
+		blockDict.put("minecraft:brain_coral_block", new int[] {270, 1} );
+		blockDict.put("minecraft:brain_coral_fan", new int[] {270, 2} );
+		blockDict.put("minecraft:brain_coral_wall_fan", new int[] {270, 3} );
 		blockDict.put("minecraft:brewing_stand", new int[] {117, 0} );
 		blockDict.put("minecraft:brick_slab", new int[] {44, 4} );
 		blockDict.put("minecraft:brick_stairs", new int[] {108, 0} );
 		blockDict.put("minecraft:brick_wall", new int[] {139, 5} );
 		blockDict.put("minecraft:bricks", new int[] {45, 0} );
-		blockDict.put("minecraft:brown_banner", new int[] {0, 0} );
-		blockDict.put("minecraft:brown_bed", new int[] {26, 0} );
+		blockDict.put("minecraft:brown_banner", new int[] {176, 12} );
+		blockDict.put("minecraft:brown_bed", new int[] {26, 12} );
 		blockDict.put("minecraft:brown_carpet", new int[] {171, 12} );
 		blockDict.put("minecraft:brown_concrete_powder", new int[] {252, 12} );
 		blockDict.put("minecraft:brown_concrete", new int[] {251, 12} );
@@ -1002,24 +1164,24 @@ public class Block
 		blockDict.put("minecraft:brown_stained_glass", new int[] {95, 12} );
 		blockDict.put("minecraft:brown_stained_glass_pane", new int[] {160, 12} );
 		blockDict.put("minecraft:brown_terracotta", new int[] {159, 12} );
-		blockDict.put("minecraft:brown_wall_banner", new int[] {0, 0} );
+		blockDict.put("minecraft:brown_wall_banner", new int[] {177, 12} );
 		blockDict.put("minecraft:brown_wool", new int[] {35, 12} );
-		blockDict.put("minecraft:bubble_column", new int[] {0, 0} );
-		blockDict.put("minecraft:bubble_coral", new int[] {0, 0} );
-		blockDict.put("minecraft:bubble_coral_block", new int[] {0, 0} );
-		blockDict.put("minecraft:bubble_coral_fan", new int[] {0, 0} );
-		blockDict.put("minecraft:bubble_coral_wall_fan", new int[] {0, 0} );
+		blockDict.put("minecraft:bubble_column", new int[] {280, 0} );
+		blockDict.put("minecraft:bubble_coral", new int[] {271, 0} );
+		blockDict.put("minecraft:bubble_coral_block", new int[] {271, 1} );
+		blockDict.put("minecraft:bubble_coral_fan", new int[] {271, 2} );
+		blockDict.put("minecraft:bubble_coral_wall_fan", new int[] {271, 3} );
 		blockDict.put("minecraft:cactus", new int[] {81, 0} );
 		blockDict.put("minecraft:cake", new int[] {92, 0} );
-		blockDict.put("minecraft:campfire", new int[] {0, 0} );
+		blockDict.put("minecraft:campfire", new int[] {282, 0} );
 		blockDict.put("minecraft:carrots", new int[] {141, 0} );
-		blockDict.put("minecraft:cartography_table", new int[] {0, 0} );
-		blockDict.put("minecraft:carved_pumpkin", new int[] {0, 0} );
+		blockDict.put("minecraft:cartography_table", new int[] {283, 0} );
+		blockDict.put("minecraft:carved_pumpkin", new int[] {86, 0} );
 		blockDict.put("minecraft:cauldron", new int[] {118, 0} );
 		blockDict.put("minecraft:cave_air", new int[] {0, 0} );
 		blockDict.put("minecraft:chain_command_block", new int[] {211, 0} );
 		blockDict.put("minecraft:chest", new int[] {54, 0} );
-		blockDict.put("minecraft:chipped_anvil", new int[] {0, 0} );
+		blockDict.put("minecraft:chipped_anvil", new int[] {145, 1} );
 		blockDict.put("minecraft:chiseled_quartz_block", new int[] {155, 1} );
 		blockDict.put("minecraft:chiseled_red_sandstone", new int[] {179, 1} );
 		blockDict.put("minecraft:chiseled_sandstone", new int[] {24, 1} );
@@ -1038,19 +1200,19 @@ public class Block
 		blockDict.put("minecraft:cocoa", new int[] {127, 0} );
 		blockDict.put("minecraft:command_block", new int[] {137, 0} );
 		blockDict.put("minecraft:comparator", new int[] {149, 0} );
-		blockDict.put("minecraft:composter", new int[] {0, 0} );
-		blockDict.put("minecraft:conduit", new int[] {0, 0} );
-		blockDict.put("minecraft:cornflower", new int[] {0, 0} );
+		blockDict.put("minecraft:composter", new int[] {284, 0} );
+		blockDict.put("minecraft:conduit", new int[] {285, 0} );
+		blockDict.put("minecraft:cornflower", new int[] {38, 11} );
 		blockDict.put("minecraft:cracked_stone_bricks", new int[] {98, 2} );
 		blockDict.put("minecraft:crafting_table", new int[] {58, 0} );
-		blockDict.put("minecraft:creeper_head", new int[] {0, 0} );
-		blockDict.put("minecraft:creeper_wall_head", new int[] {0, 0} );
+		blockDict.put("minecraft:creeper_head", new int[] {144, 4} );
+		blockDict.put("minecraft:creeper_wall_head", new int[] {144, 5} );
 		blockDict.put("minecraft:cut_red_sandstone", new int[] {179, 2} );
 		blockDict.put("minecraft:cut_red_sandstone_slab", new int[] {44, 17} );
 		blockDict.put("minecraft:cut_sandstone", new int[] {24, 2} );
 		blockDict.put("minecraft:cut_sandstone_slab", new int[] {44, 17} );
-		blockDict.put("minecraft:cyan_banner", new int[] {0, 0} );
-		blockDict.put("minecraft:cyan_bed", new int[] {26, 0} );
+		blockDict.put("minecraft:cyan_banner", new int[] {176, 9} );
+		blockDict.put("minecraft:cyan_bed", new int[] {26, 9} );
 		blockDict.put("minecraft:cyan_carpet", new int[] {171, 9} );
 		blockDict.put("minecraft:cyan_concrete_powder", new int[] {252, 9} );
 		blockDict.put("minecraft:cyan_concrete", new int[] {251, 9} );
@@ -1059,9 +1221,9 @@ public class Block
 		blockDict.put("minecraft:cyan_stained_glass", new int[] {95, 9} );
 		blockDict.put("minecraft:cyan_stained_glass_pane", new int[] {160, 9} );
 		blockDict.put("minecraft:cyan_terracotta", new int[] {159, 9} );
-		blockDict.put("minecraft:cyan_wall_banner", new int[] {0, 0} );
+		blockDict.put("minecraft:cyan_wall_banner", new int[] {177, 9} );
 		blockDict.put("minecraft:cyan_wool", new int[] {35, 9} );
-		blockDict.put("minecraft:damaged_anvil", new int[] {0, 0} );
+		blockDict.put("minecraft:damaged_anvil", new int[] {145, 2} );
 		blockDict.put("minecraft:dandelion", new int[] {37, 0} );
 		blockDict.put("minecraft:dark_oak_button", new int[] {143, 5} );
 		blockDict.put("minecraft:dark_oak_door", new int[] {197, 0} );
@@ -1082,27 +1244,27 @@ public class Block
 		blockDict.put("minecraft:dark_prismarine_slab", new int[] {44, 21} );
 		blockDict.put("minecraft:dark_prismarine_stairs", new int[] {259, 8} );
 		blockDict.put("minecraft:daylight_detector", new int[] {151, 0} );
-		blockDict.put("minecraft:dead_brain_coral", new int[] {0, 0} );
-		blockDict.put("minecraft:dead_brain_coral_block", new int[] {0, 0} );
-		blockDict.put("minecraft:dead_brain_coral_fan", new int[] {0, 0} );
-		blockDict.put("minecraft:dead_brain_coral_wall_fan", new int[] {0, 0} );
-		blockDict.put("minecraft:dead_bubble_coral", new int[] {0, 0} );
-		blockDict.put("minecraft:dead_bubble_coral_block", new int[] {0, 0} );
-		blockDict.put("minecraft:dead_bubble_coral_fan", new int[] {0, 0} );
-		blockDict.put("minecraft:dead_bubble_coral_wall_fan", new int[] {0, 0} );
+		blockDict.put("minecraft:dead_brain_coral", new int[] {275, 0} );
+		blockDict.put("minecraft:dead_brain_coral_block", new int[] {275, 1} );
+		blockDict.put("minecraft:dead_brain_coral_fan", new int[] {275, 2} );
+		blockDict.put("minecraft:dead_brain_coral_wall_fan", new int[] {275, 3} );
+		blockDict.put("minecraft:dead_bubble_coral", new int[] {276, 0} );
+		blockDict.put("minecraft:dead_bubble_coral_block", new int[] {276, 1} );
+		blockDict.put("minecraft:dead_bubble_coral_fan", new int[] {276, 2} );
+		blockDict.put("minecraft:dead_bubble_coral_wall_fan", new int[] {276, 3} );
 		blockDict.put("minecraft:dead_bush", new int[] {32, 0} );
-		blockDict.put("minecraft:dead_fire_coral", new int[] {0, 0} );
-		blockDict.put("minecraft:dead_fire_coral_block", new int[] {0, 0} );
-		blockDict.put("minecraft:dead_fire_coral_fan", new int[] {0, 0} );
-		blockDict.put("minecraft:dead_fire_coral_wall_fan", new int[] {0, 0} );
-		blockDict.put("minecraft:dead_horn_coral", new int[] {0, 0} );
-		blockDict.put("minecraft:dead_horn_coral_block", new int[] {0, 0} );
-		blockDict.put("minecraft:dead_horn_coral_fan", new int[] {0, 0} );
-		blockDict.put("minecraft:dead_horn_coral_wall_fan", new int[] {0, 0} );
-		blockDict.put("minecraft:dead_tube_coral", new int[] {0, 0} );
-		blockDict.put("minecraft:dead_tube_coral_block", new int[] {0, 0} );
-		blockDict.put("minecraft:dead_tube_coral_fan", new int[] {0, 0} );
-		blockDict.put("minecraft:dead_tube_coral_wall_fan", new int[] {0, 0} );
+		blockDict.put("minecraft:dead_fire_coral", new int[] {277, 0} );
+		blockDict.put("minecraft:dead_fire_coral_block", new int[] {277, 1} );
+		blockDict.put("minecraft:dead_fire_coral_fan", new int[] {277, 2} );
+		blockDict.put("minecraft:dead_fire_coral_wall_fan", new int[] {277, 3} );
+		blockDict.put("minecraft:dead_horn_coral", new int[] {278, 0} );
+		blockDict.put("minecraft:dead_horn_coral_block", new int[] {278, 1} );
+		blockDict.put("minecraft:dead_horn_coral_fan", new int[] {278, 2} );
+		blockDict.put("minecraft:dead_horn_coral_wall_fan", new int[] {278, 3} );
+		blockDict.put("minecraft:dead_tube_coral", new int[] {279, 0} );
+		blockDict.put("minecraft:dead_tube_coral_block", new int[] {279, 1} );
+		blockDict.put("minecraft:dead_tube_coral_fan", new int[] {279, 2} );
+		blockDict.put("minecraft:dead_tube_coral_wall_fan", new int[] {279, 3} );
 		blockDict.put("minecraft:detector_rail", new int[] {28, 0} );
 		blockDict.put("minecraft:diamond_block", new int[] {57, 0} );
 		blockDict.put("minecraft:diamond_ore", new int[] {56, 0} );
@@ -1113,9 +1275,9 @@ public class Block
 		blockDict.put("minecraft:dirt", new int[] {3, 0} );
 		blockDict.put("minecraft:dispenser", new int[] {23, 0} );
 		blockDict.put("minecraft:dragon_egg", new int[] {122, 0} );
-		blockDict.put("minecraft:dragon_head", new int[] {0, 0} );
-		blockDict.put("minecraft:dragon_wall_head", new int[] {0, 0} );
-		blockDict.put("minecraft:dried_kelp_block", new int[] {0, 0} );
+		blockDict.put("minecraft:dragon_head", new int[] {144, 6} );
+		blockDict.put("minecraft:dragon_wall_head", new int[] {144, 7} );
+		blockDict.put("minecraft:dried_kelp_block", new int[] {286, 0} );
 		blockDict.put("minecraft:dropper", new int[] {158, 0} );
 		blockDict.put("minecraft:emerald_block", new int[] {133, 0} );
 		blockDict.put("minecraft:emerald_ore", new int[] {129, 0} );
@@ -1133,11 +1295,11 @@ public class Block
 		blockDict.put("minecraft:farmland", new int[] {60, 0} );
 		blockDict.put("minecraft:fern", new int[] {31, 1} );
 		blockDict.put("minecraft:fire", new int[] {51, 0} );
-		blockDict.put("minecraft:fire_coral", new int[] {0, 0} );
-		blockDict.put("minecraft:fire_coral_block", new int[] {0, 0} );
-		blockDict.put("minecraft:fire_coral_fan", new int[] {0, 0} );
-		blockDict.put("minecraft:fire_coral_wall_fan", new int[] {0, 0} );
-		blockDict.put("minecraft:fletching_table", new int[] {0, 0} );
+		blockDict.put("minecraft:fire_coral", new int[] {272, 0} );
+		blockDict.put("minecraft:fire_coral_block", new int[] {272, 1} );
+		blockDict.put("minecraft:fire_coral_fan", new int[] {272, 2} );
+		blockDict.put("minecraft:fire_coral_wall_fan", new int[] {272, 3} );
+		blockDict.put("minecraft:fletching_table", new int[] {287, 0} );
 		blockDict.put("minecraft:flower_pot", new int[] {140, 0} );
 		blockDict.put("minecraft:flowing_lava", new int[] {10, 0} );
 		blockDict.put("minecraft:flowing_water", new int[] {8, 0} );
@@ -1156,8 +1318,8 @@ public class Block
 		blockDict.put("minecraft:grass_path", new int[] {208, 0} );
 		blockDict.put("minecraft:grass", new int[] {31, 0} );
 		blockDict.put("minecraft:gravel", new int[] {13, 0} );
-		blockDict.put("minecraft:gray_banner", new int[] {0, 0} );
-		blockDict.put("minecraft:gray_bed", new int[] {26, 0} );
+		blockDict.put("minecraft:gray_banner", new int[] {176, 7} );
+		blockDict.put("minecraft:gray_bed", new int[] {26, 7} );
 		blockDict.put("minecraft:gray_carpet", new int[] {171, 7} );
 		blockDict.put("minecraft:gray_concrete_powder", new int[] {252, 7} );
 		blockDict.put("minecraft:gray_concrete", new int[] {251, 7} );
@@ -1166,10 +1328,10 @@ public class Block
 		blockDict.put("minecraft:gray_stained_glass", new int[] {95, 7} );
 		blockDict.put("minecraft:gray_stained_glass_pane", new int[] {160, 7} );
 		blockDict.put("minecraft:gray_terracotta", new int[] {159, 7} );
-		blockDict.put("minecraft:gray_wall_banner", new int[] {0, 0} );
+		blockDict.put("minecraft:gray_wall_banner", new int[] {177, 7} );
 		blockDict.put("minecraft:gray_wool", new int[] {35, 7} );
-		blockDict.put("minecraft:green_banner", new int[] {0, 0} );
-		blockDict.put("minecraft:green_bed", new int[] {26, 0} );
+		blockDict.put("minecraft:green_banner", new int[] {176, 13} );
+		blockDict.put("minecraft:green_bed", new int[] {26, 13} );
 		blockDict.put("minecraft:green_carpet", new int[] {171, 13} );
 		blockDict.put("minecraft:green_concrete_powder", new int[] {252, 13} );
 		blockDict.put("minecraft:green_concrete", new int[] {251, 13} );
@@ -1178,16 +1340,16 @@ public class Block
 		blockDict.put("minecraft:green_stained_glass", new int[] {95, 13} );
 		blockDict.put("minecraft:green_stained_glass_pane", new int[] {160, 13} );
 		blockDict.put("minecraft:green_terracotta", new int[] {159, 13} );
-		blockDict.put("minecraft:green_wall_banner", new int[] {0, 0} );
+		blockDict.put("minecraft:green_wall_banner", new int[] {177, 13} );
 		blockDict.put("minecraft:green_wool", new int[] {35, 13} );
-		blockDict.put("minecraft:grindstone", new int[] {0, 0} );
+		blockDict.put("minecraft:grindstone", new int[] {288, 0} );
 		blockDict.put("minecraft:hay_block", new int[] {170, 0} );
 		blockDict.put("minecraft:heavy_weighted_pressure_plate", new int[] {148, 0} );
 		blockDict.put("minecraft:hopper", new int[] {154, 0} );
-		blockDict.put("minecraft:horn_coral", new int[] {0, 0} );
-		blockDict.put("minecraft:horn_coral_block", new int[] {0, 0} );
-		blockDict.put("minecraft:horn_coral_fan", new int[] {0, 0} );
-		blockDict.put("minecraft:horn_coral_wall_fan", new int[] {0, 0} );
+		blockDict.put("minecraft:horn_coral", new int[] {273, 0} );
+		blockDict.put("minecraft:horn_coral_block", new int[] {273, 1} );
+		blockDict.put("minecraft:horn_coral_fan", new int[] {273, 2} );
+		blockDict.put("minecraft:horn_coral_wall_fan", new int[] {273, 3} );
 		blockDict.put("minecraft:ice", new int[] {79, 0} );
 		blockDict.put("minecraft:infested_chiseled_stone_bricks", new int[] {97, 5} );
 		blockDict.put("minecraft:infested_cobblestone", new int[] {97, 1} );
@@ -1201,7 +1363,7 @@ public class Block
 		blockDict.put("minecraft:iron_ore", new int[] {15, 0} );
 		blockDict.put("minecraft:iron_trapdoor", new int[] {167, 0} );
 		blockDict.put("minecraft:jack_o_lantern", new int[] {91, 0} );
-		blockDict.put("minecraft:jigsaw", new int[] {0, 0} );
+		blockDict.put("minecraft:jigsaw", new int[] {289, 0} );
 		blockDict.put("minecraft:jukebox", new int[] {84, 0} );
 		blockDict.put("minecraft:jungle_button", new int[] {143, 3} );
 		blockDict.put("minecraft:jungle_door", new int[] {195, 0} );
@@ -1218,18 +1380,18 @@ public class Block
 		blockDict.put("minecraft:jungle_trapdoor", new int[] {96, 3} );
 		blockDict.put("minecraft:jungle_wall_sign", new int[] {68, 3} );
 		blockDict.put("minecraft:jungle_wood", new int[] {256, 3} );
-		blockDict.put("minecraft:kelp", new int[] {0, 0} );
-		blockDict.put("minecraft:kelp_plant", new int[] {0, 0} );
+		blockDict.put("minecraft:kelp", new int[] {262, 0} );
+		blockDict.put("minecraft:kelp_plant", new int[] {262, 1} );
 		blockDict.put("minecraft:ladder", new int[] {65, 0} );
-		blockDict.put("minecraft:lantern", new int[] {0, 0} );
+		blockDict.put("minecraft:lantern", new int[] {290, 0} );
 		blockDict.put("minecraft:lapis_block", new int[] {22, 0} );
 		blockDict.put("minecraft:lapis_ore", new int[] {21, 0} );
 		blockDict.put("minecraft:large_fern", new int[] {175, 3} );
 		blockDict.put("minecraft:lava", new int[] {11, 0} );
-		blockDict.put("minecraft:lectern", new int[] {0, 0} );
+		blockDict.put("minecraft:lectern", new int[] {291, 0} );
 		blockDict.put("minecraft:lever", new int[] {69, 0} );
-		blockDict.put("minecraft:light_blue_banner", new int[] {0, 0} );
-		blockDict.put("minecraft:light_blue_bed", new int[] {26, 0} );
+		blockDict.put("minecraft:light_blue_banner", new int[] {176, 3} );
+		blockDict.put("minecraft:light_blue_bed", new int[] {26, 3} );
 		blockDict.put("minecraft:light_blue_carpet", new int[] {171, 3} );
 		blockDict.put("minecraft:light_blue_concrete_powder", new int[] {252, 3} );
 		blockDict.put("minecraft:light_blue_concrete", new int[] {251, 3} );
@@ -1238,10 +1400,10 @@ public class Block
 		blockDict.put("minecraft:light_blue_stained_glass", new int[] {95, 3} );
 		blockDict.put("minecraft:light_blue_stained_glass_pane", new int[] {190, 3} );
 		blockDict.put("minecraft:light_blue_terracotta", new int[] {159, 3} );
-		blockDict.put("minecraft:light_blue_wall_banner", new int[] {0, 0} );
+		blockDict.put("minecraft:light_blue_wall_banner", new int[] {177, 3} );
 		blockDict.put("minecraft:light_blue_wool", new int[] {35, 3} );
-		blockDict.put("minecraft:light_gray_banner", new int[] {0, 0} );
-		blockDict.put("minecraft:light_gray_bed", new int[] {26, 0} );
+		blockDict.put("minecraft:light_gray_banner", new int[] {176, 8} );
+		blockDict.put("minecraft:light_gray_bed", new int[] {26, 8} );
 		blockDict.put("minecraft:light_gray_carpet", new int[] {171, 8} );
 		blockDict.put("minecraft:light_gray_concrete_powder", new int[] {252, 8} );
 		blockDict.put("minecraft:light_gray_concrete", new int[] {251, 8} );
@@ -1250,14 +1412,14 @@ public class Block
 		blockDict.put("minecraft:light_gray_stained_glass", new int[] {95, 8} );
 		blockDict.put("minecraft:light_gray_stained_glass_pane", new int[] {160, 8} );
 		blockDict.put("minecraft:light_gray_terracotta", new int[] {159, 8} );
-		blockDict.put("minecraft:light_gray_wall_banner", new int[] {0, 0} );
+		blockDict.put("minecraft:light_gray_wall_banner", new int[] {177, 8} );
 		blockDict.put("minecraft:light_gray_wool", new int[] {35, 8} );
 		blockDict.put("minecraft:light_weighted_pressure_plate", new int[] {147, 0} );
 		blockDict.put("minecraft:lilac", new int[] {175, 1} );
 		blockDict.put("minecraft:lily_pad", new int[] {111, 0} );
-		blockDict.put("minecraft:lily_of_the_valley", new int[] {0, 0} );
-		blockDict.put("minecraft:lime_banner", new int[] {0, 0} );
-		blockDict.put("minecraft:lime_bed", new int[] {26, 0} );
+		blockDict.put("minecraft:lily_of_the_valley", new int[] {38, 10} );
+		blockDict.put("minecraft:lime_banner", new int[] {176, 5} );
+		blockDict.put("minecraft:lime_bed", new int[] {26, 5} );
 		blockDict.put("minecraft:lime_carpet", new int[] {171, 5} );
 		blockDict.put("minecraft:lime_concrete_powder", new int[] {252, 5} );
 		blockDict.put("minecraft:lime_concrete", new int[] {251, 5} );
@@ -1266,11 +1428,11 @@ public class Block
 		blockDict.put("minecraft:lime_stained_glass", new int[] {95, 5} );
 		blockDict.put("minecraft:lime_stained_glass_pane", new int[] {160, 5} );
 		blockDict.put("minecraft:lime_terracotta", new int[] {159, 5} );
-		blockDict.put("minecraft:lime_wall_banner", new int[] {0, 0} );
+		blockDict.put("minecraft:lime_wall_banner", new int[] {177, 5} );
 		blockDict.put("minecraft:lime_wool", new int[] {35, 5} );
-		blockDict.put("minecraft:loom", new int[] {0, 0} );
-		blockDict.put("minecraft:magenta_banner", new int[] {0, 0} );
-		blockDict.put("minecraft:magenta_bed", new int[] {26, 0} );
+		blockDict.put("minecraft:loom", new int[] {292, 0} );
+		blockDict.put("minecraft:magenta_banner", new int[] {176, 2} );
+		blockDict.put("minecraft:magenta_bed", new int[] {26, 2} );
 		blockDict.put("minecraft:magenta_carpet", new int[] {171, 2} );
 		blockDict.put("minecraft:magenta_concrete_powder", new int[] {252, 2} );
 		blockDict.put("minecraft:magenta_concrete", new int[] {251, 2} );
@@ -1279,7 +1441,7 @@ public class Block
 		blockDict.put("minecraft:magenta_stained_glass", new int[] {95, 2} );
 		blockDict.put("minecraft:magenta_stained_glass_pane", new int[] {160, 2} );
 		blockDict.put("minecraft:magenta_terracotta", new int[] {159, 2} );
-		blockDict.put("minecraft:magenta_wall_banner", new int[] {0, 0} );
+		blockDict.put("minecraft:magenta_wall_banner", new int[] {177, 2} );
 		blockDict.put("minecraft:magenta_wool", new int[] {35, 2} );
 		blockDict.put("minecraft:magma_block", new int[] {213, 0} );
 		blockDict.put("minecraft:melon", new int[] {103, 0} );
@@ -1293,7 +1455,7 @@ public class Block
 		blockDict.put("minecraft:mossy_stone_brick_wall", new int[] {139, 7} );
 		blockDict.put("minecraft:mossy_stone_bricks", new int[] {98, 1} );
 		blockDict.put("minecraft:moving_piston", new int[] {34, 0} );
-		blockDict.put("minecraft:mushroom_stem", new int[] {0, 0} );
+		blockDict.put("minecraft:mushroom_stem", new int[] {263, 0} );
 		blockDict.put("minecraft:mycelium", new int[] {110, 0} );
 		blockDict.put("minecraft:nether_brick_fence", new int[] {113, 0} );
 		blockDict.put("minecraft:nether_brick_slab", new int[] {44, 6} );
@@ -1321,10 +1483,10 @@ public class Block
 		blockDict.put("minecraft:oak_trapdoor", new int[] {96, 0} );
 		blockDict.put("minecraft:oak_wall_sign", new int[] {68, 0} );
 		blockDict.put("minecraft:oak_wood", new int[] {256, 0} );
-		blockDict.put("minecraft:observer", new int[] {0, 0} );
+		blockDict.put("minecraft:observer", new int[] {264, 0} );
 		blockDict.put("minecraft:obsidian", new int[] {49, 0} );
-		blockDict.put("minecraft:orange_banner", new int[] {0, 0} );
-		blockDict.put("minecraft:orange_bed", new int[] {26, 0} );
+		blockDict.put("minecraft:orange_banner", new int[] {176, 1} );
+		blockDict.put("minecraft:orange_bed", new int[] {26, 1} );
 		blockDict.put("minecraft:orange_carpet", new int[] {171, 1} );
 		blockDict.put("minecraft:orange_concrete_powder", new int[] {252, 1} );
 		blockDict.put("minecraft:orange_concrete", new int[] {251, 1} );
@@ -1334,14 +1496,14 @@ public class Block
 		blockDict.put("minecraft:orange_stained_glass_pane", new int[] {160, 1} );
 		blockDict.put("minecraft:orange_terracotta", new int[] {159, 1} );
 		blockDict.put("minecraft:orange_tulip", new int[] {38, 5} );
-		blockDict.put("minecraft:orange_wall_banner", new int[] {0, 0} );
+		blockDict.put("minecraft:orange_wall_banner", new int[] {177, 1} );
 		blockDict.put("minecraft:orange_wool", new int[] {35, 1} );
 		blockDict.put("minecraft:oxeye_daisy", new int[] {38, 8} );
 		blockDict.put("minecraft:packed_ice", new int[] {174, 0} );
 		blockDict.put("minecraft:peony", new int[] {175, 5} );
 		blockDict.put("minecraft:petrified_oak_slab", new int[] {44, 2} );
-		blockDict.put("minecraft:pink_banner", new int[] {0, 0} );
-		blockDict.put("minecraft:pink_bed", new int[] {26, 0} );
+		blockDict.put("minecraft:pink_banner", new int[] {176, 6} );
+		blockDict.put("minecraft:pink_bed", new int[] {26, 6} );
 		blockDict.put("minecraft:pink_carpet", new int[] {171, 6} );
 		blockDict.put("minecraft:pink_concrete_powder", new int[] {252, 6} );
 		blockDict.put("minecraft:pink_concrete", new int[] {251, 6} );
@@ -1351,12 +1513,12 @@ public class Block
 		blockDict.put("minecraft:pink_stained_glass_pane", new int[] {160, 6} );
 		blockDict.put("minecraft:pink_terracotta", new int[] {159, 6} );
 		blockDict.put("minecraft:pink_tulip", new int[] {38, 7} );
-		blockDict.put("minecraft:pink_wall_banner", new int[] {0, 0} );
+		blockDict.put("minecraft:pink_wall_banner", new int[] {177, 6} );
 		blockDict.put("minecraft:pink_wool", new int[] {35, 6} );
 		blockDict.put("minecraft:piston_head", new int[] {34, 0} );
 		blockDict.put("minecraft:piston", new int[] {34, 0} );
-		blockDict.put("minecraft:player_head", new int[] {0, 0} );
-		blockDict.put("minecraft:player_wall_head", new int[] {0, 0} );
+		blockDict.put("minecraft:player_head", new int[] {144, 8} );
+		blockDict.put("minecraft:player_wall_head", new int[] {144, 9} );
 		blockDict.put("minecraft:podzol", new int[] {3, 2} );
 		blockDict.put("minecraft:polished_andesite", new int[] {1, 4} );
 		blockDict.put("minecraft:polished_andesite_slab", new int[] {44, 12} );
@@ -1402,10 +1564,10 @@ public class Block
 		blockDict.put("minecraft:prismarine_slab", new int[] {44, 19} );
 		blockDict.put("minecraft:prismarine_stairs", new int[] {259, 6} );
 		blockDict.put("minecraft:prismarine_wall", new int[] {139, 9} );
-		blockDict.put("minecraft:pumpkin", new int[] {86, 0} );
+		blockDict.put("minecraft:pumpkin", new int[] {86, 1} );
 		blockDict.put("minecraft:pumpkin_stem", new int[] {104, 0} );
-		blockDict.put("minecraft:purple_banner", new int[] {0, 0} );
-		blockDict.put("minecraft:purple_bed", new int[] {26, 0} );
+		blockDict.put("minecraft:purple_banner", new int[] {176, 10} );
+		blockDict.put("minecraft:purple_bed", new int[] {26, 10} );
 		blockDict.put("minecraft:purple_carpet", new int[] {171, 10} );
 		blockDict.put("minecraft:purple_concrete_powder", new int[] {252, 10} );
 		blockDict.put("minecraft:purple_concrete", new int[] {251, 10} );
@@ -1414,7 +1576,7 @@ public class Block
 		blockDict.put("minecraft:purple_stained_glass", new int[] {95, 10} );
 		blockDict.put("minecraft:purple_stained_glass_pane", new int[] {160, 10} );
 		blockDict.put("minecraft:purple_terracotta", new int[] {159, 10} );
-		blockDict.put("minecraft:purple_wall_banner", new int[] {0, 0} );
+		blockDict.put("minecraft:purple_wall_banner", new int[] {177, 10} );
 		blockDict.put("minecraft:purple_wool", new int[] {35, 10} );
 		blockDict.put("minecraft:purpur_block", new int[] {201, 0} );
 		blockDict.put("minecraft:purpur_pillar", new int[] {202, 0} );
@@ -1425,7 +1587,7 @@ public class Block
 		blockDict.put("minecraft:quartz_slab", new int[] {44, 7} );
 		blockDict.put("minecraft:quartz_stairs", new int[] {156, 0} );
 		blockDict.put("minecraft:rail", new int[] {66, 0} );
-		blockDict.put("minecraft:red_banner", new int[] {0, 0} );
+		blockDict.put("minecraft:red_banner", new int[] {176, 14} );
 		blockDict.put("minecraft:red_bed", new int[] {26, 0} );
 		blockDict.put("minecraft:red_carpet", new int[] {171, 14} );
 		blockDict.put("minecraft:red_concrete_powder", new int[] {252, 14} );
@@ -1447,7 +1609,7 @@ public class Block
 		blockDict.put("minecraft:red_stained_glass_pane", new int[] {160, 14} );
 		blockDict.put("minecraft:red_terracotta", new int[] {159, 14} );
 		blockDict.put("minecraft:red_tulip", new int[] {38, 4} );
-		blockDict.put("minecraft:red_wall_banner", new int[] {0, 0} );
+		blockDict.put("minecraft:red_wall_banner", new int[] {177, 14} );
 		blockDict.put("minecraft:red_wool", new int[] {35, 14} );
 		blockDict.put("minecraft:redstone_block", new int[] {152, 0} );
 		blockDict.put("minecraft:redstone_lamp", new int[] {123, 0} );
@@ -1463,16 +1625,16 @@ public class Block
 		blockDict.put("minecraft:sandstone_slab", new int[] {44, 1} );
 		blockDict.put("minecraft:sandstone_stairs", new int[] {128, 0} );
 		blockDict.put("minecraft:sandstone_wall", new int[] {139, 11} );
-		blockDict.put("minecraft:scaffolding", new int[] {0, 0} );
+		blockDict.put("minecraft:scaffolding", new int[] {265, 0} );
 		blockDict.put("minecraft:sea_lantern", new int[] {169, 0} );
-		blockDict.put("minecraft:sea_pickle", new int[] {0, 0} );
-		blockDict.put("minecraft:seagrass", new int[] {0, 0} );
-		blockDict.put("minecraft:shulker_box", new int[] {0, 0} );
+		blockDict.put("minecraft:sea_pickle", new int[] {266, 0} );
+		blockDict.put("minecraft:seagrass", new int[] {260, 0} );
+		blockDict.put("minecraft:shulker_box", new int[] {267, 0} );
 		blockDict.put("minecraft:skeleton_skull", new int[] {144, 0} );
-		blockDict.put("minecraft:skeleton_wall_skull", new int[] {144, 0} );
+		blockDict.put("minecraft:skeleton_wall_skull", new int[] {144, 1} );
 		blockDict.put("minecraft:slime_block", new int[] {165, 0} );
-		blockDict.put("minecraft:smithing_table", new int[] {0, 0} );
-		blockDict.put("minecraft:smoker", new int[] {0, 0} );
+		blockDict.put("minecraft:smithing_table", new int[] {293, 0} );
+		blockDict.put("minecraft:smoker", new int[] {61, 2} );
 		blockDict.put("minecraft:smooth_quartz", new int[] {155, 3} );
 		blockDict.put("minecraft:smooth_quartz_slab", new int[] {44, 27} );
 		blockDict.put("minecraft:smooth_quartz_stairs", new int[] {259, 14} );
@@ -1482,7 +1644,7 @@ public class Block
 		blockDict.put("minecraft:smooth_sandstone", new int[] {24, 3} );
 		blockDict.put("minecraft:smooth_sandstone_slab", new int[] {44, 16} );
 		blockDict.put("minecraft:smooth_sandstone_stairs", new int[] {259, 14} );
-		blockDict.put("minecraft:smooth_stone", new int[] {0, 0} );
+		blockDict.put("minecraft:smooth_stone", new int[] {1, 7} );
 		blockDict.put("minecraft:smooth_stone_slab", new int[] {44, 0} );
 		blockDict.put("minecraft:snow_block", new int[] {80, 0} );
 		blockDict.put("minecraft:snow", new int[] {78, 0} );
@@ -1514,7 +1676,7 @@ public class Block
 		blockDict.put("minecraft:stone_pressure_plate", new int[] {70, 0} );
 		blockDict.put("minecraft:stone_slab", new int[] {44, 8} );
 		blockDict.put("minecraft:stone_stairs", new int[] {259, 16} );
-		blockDict.put("minecraft:stonecutter", new int[] {0, 0} );
+		blockDict.put("minecraft:stonecutter", new int[] {294, 0} );
 		blockDict.put("minecraft:stripped_acacia_log", new int[] {257, 4} );
 		blockDict.put("minecraft:stripped_acacia_wood", new int[] {258, 4} );
 		blockDict.put("minecraft:stripped_birch_log", new int[] {257, 2} );
@@ -1531,20 +1693,20 @@ public class Block
 		blockDict.put("minecraft:structure_void", new int[] {217, 0} );
 		blockDict.put("minecraft:sugar_cane", new int[] {83, 0} );
 		blockDict.put("minecraft:sunflower", new int[] {175, 0} );
-		blockDict.put("minecraft:sweet_berry_bush", new int[] {0, 0} );
+		blockDict.put("minecraft:sweet_berry_bush", new int[] {295, 0} );
 		blockDict.put("minecraft:tnt", new int[] {46, 0} );
 		blockDict.put("minecraft:tall_grass", new int[] {175, 2} );
-		blockDict.put("minecraft:tall_seagrass", new int[] {0, 0} );
+		blockDict.put("minecraft:tall_seagrass", new int[] {260, 0} );
 		blockDict.put("minecraft:terracotta", new int[] {172, 0} );
 		blockDict.put("minecraft:torch", new int[] {50, 0} );
 		blockDict.put("minecraft:trapped_chest", new int[] {146, 0} );
 		blockDict.put("minecraft:tripwire_hook", new int[] {131, 0} );
 		blockDict.put("minecraft:tripwire", new int[] {132, 0} );
-		blockDict.put("minecraft:tube_coral", new int[] {0, 0} );
-		blockDict.put("minecraft:tube_coral_block", new int[] {0, 0} );
-		blockDict.put("minecraft:tube_coral_fan", new int[] {0, 0} );
-		blockDict.put("minecraft:tube_coral_wall_fan", new int[] {0, 0} );
-		blockDict.put("minecraft:turtle_egg", new int[] {0, 0} );
+		blockDict.put("minecraft:tube_coral", new int[] {274, 0} );
+		blockDict.put("minecraft:tube_coral_block", new int[] {274, 1} );
+		blockDict.put("minecraft:tube_coral_fan", new int[] {274, 2} );
+		blockDict.put("minecraft:tube_coral_wall_fan", new int[] {274, 3} );
+		blockDict.put("minecraft:turtle_egg", new int[] {281, 0} );
 		blockDict.put("minecraft:vine", new int[] {106, 0} );
 		blockDict.put("minecraft:void_air", new int[] {0, 0} );
 		blockDict.put("minecraft:wall_torch", new int[] {50, 0} );
@@ -1552,7 +1714,7 @@ public class Block
 		blockDict.put("minecraft:wet_sponge", new int[] {19, 1} );
 		blockDict.put("minecraft:wheat", new int[] {59, 0} );
 		blockDict.put("minecraft:white_banner", new int[] {176, 0} );
-		blockDict.put("minecraft:white_bed", new int[] {26, 0} );
+		blockDict.put("minecraft:white_bed", new int[] {26, 14} );
 		blockDict.put("minecraft:white_carpet", new int[] {171, 0} );
 		blockDict.put("minecraft:white_concrete_powder", new int[] {252, 0} );
 		blockDict.put("minecraft:white_concrete", new int[] {251, 0} );
@@ -1564,11 +1726,11 @@ public class Block
 		blockDict.put("minecraft:white_tulip", new int[] {38, 6} );
 		blockDict.put("minecraft:white_wall_banner", new int[] {177, 0} );
 		blockDict.put("minecraft:white_wool", new int[] {35, 0} );
-		blockDict.put("minecraft:wither_rose", new int[] {0, 0} );
-		blockDict.put("minecraft:wither_skeleton_skull", new int[] {0, 0} );
-		blockDict.put("minecraft:wither_skeleton_wall_skull", new int[] {0, 0} );
-		blockDict.put("minecraft:yellow_banner", new int[] {0, 0} );
-		blockDict.put("minecraft:yellow_bed", new int[] {26, 0} );
+		blockDict.put("minecraft:wither_rose", new int[] {38, 9} );
+		blockDict.put("minecraft:wither_skeleton_skull", new int[] {144, 2} );
+		blockDict.put("minecraft:wither_skeleton_wall_skull", new int[] {144, 3} );
+		blockDict.put("minecraft:yellow_banner", new int[] {176, 4} );
+		blockDict.put("minecraft:yellow_bed", new int[] {26, 4} );
 		blockDict.put("minecraft:yellow_carpet", new int[] {171, 4} );
 		blockDict.put("minecraft:yellow_concrete_powder", new int[] {252, 4} );
 		blockDict.put("minecraft:yellow_concrete", new int[] {251, 4} );
@@ -1577,10 +1739,10 @@ public class Block
 		blockDict.put("minecraft:yellow_stained_glass", new int[] {95, 4} );
 		blockDict.put("minecraft:yellow_stained_glass_pane", new int[] {160, 4} );
 		blockDict.put("minecraft:yellow_terracotta", new int[] {159, 4} );
-		blockDict.put("minecraft:yellow_wall_banner", new int[] {0, 0} );
+		blockDict.put("minecraft:yellow_wall_banner", new int[] {177, 4} );
 		blockDict.put("minecraft:yellow_wool", new int[] {35, 4} );
-		blockDict.put("minecraft:zombie_head", new int[] {0, 0} );
-		blockDict.put("minecraft:zombie_wall_head", new int[] {0, 0} );
+		blockDict.put("minecraft:zombie_head", new int[] {144, 10} );
+		blockDict.put("minecraft:zombie_wall_head", new int[] {144, 11} );
 
 	}
 	
@@ -1673,7 +1835,7 @@ public class Block
 			secondColor = getGrassColor(biome);
 			blend = true;
 		}
-		else if (id == 8 || id == 9)
+		else if (id == 8 || id == 9 || id == 208)
 		{
 			secondColor = getWaterColor(biome);
 			blend = true;
