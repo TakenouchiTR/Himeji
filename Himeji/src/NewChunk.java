@@ -143,14 +143,15 @@ public class NewChunk extends Chunk
 			{
 				int y = getTopBlockY(x, z);
 				int dy = getTopBlockYIgnoreWater(x, z);
+				int biomeWidth = CHUNK_SIZE / biome.length;
 				int color = Block.getBlockColor(blocks[x][dy][z], 
-						biome[x / (CHUNK_SIZE / biome.length)][dy / biomeHeight][z / biome.length]);
+						biome[x / biomeWidth][dy / biomeHeight][z / biomeWidth]);
 				
 				//Adds a blue effect to blocks under water
 				if (y != dy)
 				{
 					int waterColor = Block.getBlockColor(8, 0, 
-							biome[x / biome.length][y / biomeHeight][z / biome.length]);
+							biome[x / biomeWidth][y / biomeHeight][z / biomeWidth]);
 					int a = 0;
 					int r = 0;
 					int g = 0;

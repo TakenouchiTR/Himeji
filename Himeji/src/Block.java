@@ -1646,7 +1646,6 @@ public class Block
 		return false;
 	}
 	
-	
 	/**
 	 * Gets the color of a block to be rendered using the pre-flattening block ID and metadata.
 	 * @param id   Pre-flattening block ID
