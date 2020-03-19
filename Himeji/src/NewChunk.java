@@ -11,7 +11,7 @@ public class NewChunk extends Chunk
 	private CompoundTag levelTag;
 	private int worldHeight;
 	private String[][][] blocks;
-	private int[][] biome;
+	private int[][][] biome;
 	private Section[] sections;
 	
 	public NewChunk(CompoundTag baseTag) 
@@ -33,7 +33,7 @@ public class NewChunk extends Chunk
 		
 		sections = new Section[sectionTags.size() - 1];
 		blocks = new String[CHUNK_SIZE][worldHeight][CHUNK_SIZE];
-		biome = new int[CHUNK_SIZE][CHUNK_SIZE];
+		biome = new int[CHUNK_SIZE / 4][256 / 4][CHUNK_SIZE / 4];
 		
 		for(int x = 0; x < CHUNK_SIZE; x++) 
 		{
@@ -43,7 +43,17 @@ public class NewChunk extends Chunk
 				{
 					blocks[x][y][z] = "minecraft:air";
 				}
-				biome[x][z] = 0;
+			}
+		}
+		
+		for (int x = 0; x < CHUNK_SIZE / 4; x++)
+		{
+			for (int y = 0; y < 256 / 4; y++)
+			{
+				for (int z = 0; z < CHUNK_SIZE / 4; z++)
+				{
+					biome[x][y][z] = 0;
+				}
 			}
 		}
 		
@@ -70,17 +80,22 @@ public class NewChunk extends Chunk
 			}
 		}
 		
-		/*
 		Tag biomeTag = levelTag.get("Biomes");
+		int dataLoc = 0;
 		
 		if (biomeTag instanceof IntArrayTag)
 		{
 			int[] biomeData = levelTag.getIntArray("Biomes");
-			for(int x = 0; x < CHUNK_SIZE; x++) 
+			
+			for (int y = 0; y < 256 / 4; y++)
 			{
-				for(int z = 0; z < CHUNK_SIZE; z++) 
+				for(int z = 0; z < CHUNK_SIZE / 4; z++)
 				{
-					biome[x][z] = biomeData[getIndex(x, z)];
+					for(int x = 0; x < CHUNK_SIZE / 4; x++) 
+					{	
+						biome[x][y][z] = biomeData[dataLoc];
+						dataLoc++;
+					}
 				}
 			}
 		}
@@ -91,11 +106,10 @@ public class NewChunk extends Chunk
 			{
 				for(int z = 0; z < CHUNK_SIZE; z++) 
 				{
-					biome[x][z] = getPositiveByte(biomeData[getIndex(x, z)]);
+					//biome[x][z] = getPositiveByte(biomeData[getIndex(x, z)]);
 				}
 			}
 		}
-		*/
 	}
 
 	public int getX() 
@@ -137,12 +151,12 @@ public class NewChunk extends Chunk
 			{
 				int y = getTopBlockY(x, z);
 				int dy = getTopBlockYIgnoreWater(x, z);
-				int color = Block.getBlockColor(blocks[x][dy][z]);
+				int color = Block.getBlockColor(blocks[x][dy][z], biome[x / 4][dy / 4][z / 4]);
 				
 				//Adds a blue effect to blocks under water
 				if (y != dy)
 				{
-					int waterColor = Block.getBlockColor(8, 0);
+					int waterColor = Block.getBlockColor(8, 0, biome[x / 4][y / 64][z / 4]);
 					int a = 0;
 					int r = 0;
 					int g = 0;
