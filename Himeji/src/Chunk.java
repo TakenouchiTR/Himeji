@@ -87,14 +87,13 @@ public class Chunk
 						} 
 						catch(Exception e) 
 						{
-							//e.printStackTrace();
+							e.printStackTrace();
 						}
 					}
 				}
 			}
 		}
 		
-		/*
 		Tag biomeTag = levelTag.get("Biomes");
 		
 		if (biomeTag instanceof IntArrayTag)
@@ -125,7 +124,6 @@ public class Chunk
 				}
 			}
 		}
-		*/
 	}
 	
 	public Chunk()
@@ -133,7 +131,7 @@ public class Chunk
 		
 	}
 	
-	private int getPositiveByte(byte b) 
+	protected int getPositiveByte(byte b) 
 	{
 		return (int)(b & 0x0f) + (int)((b & 0xf0) >> 4) * 16;
 	}
@@ -164,7 +162,7 @@ public class Chunk
 		return result;
 	}
 	
-	private int getIndex(int x, int z) 
+	protected int getIndex(int x, int z) 
 	{
 		int result;
 		
@@ -230,12 +228,12 @@ public class Chunk
 			{
 				int y = getTopBlockY(x, z);
 				int dy = getTopBlockYIgnoreWater(x, z);
-				int color = Block.getBlockColor(blocks[x][dy][z], metadata[x][dy][z]);
+				int color = Block.getBlockColor(blocks[x][dy][z], metadata[x][dy][z], biome[x][z]);
 				
 				//Adds a blue effect to blocks under water
 				if (y != dy)
 				{
-					int waterColor = Block.getBlockColor(8, 0);
+					int waterColor = Block.getBlockColor(8, 0, biome[x][z]);
 					int a = 0;
 					int r = 0;
 					int g = 0;
