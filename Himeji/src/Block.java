@@ -133,8 +133,8 @@ public class Block
 		foliageColors[Biome.TAIGA.id] = 0xFF6B9793;
 		grassColors[Biome.TAIGA.id] = 0xFF80B497;
 		waterColors[Biome.TAIGA.id] = 0xFF36599C;
-		foliageColors[Biome.SWAMP.id] = 0xFF4C763C;
-		grassColors[Biome.SWAMP.id] = 0xFF4C763C;
+		foliageColors[Biome.SWAMP.id] = 0xFF222620;
+		grassColors[Biome.SWAMP.id] = 0xFF222620;
 		waterColors[Biome.SWAMP.id] = 0xFF77804F;
 		foliageColors[Biome.RIVER.id] = 0xFF5AB027;
 		grassColors[Biome.RIVER.id] = 0xFF73C252;
@@ -286,8 +286,8 @@ public class Block
 		foliageColors[Biome.TAIGA_MOUNTAINS.id] = 0xFF6B9793;
 		grassColors[Biome.TAIGA_MOUNTAINS.id] = 0xFF80B497;
 		waterColors[Biome.TAIGA_MOUNTAINS.id] = 0xFF36599C;
-		foliageColors[Biome.SWAMP_HILLS.id] = 0xFF4C763C;
-		grassColors[Biome.SWAMP_HILLS.id] = 0xFF4C763C;
+		foliageColors[Biome.SWAMP_HILLS.id] = 0xFF222620;
+		grassColors[Biome.SWAMP_HILLS.id] = 0xFF222620;
 		waterColors[Biome.SWAMP_HILLS.id] = 0xFF77804F;
 		foliageColors[Biome.ICE_SPIKES.id] = 0xFF6B9793;
 		grassColors[Biome.ICE_SPIKES.id] = 0xFF80B497;
