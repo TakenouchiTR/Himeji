@@ -1,6 +1,4 @@
-import com.mojang.nbt.ByteArrayTag;
 import com.mojang.nbt.CompoundTag;
-import com.mojang.nbt.IntArrayTag;
 import com.mojang.nbt.ListTag;
 import com.mojang.nbt.Tag;
 
@@ -20,7 +18,6 @@ public class NewChunk extends Chunk
 		super();
 		
 		levelTag = baseTag.getCompound("Level");
-		int dataVersion = levelTag.getInt("DataVersion");
 		
 		ListTag<? extends Tag> sectionTags = levelTag.getList("Sections");
 		
