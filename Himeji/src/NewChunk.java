@@ -136,9 +136,39 @@ public class NewChunk extends Chunk
 			for (int z = 0; z < CHUNK_SIZE; z++)
 			{
 				int y = getTopBlockY(x, z);
-				int color = Block.getBlockColor(blocks[x][y][z]);
+				int dy = getTopBlockYIgnoreWater(x, z);
+				int color = Block.getBlockColor(blocks[x][dy][z]);
+				
+				//Adds a blue effect to blocks under water
+				if (y != dy)
+				{
+					int waterColor = Block.getBlockColor(8, 0);
+					int a = 0;
+					int r = 0;
+					int g = 0;
+					int b = 0;
+					
+					a = 0xFF000000;
+					
+					r += ((color & 0x00FF0000) >>> 16);
+					r += ((waterColor & 0x00FF0000) >>> 16) * 3;
+					g += ((color & 0x0000FF00) >>> 8);
+					g += ((waterColor & 0x0000FF00) >>> 8) * 3;
+					b += (color & 0x000000FF);
+					b += (waterColor & 0x000000FF) * 3;
+					
+					r /= 4;
+					g /= 4;
+					b /= 4;
+					
+					r <<= 16;
+					g <<= 8;
+					
+					color = a | r | g | b;
+				}
+				
 				result[x][z][0] = color;
-				result[x][z][1] = y;
+				result[x][z][1] = dy;
 			}
 		}
 		
@@ -180,6 +210,29 @@ public class NewChunk extends Chunk
 			if (idMeta != null)
 			{
 				if (Block.isBlockVisible(idMeta[0]))
+				{
+					return y;
+				}
+			}
+			else
+			{
+				return 0;
+			}
+			
+		}
+		return 0;
+	}
+	
+	@Override
+	public int getTopBlockYIgnoreWater(int x, int z)
+	{
+		for(int y = worldHeight - 1; y > 0; y--) 
+		{
+			String blockName = blocks[x][y][z];
+			int[] idMeta = Block.getIdMeta(blockName);
+			if (idMeta != null)
+			{
+				if (Block.isBlockVisible(idMeta[0]) && idMeta[0] != 8 && idMeta[0] != 9)
 				{
 					return y;
 				}

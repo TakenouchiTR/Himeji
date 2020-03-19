@@ -228,12 +228,40 @@ public class Chunk
 		{
 			for (int z = 0; z < CHUNK_SIZE; z++)
 			{
-				Block block = getBlock(x, z);
 				int y = getTopBlockY(x, z);
-				int color = Block.getBlockColor(block.getBlockID(), block.getMetaData());
+				int dy = getTopBlockYIgnoreWater(x, z);
+				int color = Block.getBlockColor(blocks[x][dy][z], metadata[x][dy][z]);
+				
+				//Adds a blue effect to blocks under water
+				if (y != dy)
+				{
+					int waterColor = Block.getBlockColor(8, 0);
+					int a = 0;
+					int r = 0;
+					int g = 0;
+					int b = 0;
+					
+					a = 0xFF000000;
+					
+					r += ((color & 0x00FF0000) >>> 16);
+					r += ((waterColor & 0x00FF0000) >>> 16) * 3;
+					g += ((color & 0x0000FF00) >>> 8);
+					g += ((waterColor & 0x0000FF00) >>> 8) * 3;
+					b += (color & 0x000000FF);
+					b += (waterColor & 0x000000FF) * 3;
+					
+					r /= 4;
+					g /= 4;
+					b /= 4;
+					
+					r <<= 16;
+					g <<= 8;
+					
+					color = a | r | g | b;
+				}
 				
 				result[x][z][0] = color;
-				result[x][z][1] = y;
+				result[x][z][1] = dy;
 			}
 		}
 		
@@ -268,6 +296,18 @@ public class Chunk
 		for(int y = worldHeight - 1; y > 0; y--) 
 			if(Block.isBlockVisible(blocks[x][y][z])) 
 				return y;
+		
+		return 0;
+	}
+	
+	public int getTopBlockYIgnoreWater(int x, int z)
+	{
+		for(int y = worldHeight - 1; y > 0; y--) 
+		{
+			int block = blocks[x][y][z];
+			if(Block.isBlockVisible(block) && block != 8 && block != 9) 
+				return y;
+		}
 		
 		return 0;
 	}
