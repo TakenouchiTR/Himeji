@@ -1,6 +1,6 @@
-//Himeji Name:   Dimension.java
+//Program Name:   Dimension.java
 //Date:           3/13/2020
-//Himejimer:     Shawn Carter
+//Programmer:     Shawn Carter
 //Description:    This class represents a dimension of a Minecraft world.
 
 import java.io.*;
@@ -21,6 +21,7 @@ public class Dimension
 	protected FileIntMatrix colorGrid;
 	private byte[][] yVals;
 	protected File directory;
+	private MapImage image;
 	
 	/**
 	 * Creates a Dimension with a size determined by the files in the region
@@ -143,7 +144,10 @@ public class Dimension
 	{
 		File[] regions;
 		
-		try
+		image = new MapImage(blockWidth, blockHeight, 
+				new File("C:\\Users\\TOTak\\AppData\\Roaming\\.minecraft\\saves\\ping.png"));
+		
+		/*try
 		{
 			File gridLoc = File.createTempFile("gen", ".txt");
 			colorGrid = new FileIntMatrix(gridLoc, blockWidth, blockHeight);
@@ -151,7 +155,7 @@ public class Dimension
 		catch (Exception e)
 		{
 			
-		}
+		}*/
 		chunkRenderFlags = new boolean[chunkWidth][chunkHeight];
 		yVals = new byte[blockWidth][blockHeight];
 		
@@ -159,10 +163,45 @@ public class Dimension
 		
 		for (File regionFile : regions)
 		{
-			if (Himeji.SHOW_ALL_EVENTS)
-				System.out.println("Reading " + regionFile.getName());
+			Region region;
+			Region upRegion;
+			Region rightRegion;
+			Chunk chunk;
+			Chunk upChunk;
+			Chunk rightChunk;
+			File upFile;
+			File rightFile;
+			String regionName;
+			String[] nameSplit;
+			int regionX;
+			int regionZ;
+			int curYVal;
+			int upYVal;
+			int rightYVal;
 			
-			Region region = new Region(regionFile);
+			regionName = regionFile.getName();
+			nameSplit = regionName.split("[.]");
+			regionX = Integer.parseInt(nameSplit[1]);
+			regionZ = Integer.parseInt(nameSplit[2]);
+			
+			
+			if (Himeji.SHOW_ALL_EVENTS)
+				System.out.println("Reading " + regionName);
+			
+			region = new Region(regionFile);
+			upFile = new File(String.format(regionFile.getParent() + 
+					"r.%1$d.%2$d.mca", regionX, regionZ - 1));
+			rightFile = new File(String.format(regionFile.getParent() + 
+					"r.%1$d.%2$d.mca", regionX + 1, regionZ));
+			
+			if (upFile.exists())
+				upRegion = new Region(upFile);
+			else
+				upRegion = null;
+			if (rightFile.exists())
+				rightRegion = new Region(rightFile);
+			else
+				rightRegion = null;
 			
 			for (int chunkX = 0; chunkX < REGION_SIZE; chunkX++)
 			{
@@ -170,14 +209,81 @@ public class Dimension
 				{
 					if (!region.hasChunk(chunkX, chunkZ))
 						continue;
+					
 					try
 					{
 						CompoundTag chunkTag = region.getChunk(chunkX, chunkZ);
 						if (chunkTag == null)
 							continue;
 						
+						upChunk = null;
+						rightChunk = null;
+						
+						if (chunkZ == 0)
+						{
+							if (upRegion != null)
+							{
+								if (upRegion.hasChunk(chunkX, 31))
+								{
+									CompoundTag upTag = upRegion.getChunk(chunkX, REGION_SIZE - 1);
+									if (upTag != null)
+									{
+										if (upTag.getInt("DataVersion") > 1519)
+											upChunk = new NewChunk(upTag);
+										else
+											upChunk = new Chunk(upTag);
+									}
+								}
+							}
+						}
+						else
+						{
+							if (region.hasChunk(chunkX, chunkZ - 1))
+							{
+								CompoundTag upTag = region.getChunk(chunkX, chunkZ - 1);
+								if (upTag != null)
+								{
+									if (upTag.getInt("DataVersion") > 1519)
+										upChunk = new NewChunk(upTag);
+									else
+										upChunk = new Chunk(upTag);
+								}
+							}
+						}
+						
+						if (chunkX == REGION_SIZE - 1)
+						{
+							if (rightRegion != null)
+							{
+								if (rightRegion.hasChunk(0, chunkZ))
+								{
+									CompoundTag rightTag = rightRegion.getChunk(0, chunkZ);
+									if (rightTag != null)
+									{
+										if (rightTag.getInt("DataVersion") > 1519)
+											rightChunk = new NewChunk(rightTag);
+										else
+											rightChunk = new Chunk(rightTag);
+									}
+								}
+							}
+						}
+						else
+						{
+							if (region.hasChunk(chunkX + 1, chunkZ))
+							{
+								CompoundTag rightTag = region.getChunk(chunkX + 1, chunkZ);
+								if (rightTag != null)
+								{
+									if (rightTag.getInt("DataVersion") > 1519)
+										rightChunk = new NewChunk(rightTag);
+									else
+										rightChunk = new Chunk(rightTag);
+								}
+							}
+						}
+						
 						int chunkVersion = chunkTag.getInt("DataVersion");
-						Chunk chunk;
 						
 						if (chunkVersion >= 1519)
 							chunk = new NewChunk(chunkTag);
@@ -205,9 +311,38 @@ public class Dimension
 								zPos = gridZ + blockZ;
 								
 								curColor = chunkMap[blockX][blockZ][0];
-								yVals[xPos][zPos] = (byte)(chunkMap[blockX][blockZ][1] - 128);
+								curYVal = chunkMap[blockX][blockZ][1];
 								
-								colorGrid.set(xPos, zPos, curColor);
+								if (blockZ == 0)
+								{
+									if (upChunk == null)
+										upYVal = curYVal;
+									else
+										upYVal = upChunk.getTopBlockY(blockX, Chunk.CHUNK_SIZE - 1);
+								}
+								else
+								{
+									upYVal = chunkMap[blockX][blockZ - 1][1];
+								}
+								
+								if (blockX == Chunk.CHUNK_SIZE - 1)
+								{
+									if (rightChunk == null)
+										rightYVal = curYVal;
+									else
+										rightYVal = rightChunk.getTopBlockY(0, blockZ);
+								}
+								else
+								{
+									rightYVal = chunkMap[blockX + 1][blockZ][1];
+								}
+								
+								curColor = applyShading(curColor, curYVal, upYVal, rightYVal);
+								
+								image.setPixel(xPos, zPos, curColor);
+								
+								//yVals[xPos][zPos] = (byte)(chunkMap[blockX][blockZ][1] - 128);
+								//colorGrid.set(xPos, zPos, curColor);
 							}
 						}
 					}
@@ -220,7 +355,47 @@ public class Dimension
 		}
 		
 		System.out.println("Applying shading");
-		applyShading();
+		//applyShading();
+	}
+	
+	public int applyShading(int color, int yVal, int upYVal, int rightYVal)
+	{
+		int a, r, g, b;
+		
+		if (yVal < upYVal || yVal < rightYVal)
+		{
+			a = (color & 0xFF000000);
+			r = (int) (((color & 0x00FF0000) >>> 16) * .85f);
+			g = (int) (((color & 0x0000FF00) >>> 8) * .85f);
+			b = (int) ((color & 0x000000FF) * .85f);
+			
+			if (r < 0)
+				r = 0;
+			if (g < 0)
+				g = 0;
+			if (b < 0)
+				b = 0;
+			
+			color = a | (r << 16) | (g << 8) | b;
+		}
+		else if (yVal > upYVal || yVal > rightYVal)
+		{
+			a = (color & 0xFF000000);
+			r = (int) (((color & 0x00FF0000) >>> 16) * 1.15f);
+			g = (int) (((color & 0x0000FF00) >>> 8) * 1.15f);
+			b = (int) ((color & 0x000000FF) * 1.15f);
+			
+			if (r > 255)
+				r = 255;
+			if (g > 255)
+				g = 255;
+			if (b > 255)
+				b = 255;
+			
+			color = a | (r << 16) | (g << 8) | b;
+		}
+		
+		return color;
 	}
 	
 	public void applyShading()
@@ -389,5 +564,22 @@ public class Dimension
 	public int getChunkZOffset()
 	{
 		return chunkZOffset;
+	}
+
+	public void closeFileMatrix()
+	{
+		try
+		{
+			colorGrid.close();
+		}
+		catch (Exception e)
+		{
+			
+		}
+	}
+
+	public void render()
+	{
+		image.renderImage();
 	}
 }
