@@ -27,8 +27,8 @@ public class Chunk
 		
 		ListTag<? extends Tag> sections = levelTag.getList("Sections");
 		
-		worldHeight = ((int)((CompoundTag)(sections.get(sections.size() - 1))).getByte("Y") + 1) 
-				* CHUNK_SIZE;
+		worldHeight = 256;//((int)((CompoundTag)(sections.get(sections.size() - 1))).getByte("Y") + 1) 
+				//* CHUNK_SIZE;
 		
 		blockLight = new int[CHUNK_SIZE][worldHeight][CHUNK_SIZE];
 		sunLight = new int[CHUNK_SIZE][worldHeight][CHUNK_SIZE];
@@ -94,6 +94,7 @@ public class Chunk
 			}
 		}
 		
+		/*
 		Tag biomeTag = levelTag.get("Biomes");
 		
 		if (biomeTag instanceof IntArrayTag)
@@ -103,7 +104,13 @@ public class Chunk
 			{
 				for(int z = 0; z < CHUNK_SIZE; z++) 
 				{
+					try
+					{
 					biome[x][z] = biomeData[getIndex(x, z)];
+					}
+					catch (Exception e) {
+						e.printStackTrace();
+					}
 				}
 			}
 		}
@@ -118,7 +125,7 @@ public class Chunk
 				}
 			}
 		}
-		
+		*/
 	}
 	
 	public Chunk()
@@ -249,6 +256,11 @@ public class Chunk
 	public int getZ() 
 	{
 		return levelTag.getInt("zPos");
+	}
+	
+	public CompoundTag getTag()
+	{
+		return levelTag;
 	}
 	
 	public int getTopBlockY(int x, int z)

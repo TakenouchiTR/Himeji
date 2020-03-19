@@ -25,8 +25,8 @@ public class NewChunk extends Chunk
 		if (sectionTags.size() == 0)
 			return;
 		
-		worldHeight = ((int)((CompoundTag)(sectionTags.get(sectionTags.size() - 1))).getByte("Y") + 1) 
-				* CHUNK_SIZE;
+		worldHeight = 256;//((int)((CompoundTag)(sectionTags.get(sectionTags.size() - 1))).getByte("Y") + 1) 
+				//* CHUNK_SIZE;
 		
 		if (worldHeight <= 0)
 			return;
