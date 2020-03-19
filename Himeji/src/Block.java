@@ -98,14 +98,14 @@ public class Block
 	{
 		biomeGrass = new int[4][2];
 		
-		biomeBlocks[0][0] = 2;    //Grass Block
-		biomeBlocks[0][1] = 0;
-		biomeBlocks[1][0] = 31;   //Grass
-		biomeBlocks[1][1] = 0;
-		biomeBlocks[2][0] = 31;   //Fern
-		biomeBlocks[2][1] = 1;
-		biomeBlocks[3][0] = 175;  //Tall Grass
-		biomeBlocks[3][1] = 3;
+		biomeGrass[0][0] = 2;    //Grass Block
+		biomeGrass[0][1] = 0;
+		biomeGrass[1][0] = 31;   //Grass
+		biomeGrass[1][1] = 0;
+		biomeGrass[2][0] = 31;   //Fern
+		biomeGrass[2][1] = 1;
+		biomeGrass[3][0] = 175;  //Tall Grass
+		biomeGrass[3][1] = 3;
 	}
 	
 	public static void setBiomeColors()
