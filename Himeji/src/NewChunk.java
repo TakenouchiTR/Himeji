@@ -5,6 +5,7 @@ import com.mojang.nbt.Tag;
 public class NewChunk extends Chunk
 {
 	public static final int CHUNK_SIZE = 16;
+	public static final int CHUNK_HEIGHT = 256;
 	
 	private CompoundTag levelTag;
 	private int worldHeight;
@@ -130,7 +131,7 @@ public class NewChunk extends Chunk
 	}
 	
 	@Override
-	public int[][][] getTopColors()
+	public int[][][] getTopColors(int startY)
 	{
 		int[][][] result = new int[CHUNK_SIZE][CHUNK_SIZE][2];
 		
@@ -141,8 +142,8 @@ public class NewChunk extends Chunk
 		{
 			for (int z = 0; z < CHUNK_SIZE; z++)
 			{
-				int y = getTopBlockY(x, z);
-				int dy = getTopBlockYIgnoreWater(x, z);
+				int y = getTopBlockY(x, z, startY);
+				int dy = getTopBlockYIgnoreWater(x, z, startY);
 				int biomeWidth = CHUNK_SIZE / biome.length;
 				int color = Block.getBlockColor(blocks[x][dy][z], 
 						biome[x / biomeWidth][dy / biomeHeight][z / biomeWidth]);
@@ -184,12 +185,17 @@ public class NewChunk extends Chunk
 		return result;
 	}
 	
-	public String getStringBlock(int x, int z) 
+	public int[][][] getTopColors()
+	{
+		return getTopColors(CHUNK_HEIGHT - 1);
+	}
+			
+	public String getStringBlock(int x, int z, int y) 
 	{
 		String blockName;
 		int[] idMeta;
 		// starting at the top of the map and going down
-		for(int y = worldHeight - 1; y > 0; y--) 
+		for(; y > 0; y--) 
 		{
 			blockName = blocks[x][y][z];
 			idMeta = Block.getIdMeta(blockName);
@@ -209,10 +215,15 @@ public class NewChunk extends Chunk
 		return "minecraft:air";
 	}
 	
-	@Override
-	public int getTopBlockY(int x, int z)
+	public String getStringBlock(int x, int z) 
 	{
-		for(int y = worldHeight - 1; y > 0; y--) 
+		return getStringBlock(x, z, CHUNK_HEIGHT - 1);
+	}
+	
+	@Override
+	public int getTopBlockY(int x, int z, int startY)
+	{
+		for(int y = startY; y > 0; y--) 
 		{
 			String blockName = blocks[x][y][z];
 			int[] idMeta = Block.getIdMeta(blockName);
@@ -233,9 +244,9 @@ public class NewChunk extends Chunk
 	}
 	
 	@Override
-	public int getTopBlockYIgnoreWater(int x, int z)
+	public int getTopBlockYIgnoreWater(int x, int z, int startY)
 	{
-		for(int y = worldHeight - 1; y > 0; y--) 
+		for(int y = startY; y > 0; y--) 
 		{
 			String blockName = blocks[x][y][z];
 			int[] idMeta = Block.getIdMeta(blockName);

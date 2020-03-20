@@ -12,6 +12,7 @@ import com.mojang.nbt.Tag;
 public class Chunk 
 {
 	public static final int CHUNK_SIZE = 16;
+	public static final int CHUNK_HEIGHT = 256;
 	
 	private CompoundTag levelTag;
 	private int worldHeight;
@@ -218,7 +219,7 @@ public class Chunk
 	 * each x, z column.
 	 * @return int array of the colors for the top-most blocks of each x, z column
 	 */
-	public int[][][] getTopColors()
+	public int[][][] getTopColors(int startY)
 	{
 		int[][][] result = new int[CHUNK_SIZE][CHUNK_SIZE][2];
 		
@@ -226,8 +227,8 @@ public class Chunk
 		{
 			for (int z = 0; z < CHUNK_SIZE; z++)
 			{
-				int y = getTopBlockY(x, z);
-				int dy = getTopBlockYIgnoreWater(x, z);
+				int y = getTopBlockY(x, z, startY);
+				int dy = getTopBlockYIgnoreWater(x, z, startY);
 				int color = Block.getBlockColor(blocks[x][dy][z], metadata[x][dy][z], biome[x][z]);
 				
 				//Adds a blue effect to blocks under water
@@ -266,6 +267,11 @@ public class Chunk
 		return result;
 	}
 
+	public int[][][] getTopColors()
+	{
+		return getTopColors(CHUNK_HEIGHT - 1);
+	}
+	
 	/**
 	 * Gets the chunk's x position for the current Chunk, relative to the entire world.
 	 * @return chunk x position
@@ -289,18 +295,18 @@ public class Chunk
 		return levelTag;
 	}
 	
-	public int getTopBlockY(int x, int z)
+	public int getTopBlockY(int x, int z, int startY)
 	{
-		for(int y = worldHeight - 1; y > 0; y--) 
+		for(int y = startY; y > 0; y--) 
 			if(Block.isBlockVisible(blocks[x][y][z])) 
 				return y;
 		
 		return 0;
 	}
 	
-	public int getTopBlockYIgnoreWater(int x, int z)
+	public int getTopBlockYIgnoreWater(int x, int z, int startY)
 	{
-		for(int y = worldHeight - 1; y > 0; y--) 
+		for(int y = startY; y > 0; y--) 
 		{
 			int block = blocks[x][y][z];
 			if(Block.isBlockVisible(block) && block != 8 && block != 9) 
