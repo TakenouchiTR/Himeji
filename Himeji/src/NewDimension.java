@@ -45,7 +45,7 @@ public class NewDimension extends Dimension
 						int gridZ = (chunk.getZ() + chunkZOffset * REGION_SIZE) * Chunk.CHUNK_SIZE;
 						
 						//chunkRenderFlags[gridX / 16][gridZ / 16] = true;
-						int[][] chunkMap = chunk.getTopColors();
+						int[][][] chunkMap = chunk.getTopColors();
 						
 						for (int blockX = 0; blockX < Chunk.CHUNK_SIZE; blockX++)
 						{
@@ -69,7 +69,7 @@ public class NewDimension extends Dimension
 	@Override
 	public int getBlockColorAt(int x, int z)
 	{
-		return Block.getBlockColor(getStringBlockAt(x, z));
+		return Block.getBlockColor(getStringBlockAt(x, z), 0);
 	}
 	
 	public String getStringBlockAt(int x, int z)
