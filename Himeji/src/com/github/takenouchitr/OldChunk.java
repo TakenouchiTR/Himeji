@@ -1,3 +1,4 @@
+package com.github.takenouchitr;
 //Program Name:   OldChunk.java
 //Date:           3/14/2020
 //Programmer:     Shawn Carter
@@ -234,6 +235,9 @@ public class OldChunk extends Chunk
 			{
 				int y = getTopBlockY(x, z, startY);
 				int dy = y;
+				if (Himeji.renderUnderWater())
+					dy = getTopBlockYIgnoreWater(x, z, startY);
+				
 				int color = Block.getBlockColor(blocks[x][dy][z], metadata[x][dy][z], biome[x][z]);
 				
 				//Adds a blue effect to blocks under water

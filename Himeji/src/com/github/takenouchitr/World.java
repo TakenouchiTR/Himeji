@@ -1,6 +1,7 @@
-//Himeji Name:   World.java
+package com.github.takenouchitr;
+//Program Name:   World.java
 //Date:           3/13/2020
-//Himejimer:     Shawn Carter
+//Programmer:     Shawn Carter
 //Description:    This class holds information for a Minecraft world.
 
 import java.io.*;

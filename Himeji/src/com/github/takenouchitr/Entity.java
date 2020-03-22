@@ -1,3 +1,4 @@
+package com.github.takenouchitr;
 
 
 public enum Entity 

@@ -1,7 +1,6 @@
-//Program Name:   Block.java
 //Date:           3/14/2020
 //Programmer:     Shawn Carter
-//Description:    This class represents a Block in Minecraft.
+package com.github.takenouchitr;
 
 import java.util.Dictionary;
 import java.util.Hashtable;

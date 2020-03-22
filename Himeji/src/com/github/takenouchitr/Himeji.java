@@ -1,3 +1,4 @@
+package com.github.takenouchitr;
 //Program Name:   Himeji.java
 //Date:           3/13/2020
 //Programmer:     Shawn Carter

@@ -1,3 +1,4 @@
+package com.github.takenouchitr;
 import com.mojang.nbt.CompoundTag;
 import com.mojang.nbt.ListTag;
 import com.mojang.nbt.Tag;
@@ -124,6 +125,9 @@ public class NewChunk extends Chunk
 			{
 				int y = getTopBlockY(x, z, startY);
 				int dy = y;
+				if (Himeji.renderUnderWater())
+					dy = getTopBlockYIgnoreWater(x, z, startY);
+				
 				int biomeWidth = CHUNK_SIZE / biome.length;
 				int color = Block.getBlockColor(blocks[x][dy][z], 
 						biome[x / biomeWidth][dy / biomeHeight][z / biomeWidth]);
