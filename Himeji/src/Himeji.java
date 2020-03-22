@@ -17,6 +17,42 @@ public class Himeji extends JFrame implements ActionListener
 	private static JMenuBar bar_menu;
 	private static JSpinner spn_startY;
 	
+	
+	public static void main(String[] args) 
+	{
+		Block.setBlockVisibility();
+		Block.setBlockColors();
+		Block.setBlockDict();
+		Block.setBiomeColors();
+		Block.setBiomeFoliage();
+		Block.setBiomeWater();
+		Block.setBiomeGrass();
+		
+		Himeji window = new Himeji();
+		window.setVisible(true);
+	}
+	
+	public static int getStartY()
+	{
+		Integer result =(Integer) spn_startY.getValue(); 
+		return result.intValue();
+	}
+	
+	public static boolean renderUnderWater()
+	{
+		return chk_renderUnderWater.isSelected();
+	}
+	
+	public static boolean renderShadows()
+	{
+		return chk_renderShadows.isSelected();
+	}
+	
+	public static boolean renderBiomeColors()
+	{
+		return chk_renderBiomes.isSelected();
+	}
+	
 	public Himeji()
 	{
 		super("Himeji Map Viewer");
@@ -77,25 +113,6 @@ public class Himeji extends JFrame implements ActionListener
         //set listeners
         btn_folder.addActionListener(this);
         btn_start.addActionListener(this);
-	}
-	
-	public static void main(String[] args) 
-	{
-		Block.setBlockVisibility();
-		Block.setBlockColors();
-		Block.setBlockDict();
-		Block.setBiomeColors();
-		Block.setBiomeBlocks();
-		Block.setBiomeGrass();
-		
-		Himeji window = new Himeji();
-		window.setVisible(true);
-	}
-	
-	public static int getStartY()
-	{
-		Integer result =(Integer) spn_startY.getValue(); 
-		return result.intValue();
 	}
 	
 	@Override
