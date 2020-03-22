@@ -1880,6 +1880,9 @@ public class Block
 		
 		color = blockColors[id][Math.min(meta, blockColors[id].length - 1)];
 		
+		if (!Himeji.renderBiomeColors())
+			return color;
+		
 		if (hasFoliageColor(id, meta))
 		{
 			secondColor = getFoliageColor(biome);
