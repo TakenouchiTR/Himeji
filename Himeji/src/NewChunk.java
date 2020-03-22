@@ -4,11 +4,6 @@ import com.mojang.nbt.Tag;
 
 public class NewChunk extends Chunk
 {
-	public static final int CHUNK_SIZE = 16;
-	public static final int CHUNK_HEIGHT = 256;
-	
-	private CompoundTag levelTag;
-	private int worldHeight;
 	private String[][][] blocks;
 	private int[][][] biome;
 	private int biomeHeight;
@@ -16,17 +11,14 @@ public class NewChunk extends Chunk
 	
 	public NewChunk(CompoundTag baseTag) 
 	{
-		super();
-		
-		levelTag = baseTag.getCompound("Level");
+		super(baseTag);
 		
 		ListTag<? extends Tag> sectionTags = levelTag.getList("Sections");
 		
 		if (sectionTags.size() == 0)
 			return;
 		
-		worldHeight = 256;//((int)((CompoundTag)(sectionTags.get(sectionTags.size() - 1))).getByte("Y") + 1) 
-				//* CHUNK_SIZE;
+		worldHeight = CHUNK_HEIGHT;
 		
 		if (worldHeight <= 0)
 			return;
@@ -73,10 +65,10 @@ public class NewChunk extends Chunk
 			
 		if (biomeData.length == 1024)
 		{
-			biome = new int[CHUNK_SIZE / 4][256 / 4][CHUNK_SIZE / 4];
+			biome = new int[CHUNK_SIZE / 4][CHUNK_HEIGHT / 4][CHUNK_SIZE / 4];
 			biomeHeight = 4;
 			
-			for (int y = 0; y < 256 / 4; y++)
+			for (int y = 0; y < CHUNK_HEIGHT / 4; y++)
 			{
 				for(int z = 0; z < CHUNK_SIZE / 4; z++)
 				{
@@ -103,16 +95,6 @@ public class NewChunk extends Chunk
 				}
 			}
 		}
-	}
-
-	public int getX() 
-	{
-		return levelTag.getInt("xPos");
-	}
-	
-	public int getZ() 
-	{
-		return levelTag.getInt("zPos");
 	}
 	
 	public String[][] getTopStringBlocks()
@@ -185,11 +167,19 @@ public class NewChunk extends Chunk
 		return result;
 	}
 	
+	@Override
 	public int[][][] getTopColors()
 	{
 		return getTopColors(CHUNK_HEIGHT - 1);
 	}
-			
+	
+	/**
+	 * 
+	 * @param x
+	 * @param z
+	 * @param y
+	 * @return
+	 */
 	public String getStringBlock(int x, int z, int y) 
 	{
 		String blockName;
@@ -266,4 +256,5 @@ public class NewChunk extends Chunk
 		}
 		return 0;
 	}
+
 }
