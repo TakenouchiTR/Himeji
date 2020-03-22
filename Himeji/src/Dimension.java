@@ -48,10 +48,10 @@ public class Dimension
 	public static int[] calcDimSize(File dimension)
 	{
 		int[] result = {0, 0, 0, 0};
-		int maxHeight = 0;
-		int maxWidth = 0;
-		int minHeight = -1;
-		int minWidth = -1;
+		int maxHeight = Integer.MIN_VALUE;
+		int maxWidth = Integer.MIN_VALUE;
+		int minHeight = Integer.MAX_VALUE;
+		int minWidth = Integer.MAX_VALUE;
 		
 		File[] chunks = dimension.listFiles();
 
@@ -71,12 +71,12 @@ public class Dimension
 			
 			if (fileHeight < minHeight)
 				minHeight = fileHeight;
-			else if (fileHeight > maxHeight)
+			if (fileHeight > maxHeight)
 				maxHeight = fileHeight;
 			
 			if (fileWidth < minWidth)
 				minWidth = fileWidth;
-			else if (fileWidth > maxWidth)
+			if (fileWidth > maxWidth)
 				maxWidth = fileWidth;
 		}
 		
@@ -295,32 +295,50 @@ public class Dimension
 								curColor = chunkMap[blockX][blockZ][0];
 								curYVal = chunkMap[blockX][blockZ][1];
 								
-								if (blockZ == 0)
+								if (Himeji.renderShadows())
 								{
-									if (upChunk == null)
-										upYVal = curYVal;
+									if (blockZ == 0)
+									{
+										if (upChunk == null)
+											upYVal = curYVal;
+										else
+										{
+											if (Himeji.renderUnderWater())
+												upYVal = upChunk.getTopBlockYIgnoreWater(blockX, 
+													Chunk.CHUNK_SIZE - 1, startY);
+											else
+												upYVal = upChunk.getTopBlockY(blockX, 
+														Chunk.CHUNK_SIZE - 1, startY);
+										}
+									}
 									else
-										upYVal = upChunk.getTopBlockYIgnoreWater(blockX, 
-												Chunk.CHUNK_SIZE - 1, startY);
+									{
+										upYVal = chunkMap[blockX][blockZ - 1][1];
+									}
+									
+									if (blockX == Chunk.CHUNK_SIZE - 1)
+									{
+										if (rightChunk == null)
+											rightYVal = curYVal;
+										else
+										{	
+											if (Himeji.renderUnderWater())
+												rightYVal = rightChunk.getTopBlockYIgnoreWater(0, blockZ, startY);
+											else
+												rightYVal = rightChunk.getTopBlockY(0,  blockZ, startY);
+										}
+									}
+									else
+									{
+										rightYVal = chunkMap[blockX + 1][blockZ][1];
+									}
+									
+									curColor = applyShading(curColor, curYVal, upYVal, rightYVal);
 								}
 								else
 								{
-									upYVal = chunkMap[blockX][blockZ - 1][1];
+									curColor = applyShading(curColor, curYVal, curYVal, curYVal);
 								}
-								
-								if (blockX == Chunk.CHUNK_SIZE - 1)
-								{
-									if (rightChunk == null)
-										rightYVal = curYVal;
-									else
-										rightYVal = rightChunk.getTopBlockYIgnoreWater(0, blockZ, startY);
-								}
-								else
-								{
-									rightYVal = chunkMap[blockX + 1][blockZ][1];
-								}
-								
-								curColor = applyShading(curColor, curYVal, upYVal, rightYVal);
 								
 								image.setPixel(xPos, zPos, curColor);
 							}
