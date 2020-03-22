@@ -19,19 +19,11 @@ public class Block
 	private static Dictionary<String, int[]> blockDict;
 	private int blockID;
 	private int metadata;
-	//private int yCoord;
-	//private int sunLightLevel;
-	//private int lightLevel;
-	//private int biome; 
 	
-	public Block(int blockID, int metadata, int yCoord, int sunLightLevel, int lightLevel, int biome) 
+	public Block(int blockID, int metadata) 
 	{
 		this.blockID = blockID;
 		this.metadata = metadata;
-		//this.yCoord = yCoord;
-		//this.sunLightLevel = sunLightLevel;
-		//this.lightLevel = lightLevel;
-		//this.biome = biome;
 	}
 	
 	/**
@@ -1896,32 +1888,5 @@ public class Block
 	{
 		return metadata;
 	}
-	
-	/*
-	public int getYCoord() 
-	{
-		return yCoord;
-	}
-	
-	public int getLightLevel() 
-	{
-		return lightLevel;
-	}
-	
-	public int getSunLightLevel()
-	{
-		return sunLightLevel;
-	}
-	
-	public int getHighestLightLevel()
-	{
-		return lightLevel > sunLightLevel ? lightLevel : sunLightLevel; 
-	}
-	
-	public int getBiome() 
-	{
-		return biome;
-	}
 
-	*/
 }

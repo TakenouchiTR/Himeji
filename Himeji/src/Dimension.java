@@ -4,6 +4,8 @@
 //Description:    This class represents a dimension of a Minecraft world.
 
 import java.io.*;
+import java.util.ArrayList;
+
 import com.mojang.nbt.*;
 
 public class Dimension 
@@ -16,10 +18,6 @@ public class Dimension
 	protected int chunkWidth;
 	protected int chunkXOffset;
 	protected int chunkZOffset;
-	protected boolean[][] regionRenderFlags;
-	protected boolean[][] chunkRenderFlags;
-	protected FileIntMatrix colorGrid;
-	private byte[][] yVals;
 	protected File directory;
 	private MapImage image;
 	
@@ -140,24 +138,9 @@ public class Dimension
 		return result;
 	}
 	
-	public void createRenderGrid()
+	public void drawBlocksToBuffer(int startY)
 	{
 		File[] regions;
-		
-		image = new MapImage(blockWidth, blockHeight, 
-				new File("C:\\Users\\TOTak\\AppData\\Roaming\\.minecraft\\saves\\ping.png"));
-		
-		/*try
-		{
-			File gridLoc = File.createTempFile("gen", ".txt");
-			colorGrid = new FileIntMatrix(gridLoc, blockWidth, blockHeight);
-		}
-		catch (Exception e)
-		{
-			
-		}*/
-		chunkRenderFlags = new boolean[chunkWidth][chunkHeight];
-		yVals = new byte[blockWidth][blockHeight];
 		
 		regions = directory.listFiles();
 		
@@ -293,8 +276,7 @@ public class Dimension
 						int gridX = (chunk.getX() + chunkXOffset * REGION_SIZE) * Chunk.CHUNK_SIZE;
 						int gridZ = (chunk.getZ() + chunkZOffset * REGION_SIZE) * Chunk.CHUNK_SIZE;
 						
-						chunkRenderFlags[gridX / 16][gridZ / 16] = true;
-						int[][][] chunkMap = chunk.getTopColors();
+						int[][][] chunkMap = chunk.getTopColors(startY);
 						
 						if (chunkMap == null)
 							continue;
@@ -318,7 +300,8 @@ public class Dimension
 									if (upChunk == null)
 										upYVal = curYVal;
 									else
-										upYVal = upChunk.getTopBlockYIgnoreWater(blockX, Chunk.CHUNK_SIZE - 1);
+										upYVal = upChunk.getTopBlockYIgnoreWater(blockX, 
+												Chunk.CHUNK_SIZE - 1, startY);
 								}
 								else
 								{
@@ -330,7 +313,7 @@ public class Dimension
 									if (rightChunk == null)
 										rightYVal = curYVal;
 									else
-										rightYVal = rightChunk.getTopBlockYIgnoreWater(0, blockZ);
+										rightYVal = rightChunk.getTopBlockYIgnoreWater(0, blockZ, startY);
 								}
 								else
 								{
@@ -340,9 +323,6 @@ public class Dimension
 								curColor = applyShading(curColor, curYVal, upYVal, rightYVal);
 								
 								image.setPixel(xPos, zPos, curColor);
-								
-								//yVals[xPos][zPos] = (byte)(chunkMap[blockX][blockZ][1] - 128);
-								//colorGrid.set(xPos, zPos, curColor);
 							}
 						}
 					}
@@ -354,8 +334,106 @@ public class Dimension
 			}
 		}
 		
-		System.out.println("Applying shading");
-		//applyShading();
+	}
+	
+	public void drawEntitiesToBuffer(int startY)
+	{
+		File[] regions = directory.listFiles();
+		ArrayList<String> mobNames = new ArrayList<String>();
+		ArrayList<Integer> mobCount = new ArrayList<Integer>();
+		
+		for (File regionFile : regions)
+		{
+			String regionName = regionFile.getName();
+			Region region = new Region(regionFile);
+			
+			if (Himeji.SHOW_ALL_EVENTS)
+				System.out.println("Reading " + regionName);
+			
+			int xPos;
+			int zPos;
+			
+			for (int chunkX = 0; chunkX < REGION_SIZE; chunkX++)
+			{
+				for (int chunkZ = 0; chunkZ < REGION_SIZE; chunkZ++)
+				{
+					if (!region.hasChunk(chunkX, chunkZ))
+						continue;
+					
+					try
+					{
+						CompoundTag chunkTag = region.getChunk(chunkX, chunkZ);
+						if (chunkTag == null)
+							continue;
+						
+						CompoundTag levelTag = chunkTag.getCompound("Level");
+						if (levelTag == null)
+							continue;
+						
+						ListTag<? extends Tag> entitiesList = levelTag.getList("Entities");
+						if (entitiesList == null || entitiesList.size() == 0)
+							continue;
+						
+						
+						for (int i = 0; i < entitiesList.size(); i++)
+						{
+							CompoundTag entityTag = (CompoundTag)entitiesList.get(i);
+							ListTag<? extends Tag> position = entityTag.getList("Pos");
+							
+							DoubleTag yTag = (DoubleTag)(position.get(1));
+							if ((int)yTag.data > startY)
+								continue;
+									
+							String id = entityTag.getString("id");
+							DoubleTag xTag = (DoubleTag)(position.get(0));
+							DoubleTag zTag = (DoubleTag)(position.get(2));
+							
+							boolean found = false;
+							for (int j = 0; j < mobNames.size(); j++)
+							{
+								if (mobNames.get(j).equals(id))
+								{
+									mobCount.set(j, new Integer(mobCount.get(j) + 1));
+									found = true;
+									break;
+								}
+							}
+							if (!found)
+							{
+								mobNames.add(id);
+								mobCount.add(1);
+							}
+							
+							id = id.toUpperCase();
+							xPos = (int)(xTag.data);
+							zPos = (int)(zTag.data);
+							
+							xPos += (chunkTag.getInt("xPos") + chunkXOffset * REGION_SIZE) * Chunk.CHUNK_SIZE;
+							zPos += (chunkTag.getInt("zPos") + chunkZOffset * REGION_SIZE) * Chunk.CHUNK_SIZE;;
+							
+							Entity entity = Entity.valueOf(id.split(":")[1]);
+							
+							image.setPixel(xPos, zPos, entity.COLOR);
+						}
+					}
+					catch (Exception e)
+					{
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+		
+		for (int i = 0; i < mobCount.size(); i++)
+		{
+			System.out.println(mobNames.get(i) + " - " + mobCount.get(i));
+		}
+	}
+	
+	public void createRenderGrid()
+	{
+		image = new MapImage(blockWidth, blockHeight, 
+				new File("C:\\Users\\TOTak\\AppData\\Roaming\\.minecraft\\saves\\ping.png"));
 	}
 	
 	public int applyShading(int color, int yVal, int upYVal, int rightYVal)
@@ -398,92 +476,6 @@ public class Dimension
 		return color;
 	}
 	
-	public void applyShading()
-	{
-		int width = colorGrid.getRows() - 1;
-		int height = colorGrid.getCols();
-		int aboveY;
-		int rightY;
-		int curY = 0;
-		int a, r, g, b, curColor;
-		
-		for (int z = 1; z < height; z++)
-		{
-			for (int x = 1; x < width; x++)
-			{
-				if (!getChunkRenderFlag(x / 16, z / 16))
-				{
-					x += 15;
-					continue;
-				}
-				try
-				{
-					
-					rightY = yVals[x + 1][z];
-					aboveY = yVals[x][z - 1];
-					curY = yVals[x][z];
-					
-					if (curY < aboveY || curY < rightY)
-					{
-						curColor = colorGrid.get(x, z);
-						
-						a = (curColor & 0xFF000000);
-						r = (int) (((curColor & 0x00FF0000) >>> 16) * .85f);
-						g = (int) (((curColor & 0x0000FF00) >>> 8) * .85f);
-						b = (int) ((curColor & 0x000000FF) * .85f);
-						
-						if (r < 0)
-							r = 0;
-						if (g < 0)
-							g = 0;
-						if (b < 0)
-							b = 0;
-						
-						curColor = a | (r << 16) | (g << 8) | b;
-						
-						colorGrid.set(x, z, curColor);
-					}
-					else if (curY > aboveY || curY > rightY)
-					{
-						curColor = colorGrid.get(x, z);
-						
-						a = (curColor & 0xFF000000);
-						r = (int) (((curColor & 0x00FF0000) >>> 16) * 1.15f);
-						g = (int) (((curColor & 0x0000FF00) >>> 8) * 1.15f);
-						b = (int) ((curColor & 0x000000FF) * 1.15f);
-						
-						if (r > 255)
-							r = 255;
-						if (g > 255)
-							g = 255;
-						if (b > 255)
-							b = 255;
-						
-						curColor = a | (r << 16) | (g << 8) | b;
-						
-						colorGrid.set(x, z, curColor);
-					}
-				}
-				catch (Exception e)
-				{
-					e.printStackTrace();
-				}
-			}
-			
-			if (z % 100 == 0)
-				System.out.println("Applied to " + z + "/" + height);
-		}
-	}
-	
-	/**
-	 * Returns the Dimension's width in chunks.
-	 * @return Width of dimension in chunks.
-	 */
-	public int getChunkWidth() 
-	{
-		return chunkWidth;
-	}
-	
 	/**
 	 * Sets the width of a dimension in chunks. Sets the width in blocks
 	 * as well.
@@ -493,15 +485,6 @@ public class Dimension
 	{
 		this.chunkWidth = chunkWidth;
 		blockWidth = chunkWidth * 16;
-	}
-	
-	/**
-	 * Returns the Dimension's height in chunks.
-	 * @return Height of dimension in chunks.
-	 */
-	public int getChunkHeight() 
-	{
-		return chunkHeight;
 	}
 	
 	/**
@@ -533,49 +516,9 @@ public class Dimension
 		return blockHeight;
 	}
 	
-	public int getBlockColorAt(int x, int z)
-	{
-		try
-		{
-			return colorGrid.get(x, z);
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-		return 0;
-	}
-
-	public boolean getChunkRenderFlag(int x, int z)
-	{
-		return chunkRenderFlags[x][z];
-	}
-	
-	public int getChunkXOffset()
-	{
-		return chunkXOffset;
-	}
-	
 	public int getYCoord(int color)
 	{
 		return color>>>24;
-	}
-	
-	public int getChunkZOffset()
-	{
-		return chunkZOffset;
-	}
-
-	public void closeFileMatrix()
-	{
-		try
-		{
-			colorGrid.close();
-		}
-		catch (Exception e)
-		{
-			
-		}
 	}
 
 	public void render()

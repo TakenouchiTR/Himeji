@@ -108,10 +108,13 @@ public class World
 	public void createRenderGrids()
 	{
 		overworld.createRenderGrid();
+		overworld.drawBlocksToBuffer(Himeji.getStartY());
+		//overworld.drawEntitiesToBuffer(255);
 	}
 
 	public void renderWorld()
 	{
-		MapImage.renderDim(overworld);
+		overworld.render();
+		//MapImage.renderDim(overworld);
 	}
 }

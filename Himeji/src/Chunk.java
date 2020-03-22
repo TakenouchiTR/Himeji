@@ -28,8 +28,7 @@ public class Chunk
 		
 		ListTag<? extends Tag> sections = levelTag.getList("Sections");
 		
-		worldHeight = 256;//((int)((CompoundTag)(sections.get(sections.size() - 1))).getByte("Y") + 1) 
-				//* CHUNK_SIZE;
+		worldHeight = CHUNK_HEIGHT;
 		
 		blockLight = new int[CHUNK_SIZE][worldHeight][CHUNK_SIZE];
 		sunLight = new int[CHUNK_SIZE][worldHeight][CHUNK_SIZE];
@@ -184,15 +183,10 @@ public class Chunk
 			// if the block reached is visible
 			if(Block.isBlockVisible(blocks[x][y][z])) 
 			{
-				//Gets the light level of the block above it. If at worldHeight, 
-				//  uses the block's sun light level
-				int lightY = (y < worldHeight - 1 ? y + 1 : y);
-				
-				return new Block(blocks[x][y][z], metadata[x][y][z], y, sunLight[x][lightY][z], 
-						blockLight[x][lightY][z], biome[x][z]);
+				return new Block(blocks[x][y][z], metadata[x][y][z]);
 			}
 		}
-		return new Block(0, 0, 0, 0, 0, 0);
+		return new Block(0, 0);
 	}
 	
 	/**
@@ -314,16 +308,5 @@ public class Chunk
 		}
 		
 		return 0;
-	}
-
-	public int setAlphaToY(int color, int y)
-	{
-		int result;
-		
-		result = (color & 0x00FFFFFF);
-		y <<= 24;
-		result |= y;
-		
-		return result;
 	}
 }
