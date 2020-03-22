@@ -25,11 +25,20 @@ public class MapImage
 		output = new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR);
 	}
 	
+	/**
+	 * Sets the pixel of the image to a specified color.
+	 * @param x     x coordinate of the pixel
+	 * @param y     y coordinate of the pixel
+	 * @param color ARGB int of the new color
+	 */
 	public void setPixel(int x, int y, int color)
 	{
 		output.setRGB(x, y, color);
 	}
 	
+	/**
+	 * Saves the image to file.
+	 */
 	public void renderImage()
 	{
 		try

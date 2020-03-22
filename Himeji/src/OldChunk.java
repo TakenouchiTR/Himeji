@@ -1,4 +1,4 @@
-//Program Name:   Chunk.java
+//Program Name:   OldChunk.java
 //Date:           3/14/2020
 //Programmer:     Shawn Carter
 //Description:    This class represents a chunk stored in a region file.
@@ -17,25 +17,27 @@ public class OldChunk extends Chunk
 	private int[][][] metadata;
 	private int[][] biome;
 	
+	/**
+	 * Creates a Chunk using the old format for saving chunk data.
+	 * @param baseTag CompoundTag containing the chunk's DataVersion and Level tags.
+	 */
 	public OldChunk(CompoundTag baseTag) 
 	{
 		super(baseTag);
 		
 		ListTag<? extends Tag> sections = levelTag.getList("Sections");
 		
-		worldHeight = CHUNK_HEIGHT;
-		
-		blockLight = new int[CHUNK_SIZE][worldHeight][CHUNK_SIZE];
-		sunLight = new int[CHUNK_SIZE][worldHeight][CHUNK_SIZE];
-		blocks = new int[CHUNK_SIZE][worldHeight][CHUNK_SIZE];
-		metadata = new int[CHUNK_SIZE][worldHeight][CHUNK_SIZE];
+		blockLight = new int[CHUNK_SIZE][CHUNK_HEIGHT][CHUNK_SIZE];
+		sunLight = new int[CHUNK_SIZE][CHUNK_HEIGHT][CHUNK_SIZE];
+		blocks = new int[CHUNK_SIZE][CHUNK_HEIGHT][CHUNK_SIZE];
+		metadata = new int[CHUNK_SIZE][CHUNK_HEIGHT][CHUNK_SIZE];
 		biome = new int[CHUNK_SIZE][CHUNK_SIZE];
 		
 		for(int x = 0; x < CHUNK_SIZE; x++) 
 		{
 			for(int z = 0; z < CHUNK_SIZE; z++) 
 			{
-				for(int y = 0; y < worldHeight; y++) 
+				for(int y = 0; y < CHUNK_HEIGHT; y++) 
 				{
 					blockLight[x][y][z] = 0;
 					sunLight[x][y][z] = 15;
@@ -121,7 +123,12 @@ public class OldChunk extends Chunk
 		}
 	}
 	
-	protected int getPositiveByte(byte b) 
+	/**
+	 * Returns the value of a byte as a positive integer.
+	 * @param b byte to convert
+	 * @return  integer of the positive form of the byte
+	 */
+	private int getPositiveByte(byte b) 
 	{
 		return (int)(b & 0x0f) + (int)((b & 0xf0) >> 4) * 16;
 	}
@@ -143,6 +150,13 @@ public class OldChunk extends Chunk
 		}
 	}
 	
+	/**
+	 * Gets the index for an array for an item stored at a chunk's x, y, z coordinate.
+	 * @param x x coordinate, relative to the chunk
+	 * @param y y coordinate
+	 * @param z z coordinate, relative to the chunk
+	 * @return  index of an array for the given coordinates
+	 */
 	private int getIndex(int x, int y, int z) 
 	{
 		int result;
@@ -152,7 +166,13 @@ public class OldChunk extends Chunk
 		return result;
 	}
 	
-	protected int getIndex(int x, int z) 
+	/**
+	 * Gets the index for an array for an item stored at a chunk's x, z coordinate.
+	 * @param x x coordinate, relative to the chunk
+	 * @param z z coordinate, relative to the chunk
+	 * @return  index of an array for the given coordinates
+	 */
+	private int getIndex(int x, int z) 
 	{
 		int result;
 		
@@ -168,7 +188,7 @@ public class OldChunk extends Chunk
 	public Block getBlock(int x, int z) 
 	{
 		// starting at the top of the map and going down
-		for(int y = worldHeight - 1; y > 0; y--) 
+		for(int y = CHUNK_HEIGHT - 1; y > 0; y--) 
 		{
 			// if the block reached is visible
 			if(Block.isBlockVisible(blocks[x][y][z])) 
@@ -203,6 +223,7 @@ public class OldChunk extends Chunk
 	 * each x, z column.
 	 * @return int array of the colors for the top-most blocks of each x, z column
 	 */
+	@Override
 	public int[][][] getTopColors(int startY)
 	{
 		int[][][] result = new int[CHUNK_SIZE][CHUNK_SIZE][2];
@@ -212,7 +233,7 @@ public class OldChunk extends Chunk
 			for (int z = 0; z < CHUNK_SIZE; z++)
 			{
 				int y = getTopBlockY(x, z, startY);
-				int dy = getTopBlockYIgnoreWater(x, z, startY);
+				int dy = y;
 				int color = Block.getBlockColor(blocks[x][dy][z], metadata[x][dy][z], biome[x][z]);
 				
 				//Adds a blue effect to blocks under water
@@ -251,16 +272,25 @@ public class OldChunk extends Chunk
 		return result;
 	}
 
+	/**
+	 * Creates a three-dimensional int array of the ARGB values for the top-most blocks of 
+	 * each x, z and their y-value.
+	 * @return int array of the colors for the top-most blocks of each x, z column
+	 */
+	@Override
 	public int[][][] getTopColors()
 	{
 		return getTopColors(CHUNK_HEIGHT - 1);
 	}
 	
-	public CompoundTag getTag()
-	{
-		return levelTag;
-	}
-	
+	/**
+	 * Gets the top block of a given x, z column that is not listed as invisible.
+	 * @param x       the Chunk's x coord, relative to the chunk
+	 * @param z       the Chunk's z coord, relative to the chunk
+	 * @param startY  the y coord to start searching at
+	 * @return        a color stored as an ARGB integer
+	 */
+	@Override
 	public int getTopBlockY(int x, int z, int startY)
 	{
 		for(int y = startY; y > 0; y--) 
@@ -270,6 +300,15 @@ public class OldChunk extends Chunk
 		return 0;
 	}
 	
+	/**
+	 * Gets the top block of a given x, z column that is not listed as invisible or is 
+	 *   considered water.
+	 * @param x       the Chunk's x coord, relative to the chunk
+	 * @param z       the Chunk's z coord, relative to the chunk
+	 * @param startY  the y coord to start searching at
+	 * @return        a color stored as an ARGB integer
+	 */
+	@Override
 	public int getTopBlockYIgnoreWater(int x, int z, int startY)
 	{
 		for(int y = startY; y > 0; y--) 

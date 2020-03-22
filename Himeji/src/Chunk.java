@@ -11,8 +11,12 @@ public abstract class Chunk
 	public static final int CHUNK_HEIGHT = 256;
 	
 	protected CompoundTag levelTag;
-	protected int worldHeight;
 	
+	/**
+	 * Creates a chunk and sets the NBT for the chunk's info. The rest of the 
+	 *   actions are dependent on whether the chunk is in the new or old format.
+	 * @param baseTag CompoundTag containing the chunk's DataVersion and Level tags.
+	 */
 	public Chunk(CompoundTag baseTag) 
 	{
 		levelTag = baseTag.getCompound("Level");
@@ -51,12 +55,31 @@ public abstract class Chunk
 		return levelTag.getInt("zPos");
 	}
 	
+	/**
+	 * Gets the Chunk's Level NBT.
+	 * @return the chunk's Level NBT
+	 */
 	public CompoundTag getTag()
 	{
 		return levelTag;
 	}
 	
+	/**
+	 * Gets the top block of a given x, z column that is not listed as invisible.
+	 * @param x       the Chunk's x coord, relative to the chunk
+	 * @param z       the Chunk's z coord, relative to the chunk
+	 * @param startY  the y coord to start searching at
+	 * @return        a color stored as an ARGB integer
+	 */
 	public abstract int getTopBlockY(int x, int z, int startY);
 	
+	/**
+	 * Gets the top block of a given x, z column that is not listed as invisible or is 
+	 *   considered water.
+	 * @param x       the Chunk's x coord, relative to the chunk
+	 * @param z       the Chunk's z coord, relative to the chunk
+	 * @param startY  the y coord to start searching at
+	 * @return        a color stored as an ARGB integer
+	 */
 	public abstract int getTopBlockYIgnoreWater(int x, int z, int startY);
 }

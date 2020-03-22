@@ -9,28 +9,29 @@ public class NewChunk extends Chunk
 	private int biomeHeight;
 	private Section[] sections;
 	
+	/**
+	 * Creates a Chunk using the new format for saving chunk data.
+	 * @param baseTag CompoundTag containing the chunk's DataVersion and Level tags.
+	 */
 	public NewChunk(CompoundTag baseTag) 
 	{
 		super(baseTag);
 		
 		ListTag<? extends Tag> sectionTags = levelTag.getList("Sections");
 		
+		//Stops if there is no block data stored in the tag
 		if (sectionTags.size() == 0)
 			return;
 		
-		worldHeight = CHUNK_HEIGHT;
-		
-		if (worldHeight <= 0)
-			return;
-		
 		sections = new Section[sectionTags.size() - 1];
-		blocks = new String[CHUNK_SIZE][worldHeight][CHUNK_SIZE];
+		blocks = new String[CHUNK_SIZE][CHUNK_HEIGHT][CHUNK_SIZE];
 		
+		//Fills all blocks with the default block namespace ID
 		for(int x = 0; x < CHUNK_SIZE; x++) 
 		{
 			for(int z = 0; z < CHUNK_SIZE; z++) 
 			{
-				for(int y = 0; y < worldHeight; y++) 
+				for(int y = 0; y < CHUNK_HEIGHT; y++) 
 				{
 					blocks[x][y][z] = "minecraft:air";
 				}
@@ -39,15 +40,18 @@ public class NewChunk extends Chunk
 		
 		//boolean calcLight = levelTag.getBoolean("LightPopulated"); 
 		
+		//Loads data from each of the sections
 		for(int i = 0; i < sections.length; i++) 
 		{
 			sections[i] = new Section((CompoundTag)sectionTags.get(i));
 			String[][][] sectionBlocks = sections[i].getBlocks();
 			int sectionY = (sections[i].getSectionTag().getByte("Y")) * 16;
 			
+			//Skips a section if there are no blocks stored
 			if (sectionBlocks == null)
 				continue;
 			
+			//Loads each of the blocks in the section
 			for(int x = 0; x < CHUNK_SIZE; x++) 
 			{
 				for(int y = 0; y < CHUNK_SIZE; y++) 
@@ -62,7 +66,8 @@ public class NewChunk extends Chunk
 		
 		int dataLoc = 0;
 		int[] biomeData = levelTag.getIntArray("Biomes");
-			
+		
+		//Loads new, 3D-Biomes
 		if (biomeData.length == 1024)
 		{
 			biome = new int[CHUNK_SIZE / 4][CHUNK_HEIGHT / 4][CHUNK_SIZE / 4];
@@ -81,10 +86,11 @@ public class NewChunk extends Chunk
 			}
 			
 		}
+		//Loads old, 2D-Biomes
 		else
 		{
 			biome = new int[CHUNK_SIZE][1][CHUNK_SIZE];
-			biomeHeight = 256;
+			biomeHeight = CHUNK_HEIGHT;
 			
 			for(int z = 0; z < CHUNK_SIZE; z++) 
 			{
@@ -97,21 +103,13 @@ public class NewChunk extends Chunk
 		}
 	}
 	
-	public String[][] getTopStringBlocks()
-	{
-		String[][] result = new String[CHUNK_SIZE][CHUNK_SIZE];
-		
-		for (int x = 0; x < CHUNK_SIZE; x++)
-		{
-			for (int z = 0; z < CHUNK_SIZE; z++)
-			{
-				result[x][z] = getStringBlock(x, z);
-			}
-		}
-		
-		return result;
-	}
-	
+	/**
+	 * Gets the top block of a given x, z column that is not listed as invisible.
+	 * @param x       the Chunk's x coord, relative to the chunk
+	 * @param z       the Chunk's z coord, relative to the chunk
+	 * @param startY  the y coord to start searching at
+	 * @return        a color stored as an ARGB integer
+	 */
 	@Override
 	public int[][][] getTopColors(int startY)
 	{
@@ -125,7 +123,7 @@ public class NewChunk extends Chunk
 			for (int z = 0; z < CHUNK_SIZE; z++)
 			{
 				int y = getTopBlockY(x, z, startY);
-				int dy = getTopBlockYIgnoreWater(x, z, startY);
+				int dy = y;
 				int biomeWidth = CHUNK_SIZE / biome.length;
 				int color = Block.getBlockColor(blocks[x][dy][z], 
 						biome[x / biomeWidth][dy / biomeHeight][z / biomeWidth]);
@@ -167,6 +165,14 @@ public class NewChunk extends Chunk
 		return result;
 	}
 	
+	/**
+	 * Gets the top block of a given x, z column that is not listed as invisible or is 
+	 *   considered water.
+	 * @param x       the Chunk's x coord, relative to the chunk
+	 * @param z       the Chunk's z coord, relative to the chunk
+	 * @param startY  the y coord to start searching at
+	 * @return        a color stored as an ARGB integer
+	 */
 	@Override
 	public int[][][] getTopColors()
 	{
@@ -174,13 +180,13 @@ public class NewChunk extends Chunk
 	}
 	
 	/**
-	 * 
+	 * Gets the name
 	 * @param x
 	 * @param z
 	 * @param y
 	 * @return
-	 */
-	public String getStringBlock(int x, int z, int y) 
+	 
+	public String getBlockName(int x, int z, int y) 
 	{
 		String blockName;
 		int[] idMeta;
@@ -205,11 +211,18 @@ public class NewChunk extends Chunk
 		return "minecraft:air";
 	}
 	
-	public String getStringBlock(int x, int z) 
+	public String getBlockName(int x, int z) 
 	{
-		return getStringBlock(x, z, CHUNK_HEIGHT - 1);
+		return getBlockName(x, z, CHUNK_HEIGHT - 1);
 	}
-	
+	*/
+	/**
+	 * Gets the top block of a given x, z column that is not listed as invisible.
+	 * @param x       the Chunk's x coord, relative to the chunk
+	 * @param z       the Chunk's z coord, relative to the chunk
+	 * @param startY  the y coord to start searching at
+	 * @return        a color stored as an ARGB integer
+	 */
 	@Override
 	public int getTopBlockY(int x, int z, int startY)
 	{
@@ -233,6 +246,14 @@ public class NewChunk extends Chunk
 		return 0;
 	}
 	
+	/**
+	 * Gets the top block of a given x, z column that is not listed as invisible or is 
+	 *   considered water.
+	 * @param x       the Chunk's x coord, relative to the chunk
+	 * @param z       the Chunk's z coord, relative to the chunk
+	 * @param startY  the y coord to start searching at
+	 * @return        a color stored as an ARGB integer
+	 */
 	@Override
 	public int getTopBlockYIgnoreWater(int x, int z, int startY)
 	{

@@ -9,6 +9,7 @@ import java.util.Hashtable;
 public class Block 
 {
 	public static final int MAX_BLOCK_ID = 297;
+	
 	private static boolean[] blockVisibility; 
 	private static int[][] biomeFoliage;
 	private static int[][] biomeGrass;
@@ -18,14 +19,9 @@ public class Block
 	private static int[] grassColors;
 	private static int[] waterColors;
 	private static Dictionary<String, int[]> blockDict;
+	
 	private int blockID;
 	private int metadata;
-	
-	public Block(int blockID, int metadata) 
-	{
-		this.blockID = blockID;
-		this.metadata = metadata;
-	}
 	
 	/**
 	 * Sets the default values for which blocks will be rendered
@@ -67,6 +63,9 @@ public class Block
 		blockVisibility[255] = false; //Structure Block
 	}
 	
+	/**
+	 * Sets the default values for biomeFoliage 
+	 */
 	public static void setBiomeFoliage() 
 	{
 		biomeFoliage = new int[7][2];
@@ -87,6 +86,9 @@ public class Block
 		biomeFoliage[6][1] = 0;
 	}
 	
+	/**
+	 * Sets the default values for biomeGrass.
+	 */
 	public static void setBiomeGrass()
 	{
 		biomeGrass = new int[4][2];
@@ -101,6 +103,9 @@ public class Block
 		biomeGrass[3][1] = 3;
 	}
 	
+	/**
+	 * Sets the default values for biomeWater.
+	 */
 	public static void setBiomeWater()
 	{
 		biomeWater = new int[3][2];
@@ -110,6 +115,9 @@ public class Block
 		biomeWater[2][0] = 280;
 	}
 	
+	/**
+	 * Sets the default values for biomeColors.
+	 */
 	public static void setBiomeColors()
 	{
 		int length = 173;
@@ -1749,6 +1757,54 @@ public class Block
 	}
 	
 	/**
+	 * Checks whether a block is changes colors depending on the biome using the 
+	 *   foliage colors.
+	 * @param id   ID of the block
+	 * @param meta Metadata of the block
+	 * @return     true iff the block/metadata combination is in biomeFoliage 
+	 */
+	public static boolean hasFoliageColor(int id, int meta)
+	{
+		for (int i = 0; i < biomeFoliage.length; i++)
+			if (id == biomeFoliage[i][0] && meta == biomeFoliage[i][1])
+				return true;
+		
+		return false;
+	}
+
+	/**
+	 * Checks whether a block is changes colors depending on the biome using the
+	 *   grass colors.
+	 * @param id   ID of the block
+	 * @param meta Metadata of the block
+	 * @return     true iff the block/metadata combination is in biomeFoliage 
+	 */
+	public static boolean hasWaterColor(int id, int meta)
+	{
+		for (int i = 0; i < biomeWater.length; i++)
+			if (id == biomeWater[i][0] && meta == biomeWater[i][1])
+				return true;
+		
+		return false;
+	}
+	
+	/**
+	 * Checks whether a block is changes colors depending on the biome using the
+	 *   grass colors.
+	 * @param id   ID of the block
+	 * @param meta Metadata of the block
+	 * @return     true iff the block/metadata combination is in biomeFoliage 
+	 */
+	public static boolean hasGrassColor(int id, int meta)
+	{
+		for (int i = 0; i < biomeGrass.length; i++)
+			if (id == biomeGrass[i][0] && meta == biomeGrass[i][1])
+				return true;
+		
+		return false;
+	}
+	
+	/**
 	 * Checks if a block with a certain pre-flattening ID is false on the blockVisibility array.
 	 * Invisible blocks will be skipped when determining the top block of a map.
 	 * @param id Pre-flattening block id
@@ -1805,54 +1861,6 @@ public class Block
 	public static int getWaterColor(int biome)
 	{
 		return waterColors[biome];
-	}
-	
-	/**
-	 * Checks whether a block is changes colors depending on the biome using the 
-	 *   foliage colors.
-	 * @param id   ID of the block
-	 * @param meta Metadata of the block
-	 * @return     true iff the block/metadata combination is in biomeFoliage 
-	 */
-	public static boolean hasFoliageColor(int id, int meta)
-	{
-		for (int i = 0; i < biomeFoliage.length; i++)
-			if (id == biomeFoliage[i][0] && meta == biomeFoliage[i][1])
-				return true;
-		
-		return false;
-	}
-
-	/**
-	 * Checks whether a block is changes colors depending on the biome using the
-	 *   grass colors.
-	 * @param id   ID of the block
-	 * @param meta Metadata of the block
-	 * @return     true iff the block/metadata combination is in biomeFoliage 
-	 */
-	public static boolean hasWaterColor(int id, int meta)
-	{
-		for (int i = 0; i < biomeWater.length; i++)
-			if (id == biomeWater[i][0] && meta == biomeWater[i][1])
-				return true;
-		
-		return false;
-	}
-	
-	/**
-	 * Checks whether a block is changes colors depending on the biome using the
-	 *   grass colors.
-	 * @param id   ID of the block
-	 * @param meta Metadata of the block
-	 * @return     true iff the block/metadata combination is in biomeFoliage 
-	 */
-	public static boolean hasGrassColor(int id, int meta)
-	{
-		for (int i = 0; i < biomeGrass.length; i++)
-			if (id == biomeGrass[i][0] && meta == biomeGrass[i][1])
-				return true;
-		
-		return false;
 	}
 	
 	/**
@@ -1929,16 +1937,40 @@ public class Block
 		return getBlockColor(idMeta[0], idMeta[1], biome);
 	}
 	
-	public static int[] getIdMeta(String name)
+	/**
+	 * Gets the program's internal ID and metadata for a block's namespace ID. 
+	 * @param namespaceID a block's Minecraft namespace ID
+	 * @return            int array containing the ID and metadata for a block
+	 */
+	public static int[] getIdMeta(String namespaceID)
 	{
-		return blockDict.get(name);
+		return blockDict.get(namespaceID);
 	}
 	
+	/**
+	 * Creates a block with a specified blockID and metadata
+	 * @param blockID  the program's internal block id
+	 * @param metadata the metadata for the block
+	 */
+	public Block(int blockID, int metadata) 
+	{
+		this.blockID = blockID;
+		this.metadata = metadata;
+	}
+	
+	/**
+	 * Gets the block's blockID
+	 * @return the block's blockID
+	 */
  	public int getBlockID() 
 	{
 		return blockID;
 	}
 	
+ 	/**
+ 	 * Gets the block's metadata
+ 	 * @return the block's metadata
+ 	 */
 	public int getMetaData() 
 	{
 		return metadata;

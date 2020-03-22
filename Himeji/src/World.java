@@ -105,6 +105,9 @@ public class World
 		return result;
 	}
 
+	/**
+	 * Creates the BufferedImage for all selected dimensions.
+	 */
 	public void createRenderGrids()
 	{
 		overworld.createRenderGrid();
@@ -112,6 +115,9 @@ public class World
 		//overworld.drawEntitiesToBuffer(255);
 	}
 
+	/**
+	 * Saves the image for a dimension to file.
+	 */
 	public void renderWorld()
 	{
 		overworld.render();

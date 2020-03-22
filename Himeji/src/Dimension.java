@@ -214,7 +214,7 @@ public class Dimension
 										if (upTag.getInt("DataVersion") > 1519)
 											upChunk = new NewChunk(upTag);
 										else
-											upChunk = new Chunk(upTag);
+											upChunk = new OldChunk(upTag);
 									}
 								}
 							}
@@ -229,7 +229,7 @@ public class Dimension
 									if (upTag.getInt("DataVersion") > 1519)
 										upChunk = new NewChunk(upTag);
 									else
-										upChunk = new Chunk(upTag);
+										upChunk = new OldChunk(upTag);
 								}
 							}
 						}
@@ -246,7 +246,7 @@ public class Dimension
 										if (rightTag.getInt("DataVersion") > 1519)
 											rightChunk = new NewChunk(rightTag);
 										else
-											rightChunk = new Chunk(rightTag);
+											rightChunk = new OldChunk(rightTag);
 									}
 								}
 							}
@@ -261,7 +261,7 @@ public class Dimension
 									if (rightTag.getInt("DataVersion") > 1519)
 										rightChunk = new NewChunk(rightTag);
 									else
-										rightChunk = new Chunk(rightTag);
+										rightChunk = new OldChunk(rightTag);
 								}
 							}
 						}
@@ -271,7 +271,7 @@ public class Dimension
 						if (chunkVersion >= 1519)
 							chunk = new NewChunk(chunkTag);
 						else
-							chunk = new Chunk(chunkTag);
+							chunk = new OldChunk(chunkTag);
 						
 						int gridX = (chunk.getX() + chunkXOffset * REGION_SIZE) * Chunk.CHUNK_SIZE;
 						int gridZ = (chunk.getZ() + chunkZOffset * REGION_SIZE) * Chunk.CHUNK_SIZE;
