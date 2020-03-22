@@ -10,8 +10,9 @@ public class Block
 {
 	public static final int MAX_BLOCK_ID = 297;
 	private static boolean[] blockVisibility; 
-	private static int[][] biomeBlocks;
+	private static int[][] biomeFoliage;
 	private static int[][] biomeGrass;
+	private static int[][] biomeWater;
 	private static int[][] blockColors;
 	private static int[] foliageColors;
 	private static int[] grassColors;
@@ -66,24 +67,24 @@ public class Block
 		blockVisibility[255] = false; //Structure Block
 	}
 	
-	public static void setBiomeBlocks() 
+	public static void setBiomeFoliage() 
 	{
-		biomeBlocks = new int[7][2];
+		biomeFoliage = new int[7][2];
 		
-		biomeBlocks[0][0] = 18;   //Leaves
-		biomeBlocks[0][1] = 0;
-		biomeBlocks[1][0] = 18;
-		biomeBlocks[1][1] = 1;
-		biomeBlocks[2][0] = 18;
-		biomeBlocks[2][1] = 2;
-		biomeBlocks[3][0] = 18;
-		biomeBlocks[3][1] = 3;
-		biomeBlocks[4][0] = 161;
-		biomeBlocks[4][1] = 0;
-		biomeBlocks[5][0] = 161;
-		biomeBlocks[5][1] = 1;
-		biomeBlocks[6][0] = 106;  //Vines
-		biomeBlocks[6][1] = 0;
+		biomeFoliage[0][0] = 18;   //Leaves
+		biomeFoliage[0][1] = 0;
+		biomeFoliage[1][0] = 18;
+		biomeFoliage[1][1] = 1;
+		biomeFoliage[2][0] = 18;
+		biomeFoliage[2][1] = 2;
+		biomeFoliage[3][0] = 18;
+		biomeFoliage[3][1] = 3;
+		biomeFoliage[4][0] = 161;
+		biomeFoliage[4][1] = 0;
+		biomeFoliage[5][0] = 161;
+		biomeFoliage[5][1] = 1;
+		biomeFoliage[6][0] = 106;  //Vines
+		biomeFoliage[6][1] = 0;
 	}
 	
 	public static void setBiomeGrass()
@@ -98,6 +99,15 @@ public class Block
 		biomeGrass[2][1] = 1;
 		biomeGrass[3][0] = 175;  //Tall Grass
 		biomeGrass[3][1] = 3;
+	}
+	
+	public static void setBiomeWater()
+	{
+		biomeWater = new int[3][2];
+		
+		biomeWater[0][0] = 8;
+		biomeWater[1][0] = 9;
+		biomeWater[2][0] = 280;
 	}
 	
 	public static void setBiomeColors()
@@ -1767,30 +1777,75 @@ public class Block
 		return false;
 	}
 
+	/**
+	 * Gets the biome-specific color for foliage.
+	 * @param biome biome the foliage is located in
+	 * @return      int ARGB value for a color
+	 */
 	public static int getFoliageColor(int biome)
 	{
 		return foliageColors[biome];
 	}
 	
+	/**
+	 * Gets the biome-specific color for grasses.
+	 * @param biome biome the grass is located in
+	 * @return      int ARGB value for a color
+	 */
 	public static int getGrassColor(int biome)
 	{
 		return grassColors[biome];
 	}
 	
+	/**
+	 * Gets the biome-specific color for water.
+	 * @param biome biome the water is located in
+	 * @return      int ARGB value for a color
+	 */
 	public static int getWaterColor(int biome)
 	{
 		return waterColors[biome];
 	}
 	
+	/**
+	 * Checks whether a block is changes colors depending on the biome using the 
+	 *   foliage colors.
+	 * @param id   ID of the block
+	 * @param meta Metadata of the block
+	 * @return     true iff the block/metadata combination is in biomeFoliage 
+	 */
 	public static boolean hasFoliageColor(int id, int meta)
 	{
-		for (int i = 0; i < biomeBlocks.length; i++)
-			if (id == biomeBlocks[i][0] && meta == biomeBlocks[i][1])
+		for (int i = 0; i < biomeFoliage.length; i++)
+			if (id == biomeFoliage[i][0] && meta == biomeFoliage[i][1])
 				return true;
 		
 		return false;
 	}
 
+	/**
+	 * Checks whether a block is changes colors depending on the biome using the
+	 *   grass colors.
+	 * @param id   ID of the block
+	 * @param meta Metadata of the block
+	 * @return     true iff the block/metadata combination is in biomeFoliage 
+	 */
+	public static boolean hasWaterColor(int id, int meta)
+	{
+		for (int i = 0; i < biomeWater.length; i++)
+			if (id == biomeWater[i][0] && meta == biomeWater[i][1])
+				return true;
+		
+		return false;
+	}
+	
+	/**
+	 * Checks whether a block is changes colors depending on the biome using the
+	 *   grass colors.
+	 * @param id   ID of the block
+	 * @param meta Metadata of the block
+	 * @return     true iff the block/metadata combination is in biomeFoliage 
+	 */
 	public static boolean hasGrassColor(int id, int meta)
 	{
 		for (int i = 0; i < biomeGrass.length; i++)

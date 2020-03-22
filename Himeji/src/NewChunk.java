@@ -252,7 +252,8 @@ public class NewChunk extends Chunk
 			int[] idMeta = Block.getIdMeta(blockName);
 			if (idMeta != null)
 			{
-				if (Block.isBlockVisible(idMeta[0]) && idMeta[0] != 8 && idMeta[0] != 9)
+				if (Block.isBlockVisible(idMeta[0]) && 
+					!Block.hasWaterColor(idMeta[0], idMeta[1]))
 				{
 					return y;
 				}
