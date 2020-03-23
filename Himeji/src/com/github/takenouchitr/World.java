@@ -47,7 +47,7 @@ public class World
 			e.printStackTrace();
 		}
 		
-		overworld = new Dimension(owFolder);
+		/*overworld = new Dimension(owFolder);
 		
 		if (Dimension.validateGen(netherCheck))
 			nether = new Dimension(netherFolder);
@@ -57,7 +57,7 @@ public class World
 		if (Dimension.validateGen(endCheck))
 			theEnd = new Dimension(endFolder);
 		else if (Himeji.SHOW_ALL_EVENTS)
-			System.out.println("End has not been generated.");
+			System.out.println("End has not been generated.");*/
 	}
 	
 	/**
@@ -109,10 +109,10 @@ public class World
 	/**
 	 * Creates the BufferedImage for all selected dimensions.
 	 */
-	public void createRenderGrids()
+	public void createRenderGrids(int startY, int endY, int startX, int endX, int startZ, int endZ)
 	{
 		overworld.createRenderGrid();
-		overworld.drawBlocksToBuffer(Himeji.getStartY());
+		overworld.drawBlocksToBuffer(startY, endY, startX, endX, startZ, endZ);
 		//overworld.drawEntitiesToBuffer(255);
 	}
 

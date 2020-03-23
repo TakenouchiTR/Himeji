@@ -39,6 +39,18 @@ public class Dimension
 		chunkZOffset = size[3];
 	}
 	
+	public Dimension(File dimDir, int maxX, int minX, int maxZ, int minZ)
+	{
+		int[] size;
+		
+		directory = dimDir;
+		size = calcDimSize(dimDir, maxX, minX, maxZ, minZ);
+		setChunkWidth(size[0]);
+		setChunkHeight(size[1]);
+		chunkXOffset = size[2];
+		chunkZOffset = size[3];
+	}
+	
 	/**
 	 * Calculates how large the dimension is from the file names in its
 	 * directory.
@@ -93,6 +105,14 @@ public class Dimension
 		return result;
 	}
 	
+	public static int[] calcDimSize(File dimension, int maxX, int minX, int maxZ, int minZ)
+	{
+		int[] result = {Math.abs(maxX - minX) + 1, Math.abs(maxZ - minZ) + 1, -minX, -minZ};
+		
+		return result;
+	}
+	
+	
 	/**
 	 * Validates whether a dimension exists. A dimension exists if it has been 
 	 * visited in-game, causing specific files and folders to generate.
@@ -139,7 +159,13 @@ public class Dimension
 		return result;
 	}
 	
-	public void drawBlocksToBuffer(int startY)
+	public void drawBlocksToBuffer(int startY, int endY)
+	{
+		drawBlocksToBuffer(startY, endY, Integer.MAX_VALUE - 32, Integer.MIN_VALUE + 32,
+				Integer.MAX_VALUE - 32, Integer.MIN_VALUE + 32);
+	}
+	
+	public void drawBlocksToBuffer(int startY, int endY, int maxX, int minX, int maxZ, int minZ)
 	{
 		File[] regions;
 		
@@ -168,6 +194,10 @@ public class Dimension
 			regionX = Integer.parseInt(nameSplit[1]);
 			regionZ = Integer.parseInt(nameSplit[2]);
 			
+			if (regionX * 32 < minX - 32 || regionX * 32 >= maxX + 32)
+				continue;
+			if (regionZ * 32 < minZ - 32 || regionZ * 32 >= maxZ + 32)
+				continue;
 			
 			if (Himeji.SHOW_ALL_EVENTS)
 				System.out.println("Reading " + regionName);
@@ -189,8 +219,17 @@ public class Dimension
 			
 			for (int chunkX = 0; chunkX < REGION_SIZE; chunkX++)
 			{
+				int absChunkX = chunkX + regionX * 32; 
+				if (absChunkX < minX || absChunkX > maxX)
+					continue;
+				
 				for (int chunkZ = 0; chunkZ < REGION_SIZE; chunkZ++)
 				{
+					int absChunkZ = chunkZ + regionZ * 32; 
+					if (absChunkZ < minZ || absChunkZ > maxZ)
+						continue;
+					
+					
 					if (!region.hasChunk(chunkX, chunkZ))
 						continue;
 					
@@ -274,10 +313,10 @@ public class Dimension
 						else
 							chunk = new OldChunk(chunkTag);
 						
-						int gridX = (chunk.getX() + chunkXOffset * REGION_SIZE) * Chunk.CHUNK_SIZE;
-						int gridZ = (chunk.getZ() + chunkZOffset * REGION_SIZE) * Chunk.CHUNK_SIZE;
+						int gridX = (chunk.getX() + chunkXOffset) * Chunk.CHUNK_SIZE;
+						int gridZ = (chunk.getZ() + chunkZOffset) * Chunk.CHUNK_SIZE;
 						
-						int[][][] chunkMap = chunk.getTopColors(startY);
+						int[][][] chunkMap = chunk.getTopColors(startY, endY);
 						
 						if (chunkMap == null)
 							continue;
@@ -306,10 +345,10 @@ public class Dimension
 										{
 											if (Himeji.renderUnderWater())
 												upYVal = upChunk.getTopBlockYIgnoreWater(blockX, 
-													Chunk.CHUNK_SIZE - 1, startY);
+													Chunk.CHUNK_SIZE - 1, startY, endY);
 											else
 												upYVal = upChunk.getTopBlockY(blockX, 
-														Chunk.CHUNK_SIZE - 1, startY);
+														Chunk.CHUNK_SIZE - 1, startY, endY);
 										}
 									}
 									else
@@ -324,9 +363,9 @@ public class Dimension
 										else
 										{	
 											if (Himeji.renderUnderWater())
-												rightYVal = rightChunk.getTopBlockYIgnoreWater(0, blockZ, startY);
+												rightYVal = rightChunk.getTopBlockYIgnoreWater(0, blockZ, startY, endY);
 											else
-												rightYVal = rightChunk.getTopBlockY(0,  blockZ, startY);
+												rightYVal = rightChunk.getTopBlockY(0,  blockZ, startY, endY);
 										}
 									}
 									else
@@ -341,7 +380,14 @@ public class Dimension
 									curColor = applyShading(curColor, curYVal, curYVal, curYVal);
 								}
 								
+								try
+								{
 								image.setPixel(xPos, zPos, curColor);
+								}
+								catch (Exception e)
+								{
+									e.printStackTrace();
+								}
 							}
 						}
 					}
