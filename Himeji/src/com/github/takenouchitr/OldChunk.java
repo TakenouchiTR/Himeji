@@ -225,7 +225,7 @@ public class OldChunk extends Chunk
 	 * @return int array of the colors for the top-most blocks of each x, z column
 	 */
 	@Override
-	public int[][][] getTopColors(int startY)
+	public int[][][] getTopColors(int startY, int endY)
 	{
 		int[][][] result = new int[CHUNK_SIZE][CHUNK_SIZE][2];
 		
@@ -233,10 +233,10 @@ public class OldChunk extends Chunk
 		{
 			for (int z = 0; z < CHUNK_SIZE; z++)
 			{
-				int y = getTopBlockY(x, z, startY);
+				int y = getTopBlockY(x, z, startY, endY);
 				int dy = y;
 				if (Himeji.renderUnderWater())
-					dy = getTopBlockYIgnoreWater(x, z, startY);
+					dy = getTopBlockYIgnoreWater(x, z, startY, endY);
 				
 				int color = Block.getBlockColor(blocks[x][dy][z], metadata[x][dy][z], biome[x][z]);
 				
@@ -284,7 +284,7 @@ public class OldChunk extends Chunk
 	@Override
 	public int[][][] getTopColors()
 	{
-		return getTopColors(CHUNK_HEIGHT - 1);
+		return getTopColors(CHUNK_HEIGHT - 1, 0);
 	}
 	
 	/**
@@ -295,9 +295,9 @@ public class OldChunk extends Chunk
 	 * @return        a color stored as an ARGB integer
 	 */
 	@Override
-	public int getTopBlockY(int x, int z, int startY)
+	public int getTopBlockY(int x, int z, int startY, int endY)
 	{
-		for(int y = startY; y > 0; y--) 
+		for(int y = startY; y >= endY; y--) 
 			if(Block.isBlockVisible(blocks[x][y][z])) 
 				return y;
 		
@@ -313,9 +313,9 @@ public class OldChunk extends Chunk
 	 * @return        a color stored as an ARGB integer
 	 */
 	@Override
-	public int getTopBlockYIgnoreWater(int x, int z, int startY)
+	public int getTopBlockYIgnoreWater(int x, int z, int startY, int endY)
 	{
-		for(int y = startY; y > 0; y--) 
+		for(int y = startY; y >= endY; y--) 
 		{
 			int block = blocks[x][y][z];
 			if(Block.isBlockVisible(block) && block != 8 && block != 9) 

@@ -33,8 +33,8 @@ public class Dimension
 		
 		directory = dimDir;
 		size = calcDimSize(dimDir);
-		setChunkHeight(size[0]);
-		setChunkWidth(size[1]);
+		setChunkWidth(size[0]);
+		setChunkHeight(size[1]);
 		chunkXOffset = size[2];
 		chunkZOffset = size[3];
 	}
@@ -93,10 +93,10 @@ public class Dimension
 				maxWidth = fileWidth;
 		}
 		
-		result[1] = (maxWidth - minWidth + 1) * 32;
-		result[0] = (maxHeight - minHeight + 1) * 32;
-		result[2] = Math.abs(minWidth);
-		result[3] = Math.abs(minHeight);
+		result[0] = (Math.abs(maxWidth - minWidth) + 1) * 32;
+		result[1] = (Math.abs(maxHeight - minHeight) + 1) * 32;
+		result[2] = -minWidth * 32;
+		result[3] = -minHeight * 32;
 		
 		if (Himeji.SHOW_ALL_EVENTS)
 			System.out.printf("Height: %1$d\nWidth : %2$d\n", 

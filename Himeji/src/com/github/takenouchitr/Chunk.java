@@ -29,7 +29,7 @@ public abstract class Chunk
 	 * @param startY Y value to start searching at
 	 * @return int array of the colors for the top-most blocks of each x, z column
 	 */
-	public abstract int[][][] getTopColors(int startY);
+	public abstract int[][][] getTopColors(int startY, int endY);
 
 	/**
 	 * Creates a three-dimensional int array of the ARGB values for the top-most blocks of 
@@ -72,7 +72,7 @@ public abstract class Chunk
 	 * @param startY  the y coord to start searching at
 	 * @return        a color stored as an ARGB integer
 	 */
-	public abstract int getTopBlockY(int x, int z, int startY);
+	public abstract int getTopBlockY(int x, int z, int startY, int endY);
 	
 	/**
 	 * Gets the top block of a given x, z column that is not listed as invisible or is 
@@ -82,5 +82,5 @@ public abstract class Chunk
 	 * @param startY  the y coord to start searching at
 	 * @return        a color stored as an ARGB integer
 	 */
-	public abstract int getTopBlockYIgnoreWater(int x, int z, int startY);
+	public abstract int getTopBlockYIgnoreWater(int x, int z, int startY, int endY);
 }

@@ -21,10 +21,8 @@ public class NewChunk extends Chunk
 		ListTag<? extends Tag> sectionTags = levelTag.getList("Sections");
 		
 		//Stops if there is no block data stored in the tag
-		if (sectionTags.size() == 0)
-			return;
-		
-		sections = new Section[sectionTags.size() - 1];
+		if (sectionTags.size() != 0)
+			sections = new Section[sectionTags.size() - 1];
 		blocks = new String[CHUNK_SIZE][CHUNK_HEIGHT][CHUNK_SIZE];
 		
 		//Fills all blocks with the default block namespace ID
@@ -38,6 +36,9 @@ public class NewChunk extends Chunk
 				}
 			}
 		}
+		
+		if (sections == null)
+			return;
 		
 		//boolean calcLight = levelTag.getBoolean("LightPopulated"); 
 		
@@ -112,21 +113,21 @@ public class NewChunk extends Chunk
 	 * @return        a color stored as an ARGB integer
 	 */
 	@Override
-	public int[][][] getTopColors(int startY)
+	public int[][][] getTopColors(int startY, int endY)
 	{
 		int[][][] result = new int[CHUNK_SIZE][CHUNK_SIZE][2];
 		
-		if (blocks == null)
+		if (blocks == null || sections == null)
 			return null;
 		
 		for (int x = 0; x < CHUNK_SIZE; x++)
 		{
 			for (int z = 0; z < CHUNK_SIZE; z++)
 			{
-				int y = getTopBlockY(x, z, startY);
+				int y = getTopBlockY(x, z, startY, endY);
 				int dy = y;
 				if (Himeji.renderUnderWater())
-					dy = getTopBlockYIgnoreWater(x, z, startY);
+					dy = getTopBlockYIgnoreWater(x, z, startY, endY);
 				
 				int biomeWidth = CHUNK_SIZE / biome.length;
 				int color = Block.getBlockColor(blocks[x][dy][z], 
@@ -180,7 +181,7 @@ public class NewChunk extends Chunk
 	@Override
 	public int[][][] getTopColors()
 	{
-		return getTopColors(CHUNK_HEIGHT - 1);
+		return getTopColors(CHUNK_HEIGHT - 1, 0);
 	}
 	
 	/**
@@ -228,9 +229,9 @@ public class NewChunk extends Chunk
 	 * @return        a color stored as an ARGB integer
 	 */
 	@Override
-	public int getTopBlockY(int x, int z, int startY)
+	public int getTopBlockY(int x, int z, int startY, int endY)
 	{
-		for(int y = startY; y > 0; y--) 
+		for(int y = startY; y >= endY; y--) 
 		{
 			String blockName = blocks[x][y][z];
 			int[] idMeta = Block.getIdMeta(blockName);
@@ -259,11 +260,14 @@ public class NewChunk extends Chunk
 	 * @return        a color stored as an ARGB integer
 	 */
 	@Override
-	public int getTopBlockYIgnoreWater(int x, int z, int startY)
+	public int getTopBlockYIgnoreWater(int x, int z, int startY, int endY)
 	{
-		for(int y = startY; y > 0; y--) 
+		for(int y = startY; y >= endY; y--) 
 		{
+			try
+			{
 			String blockName = blocks[x][y][z];
+			
 			int[] idMeta = Block.getIdMeta(blockName);
 			if (idMeta != null)
 			{
@@ -276,6 +280,11 @@ public class NewChunk extends Chunk
 			else
 			{
 				return 0;
+			}
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
 			}
 			
 		}
