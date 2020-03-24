@@ -6,7 +6,10 @@ package com.github.takenouchitr;
 
 import javax.swing.*;
 import java.awt.event.*;
-import java.io.*;
+import java.awt.SystemColor;
+import javax.swing.border.LineBorder;
+import java.awt.Color;
+import java.awt.FlowLayout;
 
 @SuppressWarnings("serial")
 public class Himeji extends JFrame implements ActionListener, ItemListener, WindowListener
@@ -16,12 +19,13 @@ public class Himeji extends JFrame implements ActionListener, ItemListener, Wind
 	private static final int MIN_VALUE = Integer.MIN_VALUE + 32;
 	private static final int MAX_VALUE = Integer.MAX_VALUE - 32;
 	
-	private static JButton btn_folder, btn_start;
-	private static JTextField txt_worldPath;
+	private static JButton btn_folder, btn_start, btn_setBounds, btn_output;
+	private static JTextField txt_worldPath, txt_output;
 	private static JCheckBox chk_renderUnderWater, chk_renderShadows, chk_renderBiomes;
 	private static JMenuBar bar_menu;
-	private static JButton btn_setBounds;
 	private static BoundsFrame boundsFrame;
+	private static JPanel pnl_log;
+	private static JLabel lbl_log;
 	
 	public static void main(String[] args) 
 	{
@@ -33,8 +37,15 @@ public class Himeji extends JFrame implements ActionListener, ItemListener, Wind
 		Block.setBiomeWater();
 		Block.setBiomeGrass();
 		
-		Himeji window = new Himeji();
-		window.setVisible(true);
+		SwingUtilities.invokeLater(new Runnable()
+		{
+			@Override
+			public void run() 
+			{
+				Himeji window = new Himeji();
+				window.setVisible(true);
+			}
+		});
 	}
 	
 	public static int getStartY()
@@ -47,7 +58,63 @@ public class Himeji extends JFrame implements ActionListener, ItemListener, Wind
 		return boundsFrame.getMinY();
 	}
 	
-	public static boolean renderUnderWater()
+	public static int getMaxX()
+	{
+		return boundsFrame.getMaxX();
+	}
+	
+	public static int getMinX()
+	{
+		return boundsFrame.getMinX();
+	}
+	
+	public static int getMaxZ()
+	{
+		return boundsFrame.getMaxZ();
+	}
+	
+	public static int getMinZ()
+	{
+		return boundsFrame.getMinZ();
+	}
+	
+	public static void disableComponents()
+	{
+		btn_start.setEnabled(false);
+		btn_folder.setEnabled(false);
+		btn_setBounds.setEnabled(false);
+		btn_output.setEnabled(false);
+		chk_renderUnderWater.setEnabled(false);
+		chk_renderShadows.setEnabled(false);
+		chk_renderBiomes.setEnabled(false);
+		txt_worldPath.setEnabled(false);
+		txt_output.setEnabled(false);
+	}
+	
+	public static void enableComponents()
+	{
+		btn_start.setEnabled(true);
+		btn_folder.setEnabled(true);
+		btn_setBounds.setEnabled(true);
+		btn_output.setEnabled(true);
+		chk_renderUnderWater.setEnabled(true);
+		chk_renderShadows.setEnabled(true);
+		chk_renderBiomes.setEnabled(true);
+		txt_worldPath.setEnabled(true);
+		txt_output.setEnabled(true);
+	}
+	
+ 	public static BoundsFrame getBoundsFrame()
+	{
+		return boundsFrame;
+	}
+	
+	public static String getPath()
+	{
+		return txt_worldPath.getText();
+	}
+	
+ 	public static boolean renderUnderWater()
 	{
 		return chk_renderUnderWater.isSelected();
 	}
@@ -62,25 +129,23 @@ public class Himeji extends JFrame implements ActionListener, ItemListener, Wind
 		return chk_renderBiomes.isSelected();
 	}
 	
+	public static void displayMessage(String message)
+	{
+		lbl_log.setText(message);
+	}
+	
 	public Himeji()
 	{
 		super("Himeji Map Viewer");
 		
+		setResizable(false);
+		setLocationRelativeTo(null);
+		
 		boundsFrame = new BoundsFrame();
 		boundsFrame.addWindowListener(this);
-		setResizable(false);
 		
 		//construct preComponents
         JMenu fileMenu = new JMenu("File");
-        JMenuItem printItem = new JMenuItem("Print");
-        fileMenu.add(printItem);
-        JMenuItem exitItem = new JMenuItem("Exit");
-        fileMenu.add(exitItem);
-        JMenu helpMenu = new JMenu("Help");
-        JMenuItem contentsItem = new JMenuItem("Contents");
-        helpMenu.add(contentsItem);
-        JMenuItem aboutItem = new JMenuItem("About");
-        helpMenu.add(aboutItem);
 
         //construct components
         btn_folder = new JButton("World");
@@ -93,11 +158,10 @@ public class Himeji extends JFrame implements ActionListener, ItemListener, Wind
         chk_renderBiomes.setSelected(true);
         bar_menu = new JMenuBar();
         bar_menu.add(fileMenu);
-        bar_menu.add(helpMenu);
         btn_start = new JButton("Start");
 
         //adjust size and set layout
-        setSize(500, 180);
+        setSize(500, 233);
         getContentPane().setLayout(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -113,16 +177,37 @@ public class Himeji extends JFrame implements ActionListener, ItemListener, Wind
         //set component bounds (only needed by Absolute Positioning)
         btn_folder.setBounds(15, 35, 80, 25);
         txt_worldPath.setBounds(105, 35, 370, 25);
-        chk_renderUnderWater.setBounds(10, 65, 181, 25);
-        chk_renderShadows.setBounds(10, 90, 181, 25);
-        chk_renderBiomes.setBounds(10, 115, 181, 20);
+        chk_renderUnderWater.setBounds(15, 108, 181, 25);
+        chk_renderShadows.setBounds(15, 133, 181, 25);
+        chk_renderBiomes.setBounds(15, 158, 181, 20);
         bar_menu.setBounds(0, 0, 495, 25);
-        btn_start.setBounds(410, 110, 65, 25);
+        btn_start.setBounds(415, 153, 65, 25);
         
         btn_setBounds = new JButton("Set Bounds");
         btn_setBounds.addActionListener(this);
-        btn_setBounds.setBounds(297, 111, 107, 23);
+        btn_setBounds.setBounds(302, 154, 107, 23);
         getContentPane().add(btn_setBounds);
+        
+        btn_output = new JButton("Output");
+        btn_output.setBounds(15, 72, 80, 25);
+        getContentPane().add(btn_output);
+        
+        txt_output = new JTextField();
+        txt_output.setBounds(105, 73, 370, 25);
+        getContentPane().add(txt_output);
+        txt_output.setColumns(10);
+        
+        pnl_log = new JPanel();
+        pnl_log.setBackground(SystemColor.activeCaptionBorder);
+        pnl_log.setBorder(new LineBorder(new Color(0, 0, 0)));
+        FlowLayout fl_pnl_log = (FlowLayout) pnl_log.getLayout();
+        fl_pnl_log.setVgap(0);
+        fl_pnl_log.setAlignment(FlowLayout.LEFT);
+        pnl_log.setBounds(-1, 187, 496, 17);
+        getContentPane().add(pnl_log);
+        
+        lbl_log = new JLabel("Welcome!");
+        pnl_log.add(lbl_log);
         
         //set listeners
         btn_folder.addActionListener(this);
@@ -140,58 +225,21 @@ public class Himeji extends JFrame implements ActionListener, ItemListener, Wind
 		}
 		else if (source == btn_start)
 		{
-			File file = new File(txt_worldPath.getText());
-			if (World.validateDir(file)) 
+			MapWorker worker = new MapWorker();
+			try
 			{
-				long start = System.currentTimeMillis();
-				
-				Dimension dim;
-				File dimFile;
-				
-				// TODO Check for whether the dimension exists
-				String dimensionName = boundsFrame.getDimensionName();
-				switch(dimensionName)
-				{
-					case "Overworld":
-						dimFile = new File(file.getPath() + "\\region");
-						break;
-					case "Nether":
-						dimFile = new File(file.getPath() + "\\DIM-1\\region");
-						break;
-					case "End":
-						dimFile = new File(file.getPath() + "\\DIM1\\region");
-						break;
-					default:
-						dimFile = new File("");
-				}
-				
-				int startX = boundsFrame.getMaxX();
-				int startY = boundsFrame.getMaxY();
-				int startZ = boundsFrame.getMaxZ();
-				int endX = boundsFrame.getMinX();
-				int endY = boundsFrame.getMinY();
-				int endZ = boundsFrame.getMinZ();
-				
-				if (boundsFrame.getRenderBounds())
-					dim = new Dimension(dimFile, startX, endX, startZ, endZ);
-				else
-					dim = new Dimension(dimFile);
-				
-				dim.createRenderGrid();
-				if (boundsFrame.getRenderBounds())
-					dim.drawBlocksToBuffer(startY, endY, startX, endX, startZ, endZ);
-				else
-					dim.drawBlocksToBuffer(startY, endY);
-				dim.render();
-				
-				long end = System.currentTimeMillis();
-				
-				System.out.println(end - start);
+				disableComponents();
+				worker.execute();
+			}
+			catch(Exception ex)
+			{
+				ex.printStackTrace();
 			}
 		}
 		else
 		{
 			setEnabled(false);
+			boundsFrame.setLocationRelativeTo(this);
 			boundsFrame.setVisible(true);
 		}
 	}
