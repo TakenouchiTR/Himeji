@@ -428,7 +428,7 @@ public class Block
 				 					 -10047721,      //Lime Bed
 				 					 -1144921,       //Pink Bed
 				 					 -12040120,      //Gray Bed
-				 					 -15369079,      //Light Gray Bed
+				 					 0xFF8E8E8E,     //Light Gray Bed
 				 					 -8902231,       //Cyan Bed
 				 					 -13223524,      //Purple Bed
 				 					 -10076382,      //Blue Bed
@@ -453,7 +453,7 @@ public class Block
 									 -10047721,      //Lime Wool
 									 -1144921,       //Pink Wool
 									 -12040120,      //Gray Wool
-									 -15369079,      //Light Gray Wool
+									 0xFF8E8E8E,     //Light Gray Wool
 									 -8902231,       //Cyan Wool
 									 -13223524,      //Purple Wool
 									 -10076382,      //Blue Wool
@@ -591,7 +591,7 @@ public class Block
 				 					 -10047721,      //Lime Stained Glass
 				 					 -1144921,       //Pink Stained Glass
 				 					 -12040120,      //Gray Stained Glass
-				 					 -15369079,      //Light Gray Stained Glass
+				 					 0xFF8E8E8E,     //Light Gray Stained Glass
 				 					 -8902231,       //Cyan Stained Glass
 				 					 -13223524,      //Purple Stained Glass
 				 					 -10076382,      //Blue Stained Glass
@@ -775,7 +775,7 @@ public class Block
 				 					  -10047721,     //Lime Carpet
 				 					  -1144921,      //Pink Carpet
 				 					  -12040120,     //Gray Carpet
-				 					  -15369079,     //Light Gray Carpet
+				 					  0xFF8E8E8E,    //Light Gray Carpet
 				 					  -8902231,      //Cyan Carpet
 				 					  -13223524,     //Purple Carpet
 				 					  -10076382,     //Blue Carpet
@@ -801,7 +801,7 @@ public class Block
 				 					  -10047721,     //Lime Banner
 				 					  -1144921,      //Pink Banner
 				 					  -12040120,     //Gray Banner
-				 					  -15369079,     //Light Gray Banner
+				 					  0xFF8E8E8E,    //Light Gray Banner
 				 					  -8902231,      //Cyan Banner
 				 					  -13223524,     //Purple Banner
 				 					  -10076382,     //Blue Banner
@@ -817,7 +817,7 @@ public class Block
 				 					  -10047721,     //Lime Wall Banner
 				 					  -1144921,      //Pink Wall Banner
 				 					  -12040120,     //Gray Wall Banner
-				 					  -15369079,     //Light Gray Wall Banner
+				 					  0xFF8E8E8E,    //Light Gray Wall Banner
 				 					  -8902231,      //Cyan Wall Banner
 				 					  -13223524,     //Purple Wall Banner
 				 					  -10076382,     //Blue Wall Banner
@@ -858,7 +858,7 @@ public class Block
 		blockColors[205] = new int[] {-5538901};     //Purpur SLab
 		blockColors[206] = new int[] {-1972056};     //End Stone Brick
 		blockColors[207] = new int[] {-8811171};     //Beetroot Crop
-		blockColors[208] = new int[] {-5532327};     //Grass Path
+		blockColors[208] = new int[] {0xFF8B723C};   //Grass Path
 		blockColors[209] = new int[] {-15264735};    //End Gateway
 		blockColors[210] = new int[] {-9809977};     //Repeating Command Block
 		blockColors[211] = new int[] {-4410729};     //Chain Command Block
