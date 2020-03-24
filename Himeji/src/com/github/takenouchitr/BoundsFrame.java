@@ -41,7 +41,7 @@ public class BoundsFrame extends JFrame implements ActionListener, ItemListener,
 		setTitle("Set Bounds");
 		setFont(new Font("Tahoma", Font.PLAIN, 11));
 		setSize(440, 175);
-		setAlwaysOnTop(true);
+		setResizable(false);
 		getContentPane().setLayout(null);
 		
 		JPanel pnl_dimension = new JPanel();
