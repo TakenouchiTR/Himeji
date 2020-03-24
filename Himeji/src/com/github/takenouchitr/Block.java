@@ -1,5 +1,6 @@
 //Date:           3/14/2020
-//Programmer:     Shawn Carter
+//Me:             Shawn Carter
+
 package com.github.takenouchitr;
 
 import java.util.Dictionary;

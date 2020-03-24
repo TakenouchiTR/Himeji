@@ -1,4 +1,8 @@
+//Date:           3/17/2020
+//Me:             Shawn Carter
+
 package com.github.takenouchitr;
+
 import com.mojang.nbt.CompoundTag;
 import com.mojang.nbt.ListTag;
 import com.mojang.nbt.Tag;

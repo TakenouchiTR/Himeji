@@ -1,8 +1,7 @@
-package com.github.takenouchitr;
-//Program Name:   Region.java
 //Date:           3/14/2020
-//Programmer:     Shawn Carter
-//Description:    This class handles parsing region .mca files.
+//Me:             Shawn Carter
+
+package com.github.takenouchitr;
 
 import java.io.*;
 import com.mojang.nbt.*;

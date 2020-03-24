@@ -1,23 +1,23 @@
-package com.github.takenouchitr;
-//Program Name:   Himeji.java
 //Date:           3/13/2020
-//Programmer:     Shawn Carter
-//Description:    This program creates a map image of a Minecraft world.
+//Me:             Shawn Carter
 
-import javax.swing.*;
+package com.github.takenouchitr;
+
+import java.io.File;
 import java.awt.event.*;
 import java.awt.SystemColor;
-import javax.swing.border.LineBorder;
 import java.awt.Color;
 import java.awt.FlowLayout;
+import javax.swing.*;
+import javax.swing.border.LineBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
 
 @SuppressWarnings("serial")
 public class Himeji extends JFrame implements ActionListener, ItemListener, WindowListener
 {
 	public static final boolean SHOW_ALL_EVENTS = true;
-	
-	private static final int MIN_VALUE = Integer.MIN_VALUE + 32;
-	private static final int MAX_VALUE = Integer.MAX_VALUE - 32;
+	public static final String SAVE_FOLDER = System.getenv("APPDATA") + "\\.minecraft\\saves\\";
 	
 	private static JButton btn_folder, btn_start, btn_setBounds, btn_output;
 	private static JTextField txt_worldPath, txt_output;
@@ -29,6 +29,8 @@ public class Himeji extends JFrame implements ActionListener, ItemListener, Wind
 	
 	public static void main(String[] args) 
 	{
+		System.out.println(SAVE_FOLDER);
+		
 		Block.setBlockVisibility();
 		Block.setBlockColors();
 		Block.setBlockDict();
@@ -114,7 +116,12 @@ public class Himeji extends JFrame implements ActionListener, ItemListener, Wind
 		return txt_worldPath.getText();
 	}
 	
- 	public static boolean renderUnderWater()
+	public static String getSaveLocation()
+	{
+		return txt_output.getText();
+	}
+	
+	public static boolean renderUnderWater()
 	{
 		return chk_renderUnderWater.isSelected();
 	}
@@ -161,7 +168,6 @@ public class Himeji extends JFrame implements ActionListener, ItemListener, Wind
         btn_start = new JButton("Start");
 
         //adjust size and set layout
-        setSize(500, 233);
         getContentPane().setLayout(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -211,7 +217,10 @@ public class Himeji extends JFrame implements ActionListener, ItemListener, Wind
         
         //set listeners
         btn_folder.addActionListener(this);
+        btn_output.addActionListener(this);
         btn_start.addActionListener(this);
+        
+        setSize(500, pnl_log.getY() + pnl_log.getHeight() + bar_menu.getHeight() + 12);
 	}
 	
 	@Override
@@ -221,10 +230,44 @@ public class Himeji extends JFrame implements ActionListener, ItemListener, Wind
 		
 		if (source == btn_folder)
 		{
-			
+			JFileChooser fileChooser = new JFileChooser(SAVE_FOLDER);
+			fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+			if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION)
+			{
+				txt_worldPath.setText(fileChooser.getSelectedFile().getPath());
+			}
+		}
+		else if (source == btn_output)
+		{
+			JFileChooser fileChooser = new JFileChooser(SAVE_FOLDER);
+			fileChooser.setFileFilter(new FileNameExtensionFilter("Image (.png)", "png", "PNG"));
+			if (fileChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION)
+			{
+				File file = fileChooser.getSelectedFile();
+				String path = file.getPath();
+				txt_output.setText(path);
+			}
 		}
 		else if (source == btn_start)
 		{
+			if (!World.validateDir(new File(txt_worldPath.getText())))
+			{
+				JOptionPane.showMessageDialog(null,
+					    "World folder was not detected. Please check that you have selected the root\n" +
+					    "folder for the world (.../.minecraft/saves/<world name>) and try again.",
+					    "World Load Warning",
+					    JOptionPane.WARNING_MESSAGE);
+				return;
+			}
+			if (txt_output.getText().isEmpty())
+			{
+				JOptionPane.showMessageDialog(null,
+					    "File output is blank. Please fill in the field before creating an image.",
+					    "Output Warning",
+					    JOptionPane.WARNING_MESSAGE);
+				return;
+			}
+			
 			MapWorker worker = new MapWorker();
 			try
 			{

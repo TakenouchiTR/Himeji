@@ -1,8 +1,7 @@
-package com.github.takenouchitr;
-//Program Name:   OldChunk.java
 //Date:           3/14/2020
-//Programmer:     Shawn Carter
-//Description:    This class represents a chunk stored in a region file.
+//Me:             Shawn Carter
+
+package com.github.takenouchitr;
 
 import com.mojang.nbt.ByteArrayTag;
 import com.mojang.nbt.CompoundTag;

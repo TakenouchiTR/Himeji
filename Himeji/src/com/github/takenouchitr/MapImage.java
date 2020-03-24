@@ -1,8 +1,7 @@
-package com.github.takenouchitr;
-//Program Name:   MapImage.java
 //Date:           3/13/2020
-//Programmer:     Shawn Carter
-//Description:    This class renders dimensions as .png images.
+//Me:             Shawn Carter
+
+package com.github.takenouchitr;
 
 import java.awt.image.BufferedImage;
 import java.io.*;

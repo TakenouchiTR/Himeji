@@ -1,8 +1,7 @@
-package com.github.takenouchitr;
-//Program Name:   Dimension.java
 //Date:           3/13/2020
-//Programmer:     Shawn Carter
-//Description:    This class represents a dimension of a Minecraft world.
+//Me:             Shawn Carter
+
+package com.github.takenouchitr;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -111,7 +110,6 @@ public class Dimension
 		
 		return result;
 	}
-	
 	
 	/**
 	 * Validates whether a dimension exists. A dimension exists if it has been 
@@ -497,8 +495,9 @@ public class Dimension
 	
 	public void createRenderGrid()
 	{
+		// TODO Check if file is valid, if it exists, change method name
 		image = new MapImage(blockWidth, blockHeight, 
-				new File("C:\\Users\\TOTak\\AppData\\Roaming\\.minecraft\\saves\\ping.png"));
+				new File(Himeji.getSaveLocation()));
 	}
 	
 	public int applyShading(int color, int yVal, int upYVal, int rightYVal)
