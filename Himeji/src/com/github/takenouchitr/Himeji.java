@@ -308,50 +308,30 @@ public class Himeji extends JFrame implements ActionListener, ItemListener, Wind
 	}
 
 	@Override
-	public void itemStateChanged(ItemEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void itemStateChanged(ItemEvent e) {}
 
 	@Override
-	public void windowActivated(WindowEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void windowActivated(WindowEvent arg0){}
 
 	@Override
-	public void windowClosed(WindowEvent arg0) 
+	public void windowClosed(WindowEvent arg0) {}
+
+	@Override
+	public void windowClosing(WindowEvent arg0){}
+
+	@Override
+	public void windowDeactivated(WindowEvent arg0) 
 	{
-		
-	}
-
-	@Override
-	public void windowClosing(WindowEvent arg0) 
-	{
-		
-	}
-
-	@Override
-	public void windowDeactivated(WindowEvent arg0) {
 		setEnabled(true);
 		this.toFront();
 	}
 
 	@Override
-	public void windowDeiconified(WindowEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void windowDeiconified(WindowEvent arg0){}
 
 	@Override
-	public void windowIconified(WindowEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void windowIconified(WindowEvent arg0){}
 
 	@Override
-	public void windowOpened(WindowEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void windowOpened(WindowEvent arg0){}
 }
