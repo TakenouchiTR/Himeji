@@ -117,6 +117,7 @@ public class BoundsFrame extends JFrame implements ActionListener, ItemListener,
 		
 		spn_maxY = new JSpinner();
 		spn_maxY.setModel(new SpinnerNumberModel(255, 0, 255, 1));
+		spn_maxY.addChangeListener(this);
 		pnl_yBoundsCenter.add(spn_maxY);
 		
 		JLabel lbl_yMin = new JLabel("  Min Y");
@@ -124,6 +125,7 @@ public class BoundsFrame extends JFrame implements ActionListener, ItemListener,
 		
 		spn_minY = new JSpinner();
 		spn_minY.setModel(new SpinnerNumberModel(0, 0, 255, 1));
+		spn_minY.addChangeListener(this);
 		pnl_yBoundsCenter.add(spn_minY);
 		
 		JPanel pnl_chunks = new JPanel();
@@ -162,6 +164,7 @@ public class BoundsFrame extends JFrame implements ActionListener, ItemListener,
 		
 		spn_maxX = new JSpinner();
 		spn_maxX.setEnabled(false);
+		spn_maxX.addChangeListener(this);
 		pnl_chunksCenter.add(spn_maxX);
 		
 		JLabel lbl_minX = new JLabel(" Min Chunk X");
@@ -169,6 +172,7 @@ public class BoundsFrame extends JFrame implements ActionListener, ItemListener,
 		
 		spn_minX = new JSpinner();
 		spn_minX.setEnabled(false);
+		spn_minX.addChangeListener(this);
 		pnl_chunksCenter.add(spn_minX);
 		
 		JLabel lbl_maxZ = new JLabel(" Max Chunk Z");
@@ -176,6 +180,7 @@ public class BoundsFrame extends JFrame implements ActionListener, ItemListener,
 		
 		spn_maxZ = new JSpinner();
 		spn_maxZ.setEnabled(false);
+		spn_maxZ.addChangeListener(this);
 		pnl_chunksCenter.add(spn_maxZ);
 		
 		JLabel lbl_minZ = new JLabel(" Min Chunk Z");
@@ -204,9 +209,22 @@ public class BoundsFrame extends JFrame implements ActionListener, ItemListener,
 	}
 
 	@Override
-	public void stateChanged(ChangeEvent arg0) {
-		// TODO Auto-generated method stub
+	public void stateChanged(ChangeEvent e) 
+	{
+		Object source = e.getSource();
 		
+		if (source == spn_maxY)
+			spinnerPairTopChange(spn_maxY, spn_minY);
+		else if (source == spn_minY)
+			spinnerPairBottomChange(spn_maxY, spn_minY);
+		else if (source == spn_maxX)
+			spinnerPairTopChange(spn_maxX, spn_minX);
+		else if (source == spn_minX)
+			spinnerPairBottomChange(spn_maxX, spn_minX);
+		else if (source == spn_maxZ)
+			spinnerPairTopChange(spn_maxZ, spn_minZ);
+		else if (source == spn_minZ)
+			spinnerPairBottomChange(spn_maxZ, spn_minZ);
 	}
 
 	@Override
@@ -220,6 +238,25 @@ public class BoundsFrame extends JFrame implements ActionListener, ItemListener,
 		spn_minZ.setEnabled(isChecked);
 	}
 
+	private void spinnerPairTopChange(JSpinner top, JSpinner bottom)
+	{
+		int max = (int) top.getValue();
+		int min = (int) bottom.getValue();
+		
+		if (max < min)
+			bottom.setValue(max);
+	}
+	
+	private void spinnerPairBottomChange(JSpinner top, JSpinner bottom)
+	{
+		int max = (int) top.getValue();
+		int min = (int) bottom.getValue();
+		
+		if (min > max)
+			top.setValue(min);
+	}
+	
+	
 	public boolean getRenderBounds()
 	{
 		return chk_chunks.isSelected();
