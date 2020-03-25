@@ -1,5 +1,22 @@
-//Date:           3/14/2020
-//Me:             Shawn Carter
+/*
+   Copyright (C) 2020  Shawn Carter
+   Contact: shawn.jf.carter@gmail.com
+   
+   This file is part of Himeji Map Viewer (HMV).
+
+    HMV is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    HMV is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with HMV.  If not, see <https://www.gnu.org/licenses/>.
+ */
 
 package com.github.takenouchitr;
 
@@ -133,6 +150,14 @@ public class OldChunk extends Chunk
 		return (int)(b & 0x0f) + (int)((b & 0xf0) >> 4) * 16;
 	}
 	
+	/**
+	 * Gets half the value of the byte at a given index of a byte array.
+	 * @param data byte array containing data for all blocks in a section
+	 * @param x    x coordinate for the block
+	 * @param y    y coordinate for the block
+	 * @param z    z coordinate for the block
+	 * @return     half the value stored at the index
+	 */
 	private int getHalfIndexValue(byte[] data, int x, int y, int z) 
 	{
 		int r = getIndex(x, y, z);
