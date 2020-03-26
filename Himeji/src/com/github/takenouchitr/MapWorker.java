@@ -35,13 +35,11 @@ public class MapWorker extends SwingWorker<Void, String>
 		{
 			long start = System.currentTimeMillis();
 			
-			BoundsFrame boundsFrame = Himeji.getBoundsFrame();
-			
 			Dimension dim;
 			File dimFile;
 			
 			// TODO Check for whether the dimension exists
-			String dimensionName = boundsFrame.getDimensionName();
+			String dimensionName = Himeji.getDimensionName();
 			switch(dimensionName)
 			{
 				case "Overworld":
@@ -65,14 +63,14 @@ public class MapWorker extends SwingWorker<Void, String>
 			int endZ = Himeji.getMinZ();
 			
 			publish("Getting area size...");
-			if (boundsFrame.getRenderBounds())
+			if (Himeji.getRenderBounds())
 				dim = new Dimension(dimFile, startX, endX, startZ, endZ);
 			else
 				dim = new Dimension(dimFile);
 			
 			dim.createRenderGrid();
 			publish("Getting blocks...");
-			if (boundsFrame.getRenderBounds())
+			if (Himeji.getRenderBounds())
 				dim.drawBlocksToBuffer(startY, endY, startX, endX, startZ, endZ);
 			else
 				dim.drawBlocksToBuffer(startY, endY);
