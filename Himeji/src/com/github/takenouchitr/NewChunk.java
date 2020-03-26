@@ -41,9 +41,10 @@ public class NewChunk extends Chunk
 		
 		ListTag<? extends Tag> sectionTags = levelTag.getList("Sections");
 		
-		//Stops if there is no block data stored in the tag
+		
 		if (sectionTags.size() != 0)
 			sections = new Section[sectionTags.size() - 1];
+		
 		blocks = new String[CHUNK_SIZE][CHUNK_HEIGHT][CHUNK_SIZE];
 		
 		//Fills all blocks with the default block namespace ID
@@ -58,10 +59,9 @@ public class NewChunk extends Chunk
 			}
 		}
 		
+		//Stops if there is no block data stored in the tag
 		if (sections == null)
 			return;
-		
-		//boolean calcLight = levelTag.getBoolean("LightPopulated"); 
 		
 		//Loads data from each of the sections
 		for(int i = 0; i < sections.length; i++) 
@@ -90,7 +90,7 @@ public class NewChunk extends Chunk
 		int dataLoc = 0;
 		int[] biomeData = levelTag.getIntArray("Biomes");
 		
-		//Loads new, 3D-Biomes
+		//Loads new, 3D-Biomes (1.15+)
 		if (biomeData.length == 1024)
 		{
 			biome = new int[CHUNK_SIZE / 4][CHUNK_HEIGHT / 4][CHUNK_SIZE / 4];
@@ -109,7 +109,7 @@ public class NewChunk extends Chunk
 			}
 			
 		}
-		//Loads old, 2D-Biomes
+		//Loads old, 2D-Biomes (pre 1.15)
 		else
 		{
 			biome = new int[CHUNK_SIZE][1][CHUNK_SIZE];
