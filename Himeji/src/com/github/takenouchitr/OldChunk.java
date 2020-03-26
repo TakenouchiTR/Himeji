@@ -28,8 +28,6 @@ import com.mojang.nbt.Tag;
 
 public class OldChunk extends Chunk 
 {
-	private int[][][] blockLight;
-	private int[][][] sunLight;
 	private int[][][] blocks; 
 	private int[][][] metadata;
 	private int[][] biome;
@@ -44,29 +42,11 @@ public class OldChunk extends Chunk
 		
 		ListTag<? extends Tag> sections = levelTag.getList("Sections");
 		
-		blockLight = new int[CHUNK_SIZE][CHUNK_HEIGHT][CHUNK_SIZE];
-		sunLight = new int[CHUNK_SIZE][CHUNK_HEIGHT][CHUNK_SIZE];
 		blocks = new int[CHUNK_SIZE][CHUNK_HEIGHT][CHUNK_SIZE];
 		metadata = new int[CHUNK_SIZE][CHUNK_HEIGHT][CHUNK_SIZE];
 		biome = new int[CHUNK_SIZE][CHUNK_SIZE];
 		
-		for(int x = 0; x < CHUNK_SIZE; x++) 
-		{
-			for(int z = 0; z < CHUNK_SIZE; z++) 
-			{
-				for(int y = 0; y < CHUNK_HEIGHT; y++) 
-				{
-					blockLight[x][y][z] = 0;
-					sunLight[x][y][z] = 15;
-					blocks[x][y][z] = 0;
-					metadata[x][y][z] = 0;
-				}
-				biome[x][z] = 0;
-			}
-		}
-		
-		boolean calcLight = levelTag.getBoolean("LightPopulated"); 
-		
+		//Loads up the blocks stored in each of the sections
 		for(int i = 0; i < sections.size(); i++) 
 		{
 			CompoundTag section = (CompoundTag)sections.get(i);
@@ -76,10 +56,9 @@ public class OldChunk extends Chunk
 				continue;
 			
 			byte[] blockData = section.getByteArray("Blocks");
-			byte[] blockLightData = section.getByteArray("BlockLight");
-			byte[] skyLightData = section.getByteArray("SkyLight");
 			byte[] metadataData = section.getByteArray("Data");
 			
+			//Skips the section if there is no block data
 			if (blockData.length == 0)
 				continue;
 			
@@ -89,20 +68,8 @@ public class OldChunk extends Chunk
 				{
 					for(int z = 0; z < CHUNK_SIZE; z++) 
 					{
-						try 
-						{
-							blocks[x][y + sectionY][z] = getPositiveByte(blockData[getIndex(x, y, z)]);
-							metadata[x][y + sectionY][z] = getHalfIndexValue(metadataData, x, y, z);
-							if(calcLight) 
-							{
-								blockLight[x][y + sectionY][z] = getHalfIndexValue(blockLightData, x, y, z);
-								sunLight[x][y + sectionY][z] = getHalfIndexValue(skyLightData, x, y, z);
-							}
-						} 
-						catch(Exception e) 
-						{
-							e.printStackTrace();
-						}
+						blocks[x][y + sectionY][z] = getPositiveByte(blockData[getIndex(x, y, z)]);
+						metadata[x][y + sectionY][z] = getHalfIndexValue(metadataData, x, y, z);
 					}
 				}
 			}
@@ -110,26 +77,24 @@ public class OldChunk extends Chunk
 		
 		Tag biomeTag = levelTag.get("Biomes");
 		
+		//Loads the new, IntArray biome tag
 		if (biomeTag instanceof IntArrayTag)
 		{
 			int[] biomeData = levelTag.getIntArray("Biomes");
+			
 			for(int x = 0; x < CHUNK_SIZE; x++) 
 			{
 				for(int z = 0; z < CHUNK_SIZE; z++) 
 				{
-					try
-					{
 					biome[x][z] = biomeData[getIndex(x, z)];
-					}
-					catch (Exception e) {
-						e.printStackTrace();
-					}
 				}
 			}
 		}
+		//Loads the old, ByteArray biome tag
 		else if (biomeTag instanceof ByteArrayTag)
 		{
 			byte[] biomeData = levelTag.getByteArray("Biomes");
+			
 			for(int x = 0; x < CHUNK_SIZE; x++) 
 			{
 				for(int z = 0; z < CHUNK_SIZE; z++) 
@@ -147,7 +112,7 @@ public class OldChunk extends Chunk
 	 */
 	private int getPositiveByte(byte b) 
 	{
-		return (int)(b & 0x0f) + (int)((b & 0xf0) >> 4) * 16;
+		return (int)(b & 0xFF);
 	}
 	
 	/**
@@ -202,43 +167,6 @@ public class OldChunk extends Chunk
 		int result;
 		
 		result = (z * 16 + x);
-		
-		return result;
-	}
-	
-	/**
-	 * Returns the top-most visible block at (x,z).
-	 * @return a newly instanced Block object
-	 */
-	public Block getBlock(int x, int z) 
-	{
-		// starting at the top of the map and going down
-		for(int y = CHUNK_HEIGHT - 1; y > 0; y--) 
-		{
-			// if the block reached is visible
-			if(Block.isBlockVisible(blocks[x][y][z])) 
-			{
-				return new Block(blocks[x][y][z], metadata[x][y][z]);
-			}
-		}
-		return new Block(0, 0);
-	}
-	
-	/**
-	 * Creates a two-dimensional Block array of the top-most blocks of each x, z column.
-	 * @return Block array of the top-most blocks of each x, z column
-	 */
-	public Block[][] getTopBlocks()
-	{
-		Block[][] result = new Block[CHUNK_SIZE][CHUNK_SIZE];
-		
-		for (int x = 0; x < CHUNK_SIZE; x++)
-		{
-			for (int z = 0; z < CHUNK_SIZE; z++)
-			{
-				result[x][z] = getBlock(x, z);
-			}
-		}
 		
 		return result;
 	}
@@ -342,7 +270,7 @@ public class OldChunk extends Chunk
 		for(int y = startY; y >= endY; y--) 
 		{
 			int block = blocks[x][y][z];
-			if(Block.isBlockVisible(block) && block != 8 && block != 9) 
+			if(Block.isBlockVisible(block) && !Block.hasWaterColor(block, 0)) 
 				return y;
 		}
 		
