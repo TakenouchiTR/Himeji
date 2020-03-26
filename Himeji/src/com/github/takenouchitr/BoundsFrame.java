@@ -44,6 +44,7 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.JCheckBox;
 import java.awt.FlowLayout;
 import javax.swing.JButton;
+import javax.swing.SwingConstants;
 
 @SuppressWarnings("serial")
 public class BoundsFrame extends JFrame implements ActionListener, ItemListener, ChangeListener
@@ -113,6 +114,7 @@ public class BoundsFrame extends JFrame implements ActionListener, ItemListener,
 		pnl_yBoundsCenter.setLayout(new GridLayout(0, 2, 0, 0));
 		
 		JLabel lbl_yMax = new JLabel("  Max Y");
+		lbl_yMax.setToolTipText("Highest elevation to be drawn.");
 		pnl_yBoundsCenter.add(lbl_yMax);
 		
 		spn_maxY = new JSpinner();
@@ -121,6 +123,7 @@ public class BoundsFrame extends JFrame implements ActionListener, ItemListener,
 		pnl_yBoundsCenter.add(spn_maxY);
 		
 		JLabel lbl_yMin = new JLabel("  Min Y");
+		lbl_yMin.setToolTipText("Lowest elevation to be drawn.");
 		pnl_yBoundsCenter.add(lbl_yMin);
 		
 		spn_minY = new JSpinner();
@@ -151,6 +154,7 @@ public class BoundsFrame extends JFrame implements ActionListener, ItemListener,
 		pnl_chunks.add(pnl_chunksBottom, BorderLayout.SOUTH);
 		
 		chk_chunks = new JCheckBox("Render only in area");
+		chk_chunks.setToolTipText("Render one the area within the specified chunk bounds.");
 		chk_chunks.addItemListener(this);
 		pnl_chunksBottom.add(chk_chunks);
 		
@@ -160,6 +164,7 @@ public class BoundsFrame extends JFrame implements ActionListener, ItemListener,
 		pnl_chunksCenter.setLayout(new GridLayout(0, 2, 0, 0));
 		
 		JLabel lbl_maxX = new JLabel(" Max Chunk X");
+		lbl_maxX.setToolTipText("Furthest chunk to the west.");
 		pnl_chunksCenter.add(lbl_maxX);
 		
 		spn_maxX = new JSpinner();
@@ -168,6 +173,7 @@ public class BoundsFrame extends JFrame implements ActionListener, ItemListener,
 		pnl_chunksCenter.add(spn_maxX);
 		
 		JLabel lbl_minX = new JLabel(" Min Chunk X");
+		lbl_minX.setToolTipText("Furthest chunk to the east.");
 		pnl_chunksCenter.add(lbl_minX);
 		
 		spn_minX = new JSpinner();
@@ -176,6 +182,7 @@ public class BoundsFrame extends JFrame implements ActionListener, ItemListener,
 		pnl_chunksCenter.add(spn_minX);
 		
 		JLabel lbl_maxZ = new JLabel(" Max Chunk Z");
+		lbl_maxZ.setToolTipText("Furthest chunk to the south.");
 		pnl_chunksCenter.add(lbl_maxZ);
 		
 		spn_maxZ = new JSpinner();
@@ -184,6 +191,7 @@ public class BoundsFrame extends JFrame implements ActionListener, ItemListener,
 		pnl_chunksCenter.add(spn_maxZ);
 		
 		JLabel lbl_minZ = new JLabel(" Min Chunk Z");
+		lbl_minZ.setToolTipText("Furthest chunk to the North.");
 		pnl_chunksCenter.add(lbl_minZ);
 		
 		spn_minZ = new JSpinner();
@@ -255,7 +263,6 @@ public class BoundsFrame extends JFrame implements ActionListener, ItemListener,
 		if (min > max)
 			top.setValue(min);
 	}
-	
 	
 	public boolean getRenderBounds()
 	{

@@ -99,6 +99,11 @@ public class Himeji extends JFrame implements ActionListener, ItemListener, Wind
 		return boundsFrame.getMinZ();
 	}
 	
+	public static boolean getRenderBounds()
+	{
+		return boundsFrame.getRenderBounds();
+	}
+	
 	public static void disableComponents()
 	{
 		btn_start.setEnabled(false);
@@ -125,9 +130,9 @@ public class Himeji extends JFrame implements ActionListener, ItemListener, Wind
 		txt_output.setEnabled(true);
 	}
 	
- 	public static BoundsFrame getBoundsFrame()
+	public static String getDimensionName()
 	{
-		return boundsFrame;
+		return boundsFrame.getDimensionName();
 	}
 	
 	public static String getPath()
@@ -178,10 +183,13 @@ public class Himeji extends JFrame implements ActionListener, ItemListener, Wind
         btn_folder = new JButton("World");
         txt_worldPath = new JTextField(400);
         chk_renderUnderWater = new JCheckBox("Render Underwater Blocks");
+        chk_renderUnderWater.setToolTipText("Show blocks that are under water. Blocks will be tinted by the water's color.");
         chk_renderUnderWater.setSelected(true);
         chk_renderShadows = new JCheckBox("Render Shadows");
+        chk_renderShadows.setToolTipText("Add shadows to show changes in elevation.");
         chk_renderShadows.setSelected(true);
         chk_renderBiomes = new JCheckBox("Render Biome Colors");
+        chk_renderBiomes.setToolTipText("Change the colors of grass, foliage, and water to match the biome they are in.");
         chk_renderBiomes.setSelected(true);
         bar_menu = new JMenuBar();
         bar_menu.add(fileMenu);
@@ -240,7 +248,7 @@ public class Himeji extends JFrame implements ActionListener, ItemListener, Wind
         btn_output.addActionListener(this);
         btn_start.addActionListener(this);
         
-        setSize(500, pnl_log.getY() + pnl_log.getHeight() + bar_menu.getHeight() + 12);
+        setSize(500, pnl_log.getY() + pnl_log.getHeight() + bar_menu.getHeight() + 3);
 	}
 	
 	@Override
