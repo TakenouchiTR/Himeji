@@ -116,7 +116,9 @@ public class OldChunk extends Chunk
 	}
 	
 	/**
-	 * Gets half the value of the byte at a given index of a byte array.
+	 * Gets the half of the value stored at the index of a byte array. The index 
+	 * is half of what the index is for a given block, rounded down. Even number
+	 * indices will give the last four bits, while odd will give the first four. 
 	 * @param data byte array containing data for all blocks in a section
 	 * @param x    x coordinate for the block
 	 * @param y    y coordinate for the block
@@ -125,19 +127,18 @@ public class OldChunk extends Chunk
 	 */
 	private int getHalfIndexValue(byte[] data, int x, int y, int z) 
 	{
-		int r = getIndex(x, y, z);
-		int i = r / 2;
-		int h = r % 2;
-		byte b = data[i];
+		int result = 0;
+		int index = getIndex(x, y, z);
+		int halfIndex = index / 2;
+		boolean isEven = (index % 2) == 0;
+		byte b = data[halfIndex];
 		
-		if(h == 0) 
-		{
-		 	return (int)(b & 0x0f);
-		} 
-		else 
-		{
-			return (int)((b & 0xf0) >> 4);
-		}
+		if(isEven)
+		 	result = (int)(b & 0x0f);
+		else
+			result = (int)((b & 0xf0) >> 4);
+		
+		return result;
 	}
 	
 	/**
