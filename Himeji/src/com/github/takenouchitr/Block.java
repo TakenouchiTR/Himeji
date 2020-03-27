@@ -314,7 +314,7 @@ public class Block
 			secondColor = getGrassColor(biome);
 			blend = true;
 		}
-		else if (id == 8 || id == 9 || id == 208)
+		else if (hasWaterColor(id, meta))
 		{
 			secondColor = getWaterColor(biome);
 			blend = true;
