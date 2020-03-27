@@ -25,6 +25,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.util.Properties;
 
 import javax.swing.JFrame;
 import java.awt.Font;
@@ -44,18 +46,20 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.JCheckBox;
 import java.awt.FlowLayout;
 import javax.swing.JButton;
-import javax.swing.SwingConstants;
 
 @SuppressWarnings("serial")
-public class BoundsFrame extends JFrame implements ActionListener, ItemListener, ChangeListener
+public class BoundsFrame extends JFrame implements ActionListener, ItemListener, ChangeListener, WindowListener
 {
 	private JButton btn_confirm;
 	private JCheckBox chk_chunks;
 	private JSpinner spn_maxX, spn_minX, spn_maxZ, spn_minZ, spn_maxY, spn_minY;
 	private JRadioButton rad_overworld, rad_nether, rad_end;
+	private Properties props;
 	
-	public BoundsFrame() 
+	public BoundsFrame(Properties props) 
 	{
+		this.props = props;
+		
 		setType(Type.UTILITY);
 		setTitle("Set Bounds");
 		setFont(new Font("Tahoma", Font.PLAIN, 11));
@@ -83,7 +87,6 @@ public class BoundsFrame extends JFrame implements ActionListener, ItemListener,
 		pnl_dimensionCenter.setLayout(new GridLayout(3, 1, 0, 0));
 		
 		rad_overworld = new JRadioButton("Overworld");
-		rad_overworld.setSelected(true);
 		pnl_dimensionCenter.add(rad_overworld);
 		
 		rad_nether = new JRadioButton("Nether");
@@ -208,8 +211,37 @@ public class BoundsFrame extends JFrame implements ActionListener, ItemListener,
 		dimensionGroup.add(rad_overworld);
 		dimensionGroup.add(rad_nether);
 		dimensionGroup.add(rad_end);
+		
+		addWindowListener(this);
+		
+		loadProperties();
 	}
 
+	private void loadProperties()
+	{
+		switch (props.getProperty(Property.DIMENSION.key))
+		{
+			case "Overworld":
+				rad_overworld.setSelected(true);
+				break;
+			case "Nether":
+				rad_nether.setSelected(true);
+				break;
+			case "End":
+				rad_end.setSelected(true);
+				break;
+		}
+		
+		spn_maxY.setValue(Integer.parseInt(props.getProperty(Property.START_Y.key)));
+		spn_minY.setValue(Integer.parseInt(props.getProperty(Property.END_Y.key)));
+		spn_maxX.setValue(Integer.parseInt(props.getProperty(Property.START_X.key)));
+		spn_minX.setValue(Integer.parseInt(props.getProperty(Property.END_X.key)));
+		spn_maxZ.setValue(Integer.parseInt(props.getProperty(Property.START_Z.key)));
+		spn_minZ.setValue(Integer.parseInt(props.getProperty(Property.END_Z.key)));
+		
+		chk_chunks.setSelected(Boolean.parseBoolean(props.getProperty(Property.USE_AREA.key)));
+	}
+	
 	@Override
 	public void actionPerformed(ActionEvent e) 
 	{
@@ -264,49 +296,60 @@ public class BoundsFrame extends JFrame implements ActionListener, ItemListener,
 			top.setValue(min);
 	}
 	
-	public boolean getRenderBounds()
-	{
-		return chk_chunks.isSelected();
+	@Override
+	public void windowActivated(WindowEvent arg0) {
+		// TODO Auto-generated method stub
+		
 	}
-	
-	public String getDimensionName()
+
+	@Override
+	public void windowClosed(WindowEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowClosing(WindowEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowDeactivated(WindowEvent e) 
 	{
 		if (rad_overworld.isSelected())
-			return "Overworld";
-		if (rad_nether.isSelected())
-			return "Nether";
-		if (rad_end.isSelected())
-			return "End";
-		return "";
+			props.setProperty(Property.DIMENSION.key, "Overworld");
+		else if (rad_nether.isSelected())
+			props.setProperty(Property.DIMENSION.key, "Nether");
+		else
+			props.setProperty(Property.DIMENSION.key, "End");
+		
+		
+		props.setProperty(Property.START_Y.key, "" + ((int)spn_maxY.getValue()));
+		props.setProperty(Property.END_Y.key, "" + ((int)spn_minY.getValue()));
+		props.setProperty(Property.START_X.key, "" + ((int)spn_maxX.getValue()));
+		props.setProperty(Property.END_X.key, "" + ((int)spn_minX.getValue()));
+		props.setProperty(Property.START_Z.key, "" + ((int)spn_maxZ.getValue()));
+		props.setProperty(Property.END_Z.key, "" + ((int)spn_minZ.getValue()));
+		
+		props.setProperty(Property.USE_AREA.key, "" + chk_chunks.isSelected());
 	}
-	
-	public int getMaxY()
-	{
-		return (int) spn_maxY.getValue();
+
+	@Override
+	public void windowDeiconified(WindowEvent arg0) {
+		// TODO Auto-generated method stub
+		
 	}
-	
-	public int getMinY()
-	{
-		return (int) spn_minY.getValue();
+
+	@Override
+	public void windowIconified(WindowEvent arg0) {
+		// TODO Auto-generated method stub
+		
 	}
-	
-	public int getMaxX()
-	{
-		return (int) spn_maxX.getValue();
-	}
-	
-	public int getMinX()
-	{
-		return (int) spn_minX.getValue();
-	}
-	
-	public int getMaxZ()
-	{
-		return (int) spn_maxZ.getValue();
-	}
-	
-	public int getMinZ()
-	{
-		return (int) spn_minZ.getValue();
+
+	@Override
+	public void windowOpened(WindowEvent arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 }

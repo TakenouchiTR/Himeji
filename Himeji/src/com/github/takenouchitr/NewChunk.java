@@ -147,7 +147,7 @@ public class NewChunk extends Chunk
 			{
 				int y = getTopBlockY(x, z, startY, endY);
 				int dy = y;
-				if (Himeji.renderUnderWater())
+				if (Himeji.getProperty(Property.RENDER_UNDER_WATER).equals("true"))
 					dy = getTopBlockYIgnoreWater(x, z, startY, endY);
 				
 				int biomeWidth = CHUNK_SIZE / biome.length;
@@ -205,43 +205,6 @@ public class NewChunk extends Chunk
 		return getTopColors(CHUNK_HEIGHT - 1, 0);
 	}
 	
-	/**
-	 * Gets the name
-	 * @param x
-	 * @param z
-	 * @param y
-	 * @return
-	 
-	public String getBlockName(int x, int z, int y) 
-	{
-		String blockName;
-		int[] idMeta;
-		// starting at the top of the map and going down
-		for(; y > 0; y--) 
-		{
-			blockName = blocks[x][y][z];
-			idMeta = Block.getIdMeta(blockName);
-			if (idMeta != null)
-			{
-				if (Block.isBlockVisible(idMeta[0]))
-				{
-					return blockName;
-				}
-			}
-			else
-			{
-				return "minecraft:air";
-			}
-			
-		}
-		return "minecraft:air";
-	}
-	
-	public String getBlockName(int x, int z) 
-	{
-		return getBlockName(x, z, CHUNK_HEIGHT - 1);
-	}
-	*/
 	/**
 	 * Gets the top block of a given x, z column that is not listed as invisible.
 	 * @param x       the Chunk's x coord, relative to the chunk

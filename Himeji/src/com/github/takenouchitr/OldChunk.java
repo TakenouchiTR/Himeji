@@ -188,7 +188,7 @@ public class OldChunk extends Chunk
 			{
 				int y = getTopBlockY(x, z, startY, endY);
 				int dy = y;
-				if (Himeji.renderUnderWater())
+				if (Himeji.getProperty(Property.RENDER_UNDER_WATER).equals("true"))
 					dy = getTopBlockYIgnoreWater(x, z, startY, endY);
 				
 				int color = Block.getBlockColor(blocks[x][dy][z], metadata[x][dy][z], biome[x][z]);

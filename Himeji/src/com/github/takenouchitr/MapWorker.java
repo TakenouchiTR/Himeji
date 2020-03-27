@@ -30,7 +30,7 @@ public class MapWorker extends SwingWorker<Void, String>
 	@Override
 	protected Void doInBackground() throws Exception 
 	{
-		File file = new File(Himeji.getPath());
+		File file = new File(Himeji.getProperty(Property.WORLD_PATH));
 		if (World.validateDir(file)) 
 		{
 			long start = System.currentTimeMillis();
@@ -39,7 +39,7 @@ public class MapWorker extends SwingWorker<Void, String>
 			File dimFile;
 			
 			// TODO Check for whether the dimension exists
-			String dimensionName = Himeji.getDimensionName();
+			String dimensionName = Himeji.getProperty(Property.DIMENSION);
 			switch(dimensionName)
 			{
 				case "Overworld":
@@ -55,25 +55,33 @@ public class MapWorker extends SwingWorker<Void, String>
 					dimFile = new File("");
 			}
 			
-			int startX = Himeji.getMaxX();
-			int startY = Himeji.getStartY();
-			int startZ = Himeji.getMaxZ();
-			int endX = Himeji.getMinX();
-			int endY = Himeji.getEndY();
-			int endZ = Himeji.getMinZ();
+			int startY = Integer.parseInt(Himeji.getProperty(Property.START_Y));
+			int endY = Integer.parseInt(Himeji.getProperty(Property.END_Y));
 			
 			publish("Getting area size...");
-			if (Himeji.getRenderBounds())
+			if (Himeji.getProperty(Property.USE_AREA).equals("true"))
+			{
+				int startX = Integer.parseInt(Himeji.getProperty(Property.START_X));
+				int startZ = Integer.parseInt(Himeji.getProperty(Property.START_Z));
+				int endX = Integer.parseInt(Himeji.getProperty(Property.END_X));
+				int endZ = Integer.parseInt(Himeji.getProperty(Property.END_Z));
+				
 				dim = new Dimension(dimFile, startX, endX, startZ, endZ);
-			else
-				dim = new Dimension(dimFile);
-			
-			dim.createRenderGrid();
-			publish("Getting blocks...");
-			if (Himeji.getRenderBounds())
+				
+				dim.createRenderGrid();
+				
+				publish("Getting blocks...");
 				dim.drawBlocksToBuffer(startY, endY, startX, endX, startZ, endZ);
+			}
 			else
+			{
+				dim = new Dimension(dimFile);
+				
+				dim.createRenderGrid();
+				
+				publish("Getting blocks...");
 				dim.drawBlocksToBuffer(startY, endY);
+			}
 			
 			publish("Rendering image...");
 			dim.render();

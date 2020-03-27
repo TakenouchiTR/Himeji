@@ -21,12 +21,16 @@
 package com.github.takenouchitr;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Properties;
 import java.awt.event.*;
 import java.awt.SystemColor;
 import java.awt.Toolkit;
 import java.awt.Color;
 import java.awt.FlowLayout;
-
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -37,6 +41,7 @@ public class Himeji extends JFrame implements ActionListener, ItemListener, Wind
 {
 	public static final boolean SHOW_ALL_EVENTS = true;
 	public static final String SAVE_FOLDER = System.getenv("APPDATA") + "\\.minecraft\\saves\\";
+	public static final String PROPERTIES_FILE = "config.properties";
 	
 	private static JButton btn_folder, btn_start, btn_setBounds, btn_output;
 	private static JTextField txt_worldPath, txt_output;
@@ -45,10 +50,17 @@ public class Himeji extends JFrame implements ActionListener, ItemListener, Wind
 	private static BoundsFrame boundsFrame;
 	private static JPanel pnl_log;
 	private static JLabel lbl_log;
+	private static Properties props;
 	
 	public static void main(String[] args) 
 	{
-		System.out.println(SAVE_FOLDER);
+		File configFile = new File(PROPERTIES_FILE);
+		props = new Properties();
+		
+		if (!configFile.exists())
+			props = createDefaultProperties();
+		else
+			props = loadProperties(configFile);
 		
 		Block.setBlockVisibility();
 		Block.setBlockColors();
@@ -67,41 +79,6 @@ public class Himeji extends JFrame implements ActionListener, ItemListener, Wind
 				window.setVisible(true);
 			}
 		});
-	}
-	
-	public static int getStartY()
-	{
-		return boundsFrame.getMaxY();
-	}
-	
-	public static int getEndY()
-	{
-		return boundsFrame.getMinY();
-	}
-	
-	public static int getMaxX()
-	{
-		return boundsFrame.getMaxX();
-	}
-	
-	public static int getMinX()
-	{
-		return boundsFrame.getMinX();
-	}
-	
-	public static int getMaxZ()
-	{
-		return boundsFrame.getMaxZ();
-	}
-	
-	public static int getMinZ()
-	{
-		return boundsFrame.getMinZ();
-	}
-	
-	public static boolean getRenderBounds()
-	{
-		return boundsFrame.getRenderBounds();
 	}
 	
 	public static void disableComponents()
@@ -130,39 +107,83 @@ public class Himeji extends JFrame implements ActionListener, ItemListener, Wind
 		txt_output.setEnabled(true);
 	}
 	
-	public static String getDimensionName()
+	public static String getProperty(String key)
 	{
-		return boundsFrame.getDimensionName();
+		return props.getProperty(key);
 	}
 	
-	public static String getPath()
+	public static String getProperty(Property prop)
 	{
-		return txt_worldPath.getText();
+		return getProperty(prop.key);
 	}
 	
-	public static String getSaveLocation()
+	private static void setProperty(Property prop, String value)
 	{
-		return txt_output.getText();
+		props.setProperty(prop.key, value);
 	}
 	
-	public static boolean renderUnderWater()
+	private static void saveProperties()
 	{
-		return chk_renderUnderWater.isSelected();
-	}
-	
-	public static boolean renderShadows()
-	{
-		return chk_renderShadows.isSelected();
-	}
-	
-	public static boolean renderBiomeColors()
-	{
-		return chk_renderBiomes.isSelected();
+		File configFile = new File(PROPERTIES_FILE);
+		try
+		{
+			FileWriter writer = new FileWriter(configFile);
+			props.store(writer, "config");
+			writer.close();
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
 	}
 	
 	public static void displayMessage(String message)
 	{
 		lbl_log.setText(message);
+	}
+	
+	public static Properties createDefaultProperties()
+	{
+		Properties defaultProp = new Properties();
+		
+		defaultProp.setProperty("start_y", "255");
+		defaultProp.setProperty("end_y", "0");
+		defaultProp.setProperty("start_x", "0");
+		defaultProp.setProperty("end_x", "0");
+		defaultProp.setProperty("start_z", "0");
+		defaultProp.setProperty("end_z", "0");
+		defaultProp.setProperty("dimension", "Overworld");
+		defaultProp.setProperty("use_area", "false");
+		defaultProp.setProperty("render_under_water", "true");
+		defaultProp.setProperty("render_shadows", "true");
+		defaultProp.setProperty("render_biome_colors", "true");
+		defaultProp.setProperty("world_path", "");
+		defaultProp.setProperty("output_path", "");
+		
+		return defaultProp;
+	}
+	
+	public static Properties loadProperties(File configFile)
+	{
+		Properties loadedProp = new Properties();
+		
+		try
+		{
+			FileReader reader = new FileReader(configFile);
+			loadedProp.load(reader);
+		} 
+		catch (FileNotFoundException e) 
+		{
+		    System.out.println("File does not exist. Loading default properties.");
+		    loadedProp = createDefaultProperties();
+		} 
+		catch (IOException e) 
+		{
+			System.out.println("IO Exception");
+			e.printStackTrace();
+		}
+		
+		return loadedProp;
 	}
 	
 	public Himeji()
@@ -173,7 +194,7 @@ public class Himeji extends JFrame implements ActionListener, ItemListener, Wind
 		setResizable(false);
 		setLocationRelativeTo(null);
 		
-		boundsFrame = new BoundsFrame();
+		boundsFrame = new BoundsFrame(props);
 		boundsFrame.addWindowListener(this);
 		
 		//construct preComponents
@@ -247,8 +268,24 @@ public class Himeji extends JFrame implements ActionListener, ItemListener, Wind
         btn_folder.addActionListener(this);
         btn_output.addActionListener(this);
         btn_start.addActionListener(this);
+        chk_renderUnderWater.addItemListener(this);
+        chk_renderShadows.addItemListener(this);
+        chk_renderBiomes.addItemListener(this);
+        
+        addWindowListener(this);
+        
+        applyProperties();
         
         setSize(500, pnl_log.getY() + pnl_log.getHeight() + bar_menu.getHeight() + 3);
+	}
+	
+	private void applyProperties()
+	{
+		txt_worldPath.setText(getProperty(Property.WORLD_PATH));
+		txt_output.setText(getProperty(Property.OUTPUT_PATH));
+		chk_renderUnderWater.setSelected(Boolean.parseBoolean(getProperty(Property.RENDER_UNDER_WATER)));
+		chk_renderShadows.setSelected(Boolean.parseBoolean(getProperty(Property.RENDER_SHADOWS)));
+		chk_renderBiomes.setSelected(Boolean.parseBoolean(getProperty(Property.RENDER_BIOME_COLORS)));
 	}
 	
 	@Override
@@ -299,6 +336,8 @@ public class Himeji extends JFrame implements ActionListener, ItemListener, Wind
 			MapWorker worker = new MapWorker();
 			try
 			{
+				setProperty(Property.WORLD_PATH, txt_worldPath.getText());
+				setProperty(Property.OUTPUT_PATH, txt_output.getText());
 				disableComponents();
 				worker.execute();
 			}
@@ -316,8 +355,18 @@ public class Himeji extends JFrame implements ActionListener, ItemListener, Wind
 	}
 
 	@Override
-	public void itemStateChanged(ItemEvent e) {}
-
+	public void itemStateChanged(ItemEvent e) 
+	{
+		Object source = e.getSource();
+		
+		if (chk_renderUnderWater == source)
+			setProperty(Property.RENDER_UNDER_WATER, "" + chk_renderUnderWater.isSelected());
+		if (chk_renderShadows == source)
+			setProperty(Property.RENDER_SHADOWS, "" + chk_renderShadows.isSelected());
+		if (chk_renderBiomes == source)
+			setProperty(Property.RENDER_BIOME_COLORS, "" + chk_renderBiomes.isSelected());
+	}
+	
 	@Override
 	public void windowActivated(WindowEvent arg0){}
 
@@ -325,13 +374,26 @@ public class Himeji extends JFrame implements ActionListener, ItemListener, Wind
 	public void windowClosed(WindowEvent arg0) {}
 
 	@Override
-	public void windowClosing(WindowEvent arg0){}
+	public void windowClosing(WindowEvent e)
+	{
+		Object source = e.getSource();
+		if (source == this)
+		{
+			setProperty(Property.WORLD_PATH, txt_worldPath.getText());
+			setProperty(Property.OUTPUT_PATH, txt_output.getText());
+			saveProperties();
+		}
+	}
 
 	@Override
-	public void windowDeactivated(WindowEvent arg0) 
+	public void windowDeactivated(WindowEvent e) 
 	{
-		setEnabled(true);
-		this.toFront();
+		Object source = e.getSource();
+		if (source == boundsFrame)
+		{
+			setEnabled(true);
+			this.toFront();
+		}
 	}
 
 	@Override

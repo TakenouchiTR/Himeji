@@ -340,6 +340,8 @@ public class Dimension
 						int zPos;
 						int curColor;
 						
+						// TODO condense this
+						
 						for (int blockX = 0; blockX < Chunk.CHUNK_SIZE; blockX++)
 						{
 							xPos = gridX + blockX;
@@ -350,7 +352,7 @@ public class Dimension
 								curColor = chunkMap[blockX][blockZ][0];
 								curYVal = chunkMap[blockX][blockZ][1];
 								
-								if (Himeji.renderShadows())
+								if (Himeji.getProperty(Property.RENDER_SHADOWS).equals("true"))
 								{
 									if (blockZ == 0)
 									{
@@ -358,7 +360,7 @@ public class Dimension
 											upYVal = curYVal;
 										else
 										{
-											if (Himeji.renderUnderWater())
+											if (Himeji.getProperty(Property.RENDER_UNDER_WATER).equals("true"))
 												upYVal = upChunk.getTopBlockYIgnoreWater(blockX, 
 													Chunk.CHUNK_SIZE - 1, startY, endY);
 											else
@@ -377,7 +379,7 @@ public class Dimension
 											rightYVal = curYVal;
 										else
 										{	
-											if (Himeji.renderUnderWater())
+											if (Himeji.getProperty(Property.RENDER_UNDER_WATER).equals("true"))
 												rightYVal = rightChunk.getTopBlockYIgnoreWater(0, blockZ, startY, endY);
 											else
 												rightYVal = rightChunk.getTopBlockY(0,  blockZ, startY, endY);
@@ -514,7 +516,7 @@ public class Dimension
 	{
 		// TODO Check if file is valid, if it exists, change method name
 		image = new MapImage(blockWidth, blockHeight, 
-				new File(Himeji.getSaveLocation()));
+				new File(Himeji.getProperty(Property.OUTPUT_PATH)));
 	}
 	
 	public int applyShading(int color, int yVal, int upYVal, int rightYVal)

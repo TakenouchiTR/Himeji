@@ -1897,7 +1897,7 @@ public class Block
 		
 		color = blockColors[id][Math.min(meta, blockColors[id].length - 1)];
 		
-		if (!Himeji.renderBiomeColors())
+		if (Himeji.getProperty(Property.RENDER_BIOME_COLORS).equals("false"))
 			return color;
 		
 		if (hasFoliageColor(id, meta))
