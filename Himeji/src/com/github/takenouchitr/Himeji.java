@@ -22,12 +22,9 @@ package com.github.takenouchitr;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.nio.file.Files;
 import java.util.Properties;
 import java.awt.event.*;
@@ -91,7 +88,10 @@ public class Himeji extends JFrame implements ActionListener, ItemListener, Wind
 		});
 	}
 	
-
+	/**
+	 * Checks if files are present in the program's data folder. If one is missing, the default 
+	 * file will be copied to the directory from the program's resources.
+	 */
 	private static void checkFiles()
 	{
 		File dataDir = new File(DATA_FOLDER);
@@ -135,6 +135,10 @@ public class Himeji extends JFrame implements ActionListener, ItemListener, Wind
 			copyFromResource(INVISIBLE_FILE);
 	}
 	
+	/**
+	 * Copies a file from the program's resources to the data folder.
+	 * @param file name of the file
+	 */
 	private static void copyFromResource(String file)
 	{
 		try
@@ -151,7 +155,10 @@ public class Himeji extends JFrame implements ActionListener, ItemListener, Wind
 			e.printStackTrace();
 		}
 	}
-	
+
+	/**
+	 * Disables all components. Prevents any changes while the program is actively rendering a map.
+	 */
 	public static void disableComponents()
 	{
 		btn_start.setEnabled(false);
@@ -165,6 +172,9 @@ public class Himeji extends JFrame implements ActionListener, ItemListener, Wind
 		txt_output.setEnabled(false);
 	}
 	
+	/**
+	 * Enables all components.
+	 */
 	public static void enableComponents()
 	{
 		btn_start.setEnabled(true);
@@ -178,22 +188,40 @@ public class Himeji extends JFrame implements ActionListener, ItemListener, Wind
 		txt_output.setEnabled(true);
 	}
 	
+	/**
+	 * Gets a config from the program's properties using the key.
+	 * @param key property key
+	 * @return    value stored at the property key
+	 */
 	public static String getProperty(String key)
 	{
 		return props.getProperty(key);
 	}
 	
+	/**
+	 * Gets a config from the program's properties using a Property enum.
+	 * @param key Property enum
+	 * @return    value stored at the enum's key
+	 */
 	public static String getProperty(Property prop)
 	{
 		return getProperty(prop.key);
 	}
 	
-	
+	/**
+	 * Sets the value for a Property. 
+	 * @param prop  Property enum of the value to update
+	 * @param value new property value
+	 */
 	private static void setProperty(Property prop, String value)
 	{
 		props.setProperty(prop.key, value);
 	}
 	
+
+	/**
+	 * Saves the program's Properties to file.
+	 */
 	private static void saveProperties()
 	{
 		File configFile = new File(DATA_FOLDER + PROPERTIES_FILE);
@@ -209,11 +237,19 @@ public class Himeji extends JFrame implements ActionListener, ItemListener, Wind
 		}
 	}
 	
+	/**
+	 * Displays a message using the label at the bottom of the frame
+	 * @param message message to display
+	 */
 	public static void displayMessage(String message)
 	{
 		lbl_log.setText(message);
 	}
 	
+	/**
+	 * Creates a Properties object with the default values.
+	 * @return default Properties object
+	 */
 	public static Properties createDefaultProperties()
 	{
 		Properties defaultProp = new Properties();
@@ -235,6 +271,11 @@ public class Himeji extends JFrame implements ActionListener, ItemListener, Wind
 		return defaultProp;
 	}
 	
+	/**
+	 * Loads a Properties object from file.
+	 * @param configFile .properties file
+	 * @return           loaded Properties object
+	 */
 	public static Properties loadProperties(File configFile)
 	{
 		Properties loadedProp = new Properties();
@@ -257,6 +298,7 @@ public class Himeji extends JFrame implements ActionListener, ItemListener, Wind
 		
 		return loadedProp;
 	}
+	
 	
 	public Himeji()
 	{
@@ -351,6 +393,9 @@ public class Himeji extends JFrame implements ActionListener, ItemListener, Wind
         setSize(500, pnl_log.getY() + pnl_log.getHeight() + bar_menu.getHeight() + 3);
 	}
 	
+	/**
+	 * Applies the values of the program's properties to the form components.
+	 */
 	private void applyProperties()
 	{
 		txt_worldPath.setText(getProperty(Property.WORLD_PATH));
