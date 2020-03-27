@@ -22,9 +22,13 @@ package com.github.takenouchitr;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
 import java.util.Properties;
 import java.awt.event.*;
 import java.awt.SystemColor;
@@ -40,8 +44,18 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 public class Himeji extends JFrame implements ActionListener, ItemListener, WindowListener
 {
 	public static final boolean SHOW_ALL_EVENTS = true;
-	public static final String SAVE_FOLDER = System.getenv("APPDATA") + "\\.minecraft\\saves\\";
+	public static final String SAVE_FOLDER = System.getenv("APPDATA") + "/.minecraft/saves/";
+	public static final String DATA_FOLDER = "data/";
 	public static final String PROPERTIES_FILE = "config.properties";
+	public static final String BLOCK_COLORS_FILE = "colors.csv";
+	public static final String NAMESPACED_ID_FILE = "namespace.csv";
+	public static final String FOLIAGE_FILE = "foliage.csv";
+	public static final String FOLIAGE_COLORS_FILE = "foliage_colors.csv";
+	public static final String GRASS_FILE = "grass.csv";
+	public static final String GRASS_COLORS_FILE = "grass_colors.csv";
+	public static final String WATER_FILE = "water.csv";
+	public static final String WATER_COLORS_FILE = "water_colors.csv";
+	public static final String INVISIBLE_FILE = "invis.csv";
 	
 	private static JButton btn_folder, btn_start, btn_setBounds, btn_output;
 	private static JTextField txt_worldPath, txt_output;
@@ -54,21 +68,17 @@ public class Himeji extends JFrame implements ActionListener, ItemListener, Wind
 	
 	public static void main(String[] args) 
 	{
-		File configFile = new File(PROPERTIES_FILE);
+		checkFiles();
+		
+		Block.loadFiles();
+		
+		File configFile = new File(DATA_FOLDER + PROPERTIES_FILE);
 		props = new Properties();
 		
 		if (!configFile.exists())
 			props = createDefaultProperties();
 		else
 			props = loadProperties(configFile);
-		
-		Block.setBlockVisibility();
-		Block.setBlockColors();
-		Block.setBlockDict();
-		Block.setBiomeColors();
-		Block.setBiomeFoliage();
-		Block.setBiomeWater();
-		Block.setBiomeGrass();
 		
 		SwingUtilities.invokeLater(new Runnable()
 		{
@@ -79,6 +89,67 @@ public class Himeji extends JFrame implements ActionListener, ItemListener, Wind
 				window.setVisible(true);
 			}
 		});
+	}
+	
+
+	private static void checkFiles()
+	{
+		File dataDir = new File(DATA_FOLDER);
+		if (!dataDir.exists())
+			dataDir.mkdir();
+		
+		File blocksFile = new File(DATA_FOLDER + BLOCK_COLORS_FILE);
+		if (!blocksFile.exists())
+			copyFromResource(BLOCK_COLORS_FILE);
+		
+		File idFile = new File(DATA_FOLDER + NAMESPACED_ID_FILE);
+		if (!idFile.exists())
+			copyFromResource(NAMESPACED_ID_FILE);
+		
+		File foliageFile = new File(DATA_FOLDER + FOLIAGE_FILE);
+		if (!foliageFile.exists())
+			copyFromResource(FOLIAGE_FILE);
+		
+		File foliageColors = new File(DATA_FOLDER + FOLIAGE_COLORS_FILE);
+		if (!foliageColors.exists())
+			copyFromResource(FOLIAGE_COLORS_FILE);
+		
+		File grassFile = new File(DATA_FOLDER + GRASS_FILE);
+		if (!grassFile.exists())
+			copyFromResource(GRASS_FILE);
+		
+		File grassColors = new File(DATA_FOLDER + GRASS_COLORS_FILE);
+		if (!grassColors.exists())
+			copyFromResource(GRASS_COLORS_FILE);
+		
+		File waterFile = new File(DATA_FOLDER + WATER_FILE);
+		if (!waterFile.exists())
+			copyFromResource(WATER_FILE);
+		
+		File waterColors = new File(DATA_FOLDER + WATER_COLORS_FILE);
+		if (!waterColors.exists())
+			copyFromResource(WATER_COLORS_FILE);
+		
+		File invisFile = new File(DATA_FOLDER + INVISIBLE_FILE);
+		if (!invisFile.exists())
+			copyFromResource(INVISIBLE_FILE);
+	}
+	
+	private static void copyFromResource(String file)
+	{
+		try
+		{
+			File destination = new File(DATA_FOLDER + file);
+			
+			String sourceString = Himeji.class.getResource("/Resources/" + file).getFile();
+				
+			File source = new File(sourceString);
+			Files.copy(source.toPath(), destination.toPath());
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
 	}
 	
 	public static void disableComponents()
@@ -117,6 +188,7 @@ public class Himeji extends JFrame implements ActionListener, ItemListener, Wind
 		return getProperty(prop.key);
 	}
 	
+	
 	private static void setProperty(Property prop, String value)
 	{
 		props.setProperty(prop.key, value);
@@ -124,7 +196,7 @@ public class Himeji extends JFrame implements ActionListener, ItemListener, Wind
 	
 	private static void saveProperties()
 	{
-		File configFile = new File(PROPERTIES_FILE);
+		File configFile = new File(DATA_FOLDER + PROPERTIES_FILE);
 		try
 		{
 			FileWriter writer = new FileWriter(configFile);
@@ -189,7 +261,7 @@ public class Himeji extends JFrame implements ActionListener, ItemListener, Wind
 	public Himeji()
 	{
 		super("Himeji Map Viewer");
-		setIconImage(Toolkit.getDefaultToolkit().getImage(Himeji.class.getResource("/Resources/64_icon.png")));
+		setIconImage(Toolkit.getDefaultToolkit().getImage(Himeji.class.getResource("/Resources/Icons/64_icon.png")));
 		
 		setResizable(false);
 		setLocationRelativeTo(null);
@@ -353,7 +425,7 @@ public class Himeji extends JFrame implements ActionListener, ItemListener, Wind
 			boundsFrame.setVisible(true);
 		}
 	}
-
+	
 	@Override
 	public void itemStateChanged(ItemEvent e) 
 	{
@@ -367,7 +439,7 @@ public class Himeji extends JFrame implements ActionListener, ItemListener, Wind
 			setProperty(Property.RENDER_BIOME_COLORS, "" + chk_renderBiomes.isSelected());
 	}
 	
-	@Override
+@Override
 	public void windowActivated(WindowEvent arg0){}
 
 	@Override
