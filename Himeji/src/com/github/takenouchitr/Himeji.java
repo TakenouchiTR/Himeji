@@ -22,9 +22,12 @@ package com.github.takenouchitr;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.util.Properties;
 import java.awt.event.*;
@@ -143,12 +146,17 @@ public class Himeji extends JFrame implements ActionListener, ItemListener, Wind
 	{
 		try
 		{
-			File destination = new File(DATA_FOLDER + file);
+			InputStream input = Himeji.class.getResourceAsStream("/Resources/" + file);
+			OutputStream output = new FileOutputStream(DATA_FOLDER + file);
+			byte[] buffer = new byte[1024];
 			
-			String sourceString = Himeji.class.getResource("/Resources/" + file).getFile();
-				
-			File source = new File(sourceString);
-			Files.copy(source.toPath(), destination.toPath());
+			int length = 0;
+			
+			while ((length = input.read(buffer)) > 0)
+				output.write(buffer, 0, length);;
+			
+			input.close();
+			output.close();
 		}
 		catch (Exception e)
 		{
