@@ -28,7 +28,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.file.Files;
 import java.util.Properties;
 import java.awt.event.*;
 import java.awt.SystemColor;
@@ -61,6 +60,7 @@ public class Himeji extends JFrame implements ActionListener, ItemListener, Wind
 	private static JTextField txt_worldPath, txt_output;
 	private static JCheckBox chk_renderUnderWater, chk_renderShadows, chk_renderBiomes;
 	private static JMenuBar bar_menu;
+	private static JMenuItem itm_exit;
 	private static BoundsFrame boundsFrame;
 	private static JPanel pnl_log;
 	private static JLabel lbl_log;
@@ -178,6 +178,7 @@ public class Himeji extends JFrame implements ActionListener, ItemListener, Wind
 		chk_renderBiomes.setEnabled(false);
 		txt_worldPath.setEnabled(false);
 		txt_output.setEnabled(false);
+		bar_menu.setEnabled(false);
 	}
 	
 	/**
@@ -194,6 +195,7 @@ public class Himeji extends JFrame implements ActionListener, ItemListener, Wind
 		chk_renderBiomes.setEnabled(true);
 		txt_worldPath.setEnabled(true);
 		txt_output.setEnabled(true);
+		bar_menu.setEnabled(true);
 	}
 	
 	/**
@@ -336,6 +338,11 @@ public class Himeji extends JFrame implements ActionListener, ItemListener, Wind
         chk_renderBiomes.setSelected(true);
         bar_menu = new JMenuBar();
         bar_menu.add(fileMenu);
+        
+        itm_exit = new JMenuItem("Exit");
+        itm_exit.addActionListener(this);
+        fileMenu.add(itm_exit);
+        
         btn_start = new JButton("Start");
 
         //adjust size and set layout
@@ -471,11 +478,15 @@ public class Himeji extends JFrame implements ActionListener, ItemListener, Wind
 				ex.printStackTrace();
 			}
 		}
-		else
+		else if (source == btn_setBounds)
 		{
 			setEnabled(false);
 			boundsFrame.setLocationRelativeTo(this);
 			boundsFrame.setVisible(true);
+		}
+		else if (source == itm_exit)
+		{
+			dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
 		}
 	}
 	
