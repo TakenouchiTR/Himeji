@@ -1,5 +1,5 @@
 # Himeji
-Himeji Map Viewer is a Java application used top create top-down renders of Minecraft maps. Himeji has options to allow for rendering certain areas of maps, rendering within a certain elevation range, and has options for adding or removing details to renders.
+Himeji Map Viewer is a Java application used top create top-down renders of Minecraft maps. Himeji has options to allow for rendering certain areas of maps, rendering within a certain elevation range, and has for adding or removing details to renders. Himeji is currently under development with more planned features coming in the future.
 
 ![picture alt](https://tknouchi.files.wordpress.com/2020/03/sample.png)
 
