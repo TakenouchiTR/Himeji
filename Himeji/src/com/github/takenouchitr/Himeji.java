@@ -70,6 +70,7 @@ public class Himeji extends JFrame implements ActionListener, ItemListener, Wind
 	{
 		checkFiles();
 		
+		
 		Block.loadFiles();
 		
 		File configFile = new File(DATA_FOLDER + PROPERTIES_FILE);

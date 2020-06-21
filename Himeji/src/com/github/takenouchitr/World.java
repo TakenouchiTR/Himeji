@@ -56,13 +56,10 @@ public class World
 					case "region":
 						hasRegion = true;
 						break;
-					case "playerdata":
-						hasPlayerdata = true;
-						break;
 				}
 			}
 			
-			if (hasRegion && hasPlayerdata)
+			if (hasRegion)
 				result = true;
 		}
 		

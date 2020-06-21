@@ -40,66 +40,91 @@ public class OldChunk extends Chunk
 	{
 		super(baseTag);
 		
-		ListTag<? extends Tag> sections = levelTag.getList("Sections");
-		
 		blocks = new int[CHUNK_SIZE][CHUNK_HEIGHT][CHUNK_SIZE];
 		metadata = new int[CHUNK_SIZE][CHUNK_HEIGHT][CHUNK_SIZE];
 		biome = new int[CHUNK_SIZE][CHUNK_SIZE];
 		
-		//Loads up the blocks stored in each of the sections
-		for(int i = 0; i < sections.size(); i++) 
+		boolean isFirstVersion = !levelTag.contains("Sections");
+		
+		if (!isFirstVersion)
 		{
-			CompoundTag section = (CompoundTag)sections.get(i);
+			ListTag<? extends Tag> sections = levelTag.getList("Sections");
 			
-			int sectionY = (int)(section.getByte("Y")) * 16;
-			if (sectionY < 0)
-				continue;
-			
-			byte[] blockData = section.getByteArray("Blocks");
-			byte[] metadataData = section.getByteArray("Data");
-			
-			//Skips the section if there is no block data
-			if (blockData.length == 0)
-				continue;
-			
-			for(int x = 0; x < CHUNK_SIZE; x++) 
+			//Loads up the blocks stored in each of the sections
+			for(int i = 0; i < sections.size(); i++) 
 			{
-				for(int y = 0; y < CHUNK_SIZE; y++) 
+				CompoundTag section = (CompoundTag)sections.get(i);
+				
+				int sectionY = (int)(section.getByte("Y")) * 16;
+				if (sectionY < 0)
+					continue;
+				
+				byte[] blockData = section.getByteArray("Blocks");
+				byte[] metadataData = section.getByteArray("Data");
+				
+				//Skips the section if there is no block data
+				if (blockData.length == 0)
+					continue;
+				
+				for(int x = 0; x < CHUNK_SIZE; x++) 
+				{
+					for(int y = 0; y < CHUNK_SIZE; y++) 
+					{
+						for(int z = 0; z < CHUNK_SIZE; z++) 
+						{
+							blocks[x][y + sectionY][z] = getPositiveByte(blockData[getIndex(x, y, z)]);
+							metadata[x][y + sectionY][z] = getHalfIndexValue(metadataData, x, y, z);
+						}
+					}
+				}
+			}
+			
+			Tag biomeTag = levelTag.get("Biomes");
+			
+			//Loads the new, IntArray biome tag
+			if (biomeTag instanceof IntArrayTag)
+			{
+				int[] biomeData = levelTag.getIntArray("Biomes");
+				
+				for(int x = 0; x < CHUNK_SIZE; x++) 
 				{
 					for(int z = 0; z < CHUNK_SIZE; z++) 
 					{
-						blocks[x][y + sectionY][z] = getPositiveByte(blockData[getIndex(x, y, z)]);
-						metadata[x][y + sectionY][z] = getHalfIndexValue(metadataData, x, y, z);
+						biome[x][z] = biomeData[getIndex(x, z)];
+					}
+				}
+			}
+			//Loads the old, ByteArray biome tag
+			else if (biomeTag instanceof ByteArrayTag)
+			{
+				byte[] biomeData = levelTag.getByteArray("Biomes");
+				
+				for(int x = 0; x < CHUNK_SIZE; x++) 
+				{
+					for(int z = 0; z < CHUNK_SIZE; z++) 
+					{
+						biome[x][z] = getPositiveByte(biomeData[getIndex(x, z)]);
 					}
 				}
 			}
 		}
-		
-		Tag biomeTag = levelTag.get("Biomes");
-		
-		//Loads the new, IntArray biome tag
-		if (biomeTag instanceof IntArrayTag)
+		else
 		{
-			int[] biomeData = levelTag.getIntArray("Biomes");
+			byte[] blockData = levelTag.getByteArray("Blocks");
+			byte[] metadataData = levelTag.getByteArray("Data");
+			int index = 0;
 			
 			for(int x = 0; x < CHUNK_SIZE; x++) 
 			{
 				for(int z = 0; z < CHUNK_SIZE; z++) 
 				{
-					biome[x][z] = biomeData[getIndex(x, z)];
-				}
-			}
-		}
-		//Loads the old, ByteArray biome tag
-		else if (biomeTag instanceof ByteArrayTag)
-		{
-			byte[] biomeData = levelTag.getByteArray("Biomes");
-			
-			for(int x = 0; x < CHUNK_SIZE; x++) 
-			{
-				for(int z = 0; z < CHUNK_SIZE; z++) 
-				{
-					biome[x][z] = getPositiveByte(biomeData[getIndex(x, z)]);
+					for(int y = 0; y < 128; y++) 
+					{
+						blocks[x][y][z] = getPositiveByte(blockData[index]);
+						metadata[x][y][z] = getHalfIndexValue(metadataData, x, y, z);
+						index++;
+					}
+					biome[x][z] = Biome.FOREST.id;
 				}
 			}
 		}
@@ -113,6 +138,26 @@ public class OldChunk extends Chunk
 	private int getPositiveByte(byte b) 
 	{
 		return (int)(b & 0xFF);
+	}
+	
+	/**
+	 * Gets a two byte integer from a byte array 
+	 * @param data
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @return
+	 */
+	private int getDoubleByte(byte[] data, int x, int y, int z)
+	{
+		int index = getIndex(x, y, z);
+		int result;
+		
+		result = (int)(data[index] & 0xFF);
+		result <<= 2;
+		result |= (int)(data[index + 1] & 0xFF);
+		
+		return result;
 	}
 	
 	/**
