@@ -35,7 +35,10 @@ public class Dimension
 	protected int chunkWidth;
 	protected int chunkXOffset;
 	protected int chunkZOffset;
+	protected int totalChunks;
+	protected int currentChunk;
 	protected File directory;
+	protected MapWorker worker;
 	private MapImage image;
 	
 	/**
@@ -183,11 +186,24 @@ public class Dimension
 	public void drawBlocksToBuffer(int startY, int endY, int maxX, int minX, int maxZ, int minZ)
 	{
 		File[] regions;
+		FileFilter mcaFilter = new FileFilter()
+		{
+
+			@Override
+			public boolean accept(File pathname) 
+			{
+				return pathname.getName().endsWith(".mca");
+			}
+	
+		};
 		
-		regions = directory.listFiles();
+		regions = directory.listFiles(mcaFilter);
+		int finishedRegions = -1;
 		
 		for (File regionFile : regions)
 		{
+			finishedRegions++;
+			
 			Region region;
 			Region upRegion;
 			Region rightRegion;
@@ -217,6 +233,9 @@ public class Dimension
 			if (Himeji.SHOW_ALL_EVENTS)
 				System.out.println("Reading " + regionName);
 			
+			Himeji.displayMessage(String.format("Reading %1$s; Completed %2$d/%3$d files",
+					regionName, finishedRegions, regions.length));
+			
 			region = new Region(regionFile);
 			upFile = new File(String.format(regionFile.getParent() + 
 					"r.%1$d.%2$d.mca", regionX, regionZ - 1));
@@ -234,6 +253,8 @@ public class Dimension
 			
 			for (int chunkX = 0; chunkX < REGION_SIZE; chunkX++)
 			{
+				currentChunk++;
+				
 				int absChunkX = chunkX + regionX * 32; 
 				if (absChunkX < minX || absChunkX > maxX)
 					continue;
