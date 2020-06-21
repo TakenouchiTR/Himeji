@@ -121,7 +121,7 @@ public class OldChunk extends Chunk
 					for(int y = 0; y < 128; y++) 
 					{
 						blocks[x][y][z] = getPositiveByte(blockData[index]);
-						metadata[x][y][z] = getHalfIndexValue(metadataData, x, y, z);
+						metadata[x][y][z] = getHalfIndexValue(metadataData, index);
 						index++;
 					}
 					biome[x][z] = Biome.FOREST.id;
@@ -174,6 +174,21 @@ public class OldChunk extends Chunk
 	{
 		int result = 0;
 		int index = getIndex(x, y, z);
+		int halfIndex = index / 2;
+		boolean isEven = (index % 2) == 0;
+		byte b = data[halfIndex];
+		
+		if(isEven)
+		 	result = (int)(b & 0x0f);
+		else
+			result = (int)((b & 0xf0) >> 4);
+		
+		return result;
+	}
+	
+	private int getHalfIndexValue(byte[] data, int index) 
+	{
+		int result = 0;
 		int halfIndex = index / 2;
 		boolean isEven = (index % 2) == 0;
 		byte b = data[halfIndex];
