@@ -192,7 +192,8 @@ public class Dimension
 			@Override
 			public boolean accept(File pathname) 
 			{
-				return pathname.getName().endsWith(".mca");
+				return pathname.getName().endsWith(".mca") || 
+						pathname.getName().endsWith(".mcr");
 			}
 	
 		};
@@ -420,7 +421,7 @@ public class Dimension
 								
 								try
 								{
-								image.setPixel(xPos, zPos, curColor);
+									image.setPixel(xPos, zPos, curColor);
 								}
 								catch (Exception e)
 								{

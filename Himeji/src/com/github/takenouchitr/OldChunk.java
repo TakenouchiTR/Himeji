@@ -121,7 +121,7 @@ public class OldChunk extends Chunk
 					for(int y = 0; y < 128; y++) 
 					{
 						blocks[x][y][z] = getPositiveByte(blockData[index]);
-						metadata[x][y][z] = getHalfIndexValue(metadataData, index);
+						metadata[x][y][z] = 0;//getHalfIndexValue(metadataData, index);
 						index++;
 					}
 					biome[x][z] = Biome.FOREST.id;
@@ -138,26 +138,6 @@ public class OldChunk extends Chunk
 	private int getPositiveByte(byte b) 
 	{
 		return (int)(b & 0xFF);
-	}
-	
-	/**
-	 * Gets a two byte integer from a byte array 
-	 * @param data
-	 * @param x
-	 * @param y
-	 * @param z
-	 * @return
-	 */
-	private int getDoubleByte(byte[] data, int x, int y, int z)
-	{
-		int index = getIndex(x, y, z);
-		int result;
-		
-		result = (int)(data[index] & 0xFF);
-		result <<= 2;
-		result |= (int)(data[index + 1] & 0xFF);
-		
-		return result;
 	}
 	
 	/**
@@ -256,7 +236,7 @@ public class OldChunk extends Chunk
 				//Adds a blue effect to blocks under water
 				if (y != dy)
 				{
-					int waterColor = Block.getBlockColor(8, 0, biome[x][z]);
+					int waterColor = Block.getBlockColor("minecraft:water", biome[x][z]);
 					int a = 0;
 					int r = 0;
 					int g = 0;
@@ -311,7 +291,7 @@ public class OldChunk extends Chunk
 	public int getTopBlockY(int x, int z, int startY, int endY)
 	{
 		for(int y = startY; y >= endY; y--) 
-			if(Block.isBlockVisible(blocks[x][y][z])) 
+			if(Block.isBlockVisible(blocks[x][y][z], metadata[x][y][z])) 
 				return y;
 		
 		return 0;
@@ -331,7 +311,8 @@ public class OldChunk extends Chunk
 		for(int y = startY; y >= endY; y--) 
 		{
 			int block = blocks[x][y][z];
-			if(Block.isBlockVisible(block) && !Block.hasWaterColor(block, 0)) 
+			int meta = metadata[x][y][z];
+			if(Block.isBlockVisible(block, meta) && !Block.hasWaterColor(block, 0)) 
 				return y;
 		}
 		

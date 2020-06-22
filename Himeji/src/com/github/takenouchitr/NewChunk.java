@@ -157,7 +157,7 @@ public class NewChunk extends Chunk
 				//Adds a blue effect to blocks under water
 				if (y != dy)
 				{
-					int waterColor = Block.getBlockColor(8, 0, 
+					int waterColor = Block.getBlockColor("minecraft:water", 
 							biome[x / biomeWidth][y / biomeHeight][z / biomeWidth]);
 					int a = 0;
 					int r = 0;
@@ -218,19 +218,11 @@ public class NewChunk extends Chunk
 		for(int y = startY; y >= endY; y--) 
 		{
 			String blockName = blocks[x][y][z];
-			int[] idMeta = Block.getIdMeta(blockName);
-			if (idMeta != null)
-			{
-				if (Block.isBlockVisible(idMeta[0]))
-				{
-					return y;
-				}
-			}
-			else
-			{
-				return 0;
-			}
 			
+			if (Block.isBlockVisible(blockName))
+			{
+				return y;
+			}
 		}
 		return 0;
 	}
@@ -250,21 +242,13 @@ public class NewChunk extends Chunk
 		{
 			try
 			{
-			String blockName = blocks[x][y][z];
-			
-			int[] idMeta = Block.getIdMeta(blockName);
-			if (idMeta != null)
-			{
-				if (Block.isBlockVisible(idMeta[0]) && 
-					!Block.hasWaterColor(idMeta[0], idMeta[1]))
+				String blockName = blocks[x][y][z];
+				
+				if (Block.isBlockVisible(blockName) && 
+					!Block.hasWaterColor(blockName))
 				{
 					return y;
 				}
-			}
-			else
-			{
-				return 0;
-			}
 			}
 			catch (Exception e)
 			{

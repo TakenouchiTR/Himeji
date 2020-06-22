@@ -22,27 +22,27 @@ package com.github.takenouchitr;
 
 import java.io.File;
 import java.nio.file.Files;
-import java.util.Dictionary;
-import java.util.Hashtable;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 public class Block 
 {
-	private static int maxBlockId;
-	
-	private static boolean[] blockVisibility; 
-	private static int[][] biomeFoliage;
-	private static int[][] biomeGrass;
-	private static int[][] biomeWater;
-	private static int[][] blockColors;
 	private static int[] foliageColors;
 	private static int[] grassColors;
 	private static int[] waterColors;
-	private static Dictionary<String, int[]> blockDict;
+	private static String[][] legacyIds;
+	private static HashMap<String, int[]> blockDict;
+	private static HashMap<String, Integer> colors;
+	private static HashSet<String> foliage;
+	private static HashSet<String> grass;
+	private static HashSet<String> water;
+	private static HashSet<String> invisible;
 	
 	private int blockID;
 	private int metadata;
 	
+	/*
 	public static void loadFiles()
 	{
 		final String DATA_FOLDER = Himeji.DATA_FOLDER;
@@ -74,6 +74,77 @@ public class Block
 		
 		input = new File(DATA_FOLDER + Himeji.NAMESPACED_ID_FILE);
 		blockDict = loadDictionary(input);
+	}
+	*/
+	public static void loadFiles()
+	{
+		final String DATA_FOLDER = Himeji.DATA_FOLDER;
+		colors = new HashMap<>();
+		
+		try
+		{
+			File file = new File(DATA_FOLDER + Himeji.BLOCK_COLORS_FILE);
+			List<String> items = Files.readAllLines(file.toPath());
+			
+			for (String s : items)
+			{
+				String[] split = s.split("[,]");
+				colors.put(split[0], Integer.parseInt(split[1]));
+			}
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		
+		foliage = loadStringList(new File(DATA_FOLDER + Himeji.FOLIAGE_FILE));
+		grass = loadStringList(new File(DATA_FOLDER + Himeji.GRASS_FILE));
+		water = loadStringList(new File(DATA_FOLDER + Himeji.WATER_FILE));
+		invisible = loadStringList(new File(DATA_FOLDER + Himeji.INVISIBLE_FILE));
+				
+		foliageColors = loadIntArray(new File(DATA_FOLDER + Himeji.FOLIAGE_COLORS_FILE));
+		grassColors = loadIntArray(new File(DATA_FOLDER + Himeji.GRASS_COLORS_FILE));
+		waterColors = loadIntArray(new File(DATA_FOLDER + Himeji.WATER_COLORS_FILE));
+		
+		try
+		{
+			File file = new File(DATA_FOLDER + Himeji.LEGACY_ID_FILE);
+			List<String> items = Files.readAllLines(file.toPath());
+			
+			legacyIds = new String[items.size()][];
+			
+			int index = 0;
+			for (String s : items)
+			{
+				String[] split = s.split("[,]");
+				legacyIds[index] = split;
+				
+				index++;
+			}
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	private static HashSet<String> loadStringList(File file)
+	{
+		HashSet<String> result = new HashSet<>();
+		
+		try
+		{
+			List<String> items = Files.readAllLines(file.toPath());
+			
+			for (String s : items)
+				result.add(s);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		
+		return result;
 	}
 	
 	private static int[][] load2DIntArray(File file)
@@ -148,7 +219,7 @@ public class Block
 		return null;
 	}
 	
-	private static Dictionary<String, int[]> loadDictionary(File file)
+	private static HashMap<String, int[]> loadDictionary(File file)
 	{
 		try
 		{
@@ -156,7 +227,7 @@ public class Block
 			
 			int size = items.size();
 			
-			Dictionary<String, int[]> dict = new Hashtable<String, int[]>();
+			HashMap<String, int[]> dict = new HashMap<String, int[]>();
 			
 			for (int i = 0; i < size; i++)
 			{
@@ -186,11 +257,21 @@ public class Block
 	 */
 	public static boolean hasFoliageColor(int id, int meta)
 	{
-		for (int i = 0; i < biomeFoliage.length; i++)
-			if (id == biomeFoliage[i][0] && meta == biomeFoliage[i][1])
-				return true;
+		String namespaceID = legacyIds[id][meta];
 		
-		return false;
+		return foliage.contains(namespaceID);
+	}
+	
+	/**
+	 * Checks whether a block is changes colors depending on the biome using the 
+	 *   foliage colors.
+	 * @param id   ID of the block
+	 * @param meta Metadata of the block
+	 * @return     true iff the block/metadata combination is in biomeFoliage 
+	 */
+	public static boolean hasFoliageColor(String id)
+	{
+		return foliage.contains(id);
 	}
 
 	/**
@@ -202,11 +283,21 @@ public class Block
 	 */
 	public static boolean hasWaterColor(int id, int meta)
 	{
-		for (int i = 0; i < biomeWater.length; i++)
-			if (id == biomeWater[i][0] && meta == biomeWater[i][1])
-				return true;
+		String namespaceID = legacyIds[id][meta];
 		
-		return false;
+		return water.contains(namespaceID);
+	}
+	
+	/**
+	 * Checks whether a block is changes colors depending on the biome using the
+	 *   grass colors.
+	 * @param id   ID of the block
+	 * @param meta Metadata of the block
+	 * @return     true iff the block/metadata combination is in biomeFoliage 
+	 */
+	public static boolean hasWaterColor(String id)
+	{
+		return water.contains(id);
 	}
 	
 	/**
@@ -218,11 +309,21 @@ public class Block
 	 */
 	public static boolean hasGrassColor(int id, int meta)
 	{
-		for (int i = 0; i < biomeGrass.length; i++)
-			if (id == biomeGrass[i][0] && meta == biomeGrass[i][1])
-				return true;
+		String namespaceID = legacyIds[id][meta];
 		
-		return false;
+		return grass.contains(namespaceID);
+	}
+	
+	/**
+	 * Checks whether a block is changes colors depending on the biome using the
+	 *   grass colors.
+	 * @param id   ID of the block
+	 * @param meta Metadata of the block
+	 * @return     true iff the block/metadata combination is in biomeFoliage 
+	 */
+	public static boolean hasGrassColor(String id)
+	{
+		return grass.contains(id);
 	}
 	
 	/**
@@ -231,11 +332,19 @@ public class Block
 	 * @param id Pre-flattening block id
 	 * @return   true if the block should be rendered, false if the block should be skipped
 	 */
-	public static boolean isBlockVisible(int id)
+	public static boolean isBlockVisible(int id, int meta)
 	{
-		if (id < maxBlockId)
-			return blockVisibility[id];
-		return false;
+		String namespaceID;
+		try
+		{
+			namespaceID = legacyIds[id][meta];
+		
+			return !invisible.contains(namespaceID);
+		}
+		catch (Exception e)
+		{
+			return false;
+		}
 	}
 	
 	/**
@@ -246,12 +355,7 @@ public class Block
 	 */
 	public static boolean isBlockVisible(String id)
 	{
-		//Gets the pre-flattening ID of the block
-		int[] idMeta = getIdMeta(id);
-		
-		if (idMeta[0] <= maxBlockId)
-			return blockVisibility[idMeta[0]];
-		return false;
+		return !invisible.contains(id);
 	}
 
 	/**
@@ -284,6 +388,8 @@ public class Block
 		return waterColors[biome];
 	}
 	
+	
+	
 	/**
 	 * Gets the color of a block to be rendered using the pre-flattening block ID and metadata.
 	 * @param id   Pre-flattening block ID
@@ -292,29 +398,47 @@ public class Block
 	 */
 	public static int getBlockColor(int id, int meta, int biome)
 	{
-		if (id >= blockColors.length || blockColors[id].length == 0)
-			return 0;
+		if (id >= legacyIds.length || legacyIds[id] == null ||
+				legacyIds[id].length == 0)
+			return 0xFF000000;
 		
+		String namespaceId = legacyIds[id][meta];
+		
+		return getBlockColor(namespaceId, biome);
+	}
+	
+	public static int getBlockColor(String namespaceId)
+	{
+		return colors.get(namespaceId);
+	}
+	
+	/**
+	 * Gets the color of a block to be rendered using the post-flattening block ID.
+	 * @param id   Post-flattening block ID
+	 * @return     int representation of an ARGB value
+	 */
+	public static int getBlockColor(String id, int biome)
+	{
 		int color;
 		int secondColor = 0;
 		boolean blend = false;
 		
-		color = blockColors[id][Math.min(meta, blockColors[id].length - 1)];
+		color = colors.get(id);
 		
 		if (Himeji.getProperty(Property.RENDER_BIOME_COLORS).equals("false"))
 			return color;
 		
-		if (hasFoliageColor(id, meta))
+		if (hasFoliageColor(id))
 		{
 			secondColor = getFoliageColor(biome);
 			blend = true;
 		}
-		else if (hasGrassColor(id, meta))
+		else if (hasGrassColor(id))
 		{
 			secondColor = getGrassColor(biome);
 			blend = true;
 		}
-		else if (hasWaterColor(id, meta))
+		else if (hasWaterColor(id))
 		{
 			secondColor = getWaterColor(biome);
 			blend = true;
@@ -349,26 +473,25 @@ public class Block
 	}
 	
 	/**
-	 * Gets the color of a block to be rendered using the post-flattening block ID.
-	 * @param id   Post-flattening block ID
-	 * @return     int representation of an ARGB value
-	 */
-	public static int getBlockColor(String id, int biome)
-	{
-		if (id == null)
-			return 0;
-		int[] idMeta = blockDict.get(id);
-		return getBlockColor(idMeta[0], idMeta[1], biome);
-	}
-	
-	/**
 	 * Gets the program's internal ID and metadata for a block's namespace ID. 
 	 * @param namespaceID a block's Minecraft namespace ID
 	 * @return            int array containing the ID and metadata for a block
-	 */
+	 *
 	public static int[] getIdMeta(String namespaceID)
 	{
 		return blockDict.get(namespaceID);
+	}
+	*/
+	
+	
+	public static void setBlockColor(String id, int color)
+	{
+		colors.put(id, color);
+	}
+	
+	public static HashMap<String, int[]> getBlockDict()
+	{
+		return blockDict;
 	}
 	
 	/**
