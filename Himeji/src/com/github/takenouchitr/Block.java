@@ -404,7 +404,7 @@ public class Block
 	
 	public static int getBlockColor(String namespaceId)
 	{
-		return colors.get(namespaceId);
+		return colors.containsKey(namespaceId) ? colors.get(namespaceId) : 0xFF00FFFF;
 	}
 	
 	/**
