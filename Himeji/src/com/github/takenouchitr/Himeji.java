@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Properties;
+import java.util.Scanner;
 import java.awt.event.*;
 import java.awt.SystemColor;
 import java.awt.Toolkit;
@@ -40,14 +41,13 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 
 @SuppressWarnings("serial")
-public class Himeji extends JFrame implements ActionListener, ItemListener, WindowListener
+public class Himeji extends JFrame implements ActionListener, ItemListener
 {
 	public static final boolean SHOW_ALL_EVENTS = true;
 	public static final String SAVE_FOLDER = System.getenv("APPDATA") + "/.minecraft/saves/";
 	public static final String DATA_FOLDER = "data/";
 	public static final String PROPERTIES_FILE = "config.properties";
 	public static final String BLOCK_COLORS_FILE = "colors.csv";
-	public static final String NAMESPACED_ID_FILE = "namespace.csv";
 	public static final String FOLIAGE_FILE = "foliage.csv";
 	public static final String FOLIAGE_COLORS_FILE = "foliage_colors.csv";
 	public static final String GRASS_FILE = "grass.csv";
@@ -55,13 +55,15 @@ public class Himeji extends JFrame implements ActionListener, ItemListener, Wind
 	public static final String WATER_FILE = "water.csv";
 	public static final String WATER_COLORS_FILE = "water_colors.csv";
 	public static final String INVISIBLE_FILE = "invis.csv";
+	public static final String LEGACY_ID_FILE = "legacyIds.csv";
 	
 	private static JButton btn_folder, btn_start, btn_setBounds, btn_output;
 	private static JTextField txt_worldPath, txt_output;
 	private static JCheckBox chk_renderUnderWater, chk_renderShadows, chk_renderBiomes;
 	private static JMenuBar bar_menu;
-	private static JMenuItem itm_exit;
+	private static JMenuItem itm_exit, itm_colors;
 	private static BoundsFrame boundsFrame;
+	private static ColorPickerFrame colorFrame;
 	private static JPanel pnl_log;
 	private static JLabel lbl_log;
 	private static Properties props;
@@ -69,7 +71,6 @@ public class Himeji extends JFrame implements ActionListener, ItemListener, Wind
 	public static void main(String[] args) 
 	{
 		checkFiles();
-		
 		
 		Block.loadFiles();
 		
@@ -90,6 +91,7 @@ public class Himeji extends JFrame implements ActionListener, ItemListener, Wind
 				window.setVisible(true);
 			}
 		});
+		
 	}
 	
 	/**
@@ -106,9 +108,9 @@ public class Himeji extends JFrame implements ActionListener, ItemListener, Wind
 		if (!blocksFile.exists())
 			copyFromResource(BLOCK_COLORS_FILE);
 		
-		File idFile = new File(DATA_FOLDER + NAMESPACED_ID_FILE);
+		File idFile = new File(DATA_FOLDER + LEGACY_ID_FILE);
 		if (!idFile.exists())
-			copyFromResource(NAMESPACED_ID_FILE);
+			copyFromResource(LEGACY_ID_FILE);
 		
 		File foliageFile = new File(DATA_FOLDER + FOLIAGE_FILE);
 		if (!foliageFile.exists())
@@ -229,7 +231,6 @@ public class Himeji extends JFrame implements ActionListener, ItemListener, Wind
 		props.setProperty(prop.key, value);
 	}
 	
-
 	/**
 	 * Saves the program's Properties to file.
 	 */
@@ -310,7 +311,6 @@ public class Himeji extends JFrame implements ActionListener, ItemListener, Wind
 		return loadedProp;
 	}
 	
-	
 	public Himeji()
 	{
 		super("Himeji Map Viewer");
@@ -319,13 +319,14 @@ public class Himeji extends JFrame implements ActionListener, ItemListener, Wind
 		setResizable(false);
 		setLocationRelativeTo(null);
 		
-		boundsFrame = new BoundsFrame(props);
-		boundsFrame.addWindowListener(this);
+		boundsFrame = new BoundsFrame(props, this);
 		
-		//construct preComponents
+		//construct pre-components
         JMenu fileMenu = new JMenu("File");
+        JMenu menu_config = new JMenu("Config");
 
         //construct components
+        btn_setBounds = new JButton("Set Bounds");
         btn_folder = new JButton("World");
         txt_worldPath = new JTextField(400);
         chk_renderUnderWater = new JCheckBox("Render Underwater Blocks");
@@ -368,9 +369,13 @@ public class Himeji extends JFrame implements ActionListener, ItemListener, Wind
         bar_menu.setBounds(0, 0, 495, 25);
         btn_start.setBounds(415, 153, 65, 25);
         
-        btn_setBounds = new JButton("Set Bounds");
-        btn_setBounds.addActionListener(this);
-        btn_setBounds.setBounds(302, 154, 107, 23);
+        
+        bar_menu.add(menu_config);
+        
+        itm_colors = new JMenuItem("Block Colors");
+        menu_config.add(menu_config.add(itm_colors));
+        
+        btn_setBounds.setBounds(298, 154, 107, 23);
         getContentPane().add(btn_setBounds);
         
         btn_output = new JButton("Output");
@@ -401,13 +406,51 @@ public class Himeji extends JFrame implements ActionListener, ItemListener, Wind
         chk_renderUnderWater.addItemListener(this);
         chk_renderShadows.addItemListener(this);
         chk_renderBiomes.addItemListener(this);
+        itm_colors.addActionListener((e) -> openColorPicker());
+        btn_setBounds.addActionListener((e) -> openBoundsFrame());
         
-        addWindowListener(this);
-        
+        addWindowListener(new WindowListener() 
+        {
+
+        	@Override
+			public void windowActivated(WindowEvent arg0){}
+		
+			@Override
+			public void windowClosed(WindowEvent arg0) {}
+		
+			@Override
+			public void windowClosing(WindowEvent e)
+			{
+				Object source = e.getSource();
+				if (source == this)
+				{
+					setProperty(Property.WORLD_PATH, txt_worldPath.getText());
+					setProperty(Property.OUTPUT_PATH, txt_output.getText());
+					saveProperties();
+				}
+			}
+		
+			@Override
+			public void windowDeactivated(WindowEvent e) 
+			{
+				
+			}
+		
+			@Override
+			public void windowDeiconified(WindowEvent arg0){}
+		
+			@Override
+			public void windowIconified(WindowEvent arg0){}
+		
+			@Override
+			public void windowOpened(WindowEvent arg0){}
+		
+		        });
+		        
         applyProperties();
         
         setSize(500, pnl_log.getY() + pnl_log.getHeight() + bar_menu.getHeight() + 3);
-	}
+		}
 	
 	/**
 	 * Applies the values of the program's properties to the form components.
@@ -419,6 +462,25 @@ public class Himeji extends JFrame implements ActionListener, ItemListener, Wind
 		chk_renderUnderWater.setSelected(Boolean.parseBoolean(getProperty(Property.RENDER_UNDER_WATER)));
 		chk_renderShadows.setSelected(Boolean.parseBoolean(getProperty(Property.RENDER_SHADOWS)));
 		chk_renderBiomes.setSelected(Boolean.parseBoolean(getProperty(Property.RENDER_BIOME_COLORS)));
+	}
+	
+	private void openColorPicker()
+	{
+		if (colorFrame == null)
+		{
+			colorFrame = new ColorPickerFrame(this);
+		}
+		
+		setEnabled(false);
+		colorFrame.setLocationRelativeTo(this);
+		colorFrame.setVisible(true);
+	}
+	
+	private void openBoundsFrame()
+	{
+		setEnabled(false);
+		boundsFrame.setLocationRelativeTo(this);
+		boundsFrame.setVisible(true);
 	}
 	
 	@Override
@@ -479,12 +541,6 @@ public class Himeji extends JFrame implements ActionListener, ItemListener, Wind
 				ex.printStackTrace();
 			}
 		}
-		else if (source == btn_setBounds)
-		{
-			setEnabled(false);
-			boundsFrame.setLocationRelativeTo(this);
-			boundsFrame.setVisible(true);
-		}
 		else if (source == itm_exit)
 		{
 			dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
@@ -503,42 +559,4 @@ public class Himeji extends JFrame implements ActionListener, ItemListener, Wind
 		if (chk_renderBiomes == source)
 			setProperty(Property.RENDER_BIOME_COLORS, "" + chk_renderBiomes.isSelected());
 	}
-	
-@Override
-	public void windowActivated(WindowEvent arg0){}
-
-	@Override
-	public void windowClosed(WindowEvent arg0) {}
-
-	@Override
-	public void windowClosing(WindowEvent e)
-	{
-		Object source = e.getSource();
-		if (source == this)
-		{
-			setProperty(Property.WORLD_PATH, txt_worldPath.getText());
-			setProperty(Property.OUTPUT_PATH, txt_output.getText());
-			saveProperties();
-		}
 	}
-
-	@Override
-	public void windowDeactivated(WindowEvent e) 
-	{
-		Object source = e.getSource();
-		if (source == boundsFrame)
-		{
-			setEnabled(true);
-			this.toFront();
-		}
-	}
-
-	@Override
-	public void windowDeiconified(WindowEvent arg0){}
-
-	@Override
-	public void windowIconified(WindowEvent arg0){}
-
-	@Override
-	public void windowOpened(WindowEvent arg0){}
-}

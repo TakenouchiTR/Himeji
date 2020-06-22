@@ -55,10 +55,12 @@ public class BoundsFrame extends JFrame implements ActionListener, ItemListener,
 	private JSpinner spn_maxX, spn_minX, spn_maxZ, spn_minZ, spn_maxY, spn_minY;
 	private JRadioButton rad_overworld, rad_nether, rad_end;
 	private Properties props;
+	private Himeji himeji;
 	
-	public BoundsFrame(Properties props) 
+	public BoundsFrame(Properties props, Himeji himeji) 
 	{
 		this.props = props;
+		this.himeji = himeji;
 		
 		setType(Type.UTILITY);
 		setTitle("Set Bounds");
@@ -156,7 +158,7 @@ public class BoundsFrame extends JFrame implements ActionListener, ItemListener,
 		flowLayout.setAlignment(FlowLayout.LEFT);
 		pnl_chunks.add(pnl_chunksBottom, BorderLayout.SOUTH);
 		
-		chk_chunks = new JCheckBox("Render only in area");
+		chk_chunks = new JCheckBox("Use render area");
 		chk_chunks.setToolTipText("Render one the area within the specified chunk bounds.");
 		chk_chunks.addItemListener(this);
 		pnl_chunksBottom.add(chk_chunks);
@@ -309,9 +311,9 @@ public class BoundsFrame extends JFrame implements ActionListener, ItemListener,
 	}
 
 	@Override
-	public void windowClosing(WindowEvent arg0) {
-		// TODO Auto-generated method stub
-		
+	public void windowClosing(WindowEvent arg0) 
+	{
+		himeji.setEnabled(true);
 	}
 
 	@Override
