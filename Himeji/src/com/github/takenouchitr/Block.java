@@ -21,6 +21,7 @@
 package com.github.takenouchitr;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -32,7 +33,6 @@ public class Block
 	private static int[] grassColors;
 	private static int[] waterColors;
 	private static String[][] legacyIds;
-	private static HashMap<String, int[]> blockDict;
 	private static HashMap<String, Integer> colors;
 	private static HashSet<String> foliage;
 	private static HashSet<String> grass;
@@ -42,40 +42,6 @@ public class Block
 	private int blockID;
 	private int metadata;
 	
-	/*
-	public static void loadFiles()
-	{
-		final String DATA_FOLDER = Himeji.DATA_FOLDER;
-		
-		File input = new File(DATA_FOLDER + Himeji.BLOCK_COLORS_FILE);
-		blockColors = load2DIntArray(input);
-		maxBlockId = blockColors.length - 1;
-		
-		input = new File(DATA_FOLDER + Himeji.FOLIAGE_FILE);
-		biomeFoliage = load2DIntArray(input);
-		
-		input = new File(DATA_FOLDER + Himeji.GRASS_FILE);
-		biomeGrass = load2DIntArray(input);
-		
-		input = new File(DATA_FOLDER + Himeji.WATER_FILE);
-		biomeWater = load2DIntArray(input);
-		
-		input = new File(DATA_FOLDER + Himeji.FOLIAGE_COLORS_FILE);
-		foliageColors = loadIntArray(input);
-		
-		input = new File(DATA_FOLDER + Himeji.GRASS_COLORS_FILE);
-		grassColors = loadIntArray(input);
-		
-		input = new File(DATA_FOLDER + Himeji.WATER_COLORS_FILE);
-		waterColors = loadIntArray(input);
-		
-		input = new File(DATA_FOLDER + Himeji.INVISIBLE_FILE);
-		blockVisibility = loadBooleanArray(input);
-		
-		input = new File(DATA_FOLDER + Himeji.NAMESPACED_ID_FILE);
-		blockDict = loadDictionary(input);
-	}
-	*/
 	public static void loadFiles()
 	{
 		final String DATA_FOLDER = Himeji.DATA_FOLDER;
@@ -122,6 +88,24 @@ public class Block
 				index++;
 			}
 		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	public static void saveColorFile()
+	{
+		File file = new File(Himeji.DATA_FOLDER + Himeji.BLOCK_COLORS_FILE);
+		try
+		{
+			FileWriter writer = new FileWriter(file);
+			
+			for (String s : colors.keySet())
+				writer.write(s + ',' + colors.get(s) + '\n');
+			
+			writer.close();
+		} 
 		catch (Exception e)
 		{
 			e.printStackTrace();
@@ -257,9 +241,9 @@ public class Block
 	 */
 	public static boolean hasFoliageColor(int id, int meta)
 	{
-		String namespaceID = legacyIds[id][meta];
+		String namespaceId = getNamespacedId(id, meta);
 		
-		return foliage.contains(namespaceID);
+		return foliage.contains(namespaceId);
 	}
 	
 	/**
@@ -283,9 +267,9 @@ public class Block
 	 */
 	public static boolean hasWaterColor(int id, int meta)
 	{
-		String namespaceID = legacyIds[id][meta];
+		String namespaceId = getNamespacedId(id, meta);
 		
-		return water.contains(namespaceID);
+		return water.contains(namespaceId);
 	}
 	
 	/**
@@ -309,9 +293,9 @@ public class Block
 	 */
 	public static boolean hasGrassColor(int id, int meta)
 	{
-		String namespaceID = legacyIds[id][meta];
+		String namespaceId = getNamespacedId(id, meta);
 		
-		return grass.contains(namespaceID);
+		return grass.contains(namespaceId);
 	}
 	
 	/**
@@ -326,6 +310,24 @@ public class Block
 		return grass.contains(id);
 	}
 	
+	public static String getNamespacedId(int id, int meta)
+	{
+		String namespaceID = null;
+		try
+		{
+			if (legacyIds[id] != null && legacyIds[id].length > meta)
+				namespaceID = legacyIds[id][meta];
+			else
+				namespaceID = legacyIds[id][0];
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		
+		return namespaceID;
+	}
+	
 	/**
 	 * Checks if a block with a certain pre-flattening ID is false on the blockVisibility array.
 	 * Invisible blocks will be skipped when determining the top block of a map.
@@ -334,17 +336,7 @@ public class Block
 	 */
 	public static boolean isBlockVisible(int id, int meta)
 	{
-		String namespaceID;
-		try
-		{
-			namespaceID = legacyIds[id][meta];
-		
-			return !invisible.contains(namespaceID);
-		}
-		catch (Exception e)
-		{
-			return false;
-		}
+		return !invisible.contains(getNamespacedId(id, meta));
 	}
 	
 	/**
@@ -388,8 +380,6 @@ public class Block
 		return waterColors[biome];
 	}
 	
-	
-	
 	/**
 	 * Gets the color of a block to be rendered using the pre-flattening block ID and metadata.
 	 * @param id   Pre-flattening block ID
@@ -402,9 +392,14 @@ public class Block
 				legacyIds[id].length == 0)
 			return 0xFF000000;
 		
-		String namespaceId = legacyIds[id][meta];
+		String namespaceId = getNamespacedId(id, meta);
 		
 		return getBlockColor(namespaceId, biome);
+	}
+	
+	public static boolean idExists(String id)
+	{
+		return colors.containsKey(id);
 	}
 	
 	public static int getBlockColor(String namespaceId)
@@ -483,15 +478,14 @@ public class Block
 	}
 	*/
 	
-	
 	public static void setBlockColor(String id, int color)
 	{
 		colors.put(id, color);
 	}
 	
-	public static HashMap<String, int[]> getBlockDict()
+	public static HashMap<String, Integer> getColors()
 	{
-		return blockDict;
+		return colors;
 	}
 	
 	/**
