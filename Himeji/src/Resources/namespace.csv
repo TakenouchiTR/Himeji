@@ -193,7 +193,7 @@ minecraft:lime_carpet,171,5
 minecraft:cauldron,118,0
 minecraft:crimson_sign,63,6
 minecraft:tripwire_hook,131,0
-minecraft:attached_melon_stem,104,1
+minecraft:attached_melon_stem,105,1
 minecraft:seagrass,260,0
 minecraft:chiseled_sandstone,24,1
 minecraft:granite_stairs,259,0
@@ -670,7 +670,7 @@ minecraft:cyan_concrete,251,9
 minecraft:dead_brain_coral,275,0
 minecraft:potted_pink_tulip,296,18
 minecraft:dark_oak_stairs,164,0
-minecraft:attached_pumpkin_stem,105,1
+minecraft:attached_pumpkin_stem,104,1
 minecraft:jungle_fence,190,0
 minecraft:orange_tulip,38,5
 minecraft:red_nether_brick_slab,44,26
