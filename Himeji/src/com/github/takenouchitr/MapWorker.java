@@ -21,8 +21,10 @@
 package com.github.takenouchitr;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
 
 public class MapWorker extends SwingWorker<Void, String>
@@ -30,6 +32,8 @@ public class MapWorker extends SwingWorker<Void, String>
 	@Override
 	protected Void doInBackground() throws Exception 
 	{
+		Himeji.log("Starting worker");
+		
 		File file = new File(Himeji.getProperty(Property.WORLD_PATH));
 		if (World.validateDir(file)) 
 		{
@@ -39,6 +43,7 @@ public class MapWorker extends SwingWorker<Void, String>
 			File dimFile;
 			
 			// TODO Check for whether the dimension exists
+			Himeji.log("Getting dimension");
 			String dimensionName = Himeji.getProperty(Property.DIMENSION);
 			switch(dimensionName)
 			{
@@ -75,9 +80,12 @@ public class MapWorker extends SwingWorker<Void, String>
 			}
 			else
 			{
+				Himeji.log("Creating dimension " + dimensionName + "...");
 				dim = new Dimension(dimFile);
 				
+				Himeji.log("Creating render grid");
 				dim.createRenderGrid();
+				Himeji.log("Render grid created");
 				
 				publish("Getting blocks...");
 				dim.drawBlocksToBuffer(startY, endY);
@@ -107,6 +115,29 @@ public class MapWorker extends SwingWorker<Void, String>
 	@Override
 	protected void done()
 	{
+		if (Block.getMissingIds().size() > 0)
+		{
+			int result = JOptionPane.showConfirmDialog(Himeji.frame,"Missing block IDs found. Would you like " + 
+				"to add them now?", "Missing IDs found", JOptionPane.YES_NO_OPTION,
+				JOptionPane.QUESTION_MESSAGE);
+			
+			if (result == JOptionPane.YES_OPTION)
+			{
+				List<String> ids = new ArrayList<String>();
+				for (String s : Block.getMissingIds())
+					ids.add(s);
+				
+				for (String s : ids)
+				{
+					Himeji.frame.addBlockId(s);
+					Block.setBlockColor(s, 0xFF000000);
+				}
+				
+				JOptionPane.showConfirmDialog(Himeji.frame, "Missing IDs have been added. You can " + 
+					"change block colors by going to config>block colors.\nNewly added IDs are " + 
+					"at the bottom of the list.", "Missing IDs added", JOptionPane.OK_OPTION);
+			}
+		}
 		Himeji.enableComponents();
 	}
 }

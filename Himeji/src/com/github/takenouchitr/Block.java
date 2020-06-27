@@ -29,6 +29,8 @@ import java.util.List;
 
 public class Block 
 {
+	public static final int MISSING_COLOR = 0xFFFF00FF;
+	
 	private static int[] foliageColors;
 	private static int[] grassColors;
 	private static int[] waterColors;
@@ -38,6 +40,7 @@ public class Block
 	private static HashSet<String> grass;
 	private static HashSet<String> water;
 	private static HashSet<String> invisible;
+	private static HashSet<String> missingIds;
 	
 	private int blockID;
 	private int metadata;
@@ -45,6 +48,7 @@ public class Block
 	public static void loadFiles()
 	{
 		final String DATA_FOLDER = Himeji.DATA_FOLDER;
+		missingIds = new HashSet<>();
 		colors = new HashMap<>();
 		
 		try
@@ -404,7 +408,14 @@ public class Block
 	
 	public static int getBlockColor(String namespaceId)
 	{
-		return colors.containsKey(namespaceId) ? colors.get(namespaceId) : 0xFF00FFFF;
+		if (colors.containsKey(namespaceId))
+			return colors.get(namespaceId);
+		else
+		{
+			missingIds.add(namespaceId);
+			return MISSING_COLOR;
+		}
+		
 	}
 	
 	/**
@@ -415,10 +426,11 @@ public class Block
 	public static int getBlockColor(String id, int biome)
 	{
 		int color;
-		int secondColor = 0;
+		int secondColor = 0xFF000000;
+		
 		boolean blend = false;
 		
-		color = colors.get(id);
+		color = getBlockColor(id);
 		
 		if (Himeji.getProperty(Property.RENDER_BIOME_COLORS).equals("false"))
 			return color;
@@ -477,10 +489,21 @@ public class Block
 		return blockDict.get(namespaceID);
 	}
 	*/
-	
 	public static void setBlockColor(String id, int color)
 	{
 		colors.put(id, color);
+		if (missingIds.contains(id))
+			missingIds.remove(id);
+	}
+	
+	public static void addMissingId(String id)
+	{
+		missingIds.add(id);
+	}
+	
+	public static HashSet<String> getMissingIds()
+	{
+		return missingIds;
 	}
 	
 	public static HashMap<String, Integer> getColors()

@@ -30,7 +30,6 @@ public class ColorPickerFrame extends JFrame
 	private JButton btn_update;
 	private JButton btn_save;
 	private JButton btn_add;
-	private Himeji himeji;
 	
 	public ColorPickerFrame(Himeji himeji) 
 	{

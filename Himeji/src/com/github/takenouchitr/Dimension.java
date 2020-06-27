@@ -51,7 +51,9 @@ public class Dimension
 		int[] size;
 		
 		directory = dimDir;
+		Himeji.log("Calculating dimension size...");
 		size = calcDimSize(dimDir);
+		Himeji.log("Setting bounds data");
 		setChunkWidth(size[0]);
 		setChunkHeight(size[1]);
 		chunkXOffset = size[2];
@@ -85,16 +87,23 @@ public class Dimension
 		int minHeight = Integer.MAX_VALUE;
 		int minWidth = Integer.MAX_VALUE;
 		
+		Himeji.log("Getting Region files");
 		File[] chunks = dimension.listFiles();
+		Himeji.log(chunks.length + " files found");
 
 		if (Himeji.SHOW_ALL_EVENTS)
 			System.out.println("Getting chunk files...");
+		
+		int counter = 0;
+		
 		for (File c : chunks)
 		{
 			String loc = c.getName();
+			counter++;
 
 			if (Himeji.SHOW_ALL_EVENTS)
 				System.out.printf("Checking file %s\n", loc);
+			Himeji.log(String.format("Checking file %1$s (%2$d)", loc, counter));
 			
 			String[] locSplit = loc.split("[.]");
 			
@@ -111,7 +120,8 @@ public class Dimension
 			if (fileWidth > maxWidth)
 				maxWidth = fileWidth;
 		}
-		
+		Himeji.log("Bounds files have been found");
+		Himeji.log("Calculating chunk size");
 		result[0] = (Math.abs(maxWidth - minWidth) + 1) * 32;
 		result[1] = (Math.abs(maxHeight - minHeight) + 1) * 32;
 		result[2] = -minWidth * 32;
@@ -199,7 +209,7 @@ public class Dimension
 		};
 		
 		regions = directory.listFiles(mcaFilter);
-		int finishedRegions = -1;
+		int finishedRegions = 0;
 		
 		for (File regionFile : regions)
 		{
@@ -234,7 +244,7 @@ public class Dimension
 			if (Himeji.SHOW_ALL_EVENTS)
 				System.out.println("Reading " + regionName);
 			
-			Himeji.displayMessage(String.format("Reading %1$s; Completed %2$d/%3$d files",
+			Himeji.displayMessage(String.format("Reading %1$s (%2$d/%3$d)",
 					regionName, finishedRegions, regions.length));
 			
 			region = new Region(regionFile);

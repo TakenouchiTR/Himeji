@@ -44,6 +44,9 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 public class Himeji extends JFrame implements ActionListener, ItemListener
 {
 	public static final boolean SHOW_ALL_EVENTS = true;
+	public static final boolean CREATE_LOG = false;
+	
+	public static Himeji frame;
 	public static final String SAVE_FOLDER = System.getenv("APPDATA") + "/.minecraft/saves/";
 	public static final String DATA_FOLDER = "data/";
 	public static final String PROPERTIES_FILE = "config.properties";
@@ -67,6 +70,10 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
 	private static JPanel pnl_log;
 	private static JLabel lbl_log;
 	private static Properties props;
+	
+	private static FileWriter writer;
+	private static boolean isWriting;
+	private static Object key = new Object();
 	
 	public static void main(String[] args) 
 	{
@@ -256,6 +263,31 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
 	public static void displayMessage(String message)
 	{
 		lbl_log.setText(message);
+		log(message);
+	}
+	
+	public static void log(String line)
+	{
+		if (!CREATE_LOG)
+			return;
+		
+		synchronized(key)
+		{
+			try
+			{
+				if (!isWriting)
+				{
+					isWriting = true;
+					writer = new FileWriter(new File("data/log.txt"));
+				}
+				
+				writer.write(line + '\n');
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	/**
@@ -311,14 +343,16 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
 		return loadedProp;
 	}
 	
-	public Himeji()
+	private Himeji()
 	{
 		super("Himeji Map Viewer");
+		frame = this;
 		setIconImage(Toolkit.getDefaultToolkit().getImage(Himeji.class.getResource("/Resources/Icons/64_icon.png")));
 		
 		setResizable(false);
 		setLocationRelativeTo(null);
 		
+		colorFrame = new ColorPickerFrame(this);
 		boundsFrame = new BoundsFrame(props, this);
 		
 		//construct pre-components
@@ -421,12 +455,20 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
 			@Override
 			public void windowClosing(WindowEvent e)
 			{
-				Object source = e.getSource();
-				if (source == this)
+				setProperty(Property.WORLD_PATH, txt_worldPath.getText());
+				setProperty(Property.OUTPUT_PATH, txt_output.getText());
+				saveProperties();
+				if (isWriting)
 				{
-					setProperty(Property.WORLD_PATH, txt_worldPath.getText());
-					setProperty(Property.OUTPUT_PATH, txt_output.getText());
-					saveProperties();
+					try
+					{
+						writer.close();
+					} 
+					catch (IOException e1)
+					{
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 				}
 			}
 		
@@ -445,11 +487,12 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
 			@Override
 			public void windowOpened(WindowEvent arg0){}
 		
-		        });
+        });
 		        
         applyProperties();
         
         setSize(500, pnl_log.getY() + pnl_log.getHeight() + bar_menu.getHeight() + 3);
+        setLocation(getX() - getWidth() / 2, getY() - getHeight() / 2);
 		}
 	
 	/**
@@ -478,9 +521,17 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
 	
 	private void openBoundsFrame()
 	{
+		if (boundsFrame == null)
+			boundsFrame = new BoundsFrame(props, this);
+		
 		setEnabled(false);
 		boundsFrame.setLocationRelativeTo(this);
 		boundsFrame.setVisible(true);
+	}
+	
+	public void addBlockId(String id)
+	{
+		colorFrame.addBlockId(id);
 	}
 	
 	@Override
@@ -505,6 +556,8 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
 			{
 				File file = fileChooser.getSelectedFile();
 				String path = file.getPath();
+				if (!path.endsWith(".png"))
+					path += ".png";
 				txt_output.setText(path);
 			}
 		}
@@ -559,4 +612,4 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
 		if (chk_renderBiomes == source)
 			setProperty(Property.RENDER_BIOME_COLORS, "" + chk_renderBiomes.isSelected());
 	}
-	}
+}
