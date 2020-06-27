@@ -98,7 +98,7 @@ public class AddBlockFrame extends JFrame
 	
 	private void addPress()
 	{
-		String id = txt_id.getText();
+		String id = txt_id.getText().toLowerCase();
 		
 		if (Block.idExists(id))
 		{
