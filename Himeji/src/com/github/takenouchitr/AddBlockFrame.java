@@ -45,7 +45,7 @@ public class AddBlockFrame extends JFrame
 		
 		btn_add.addActionListener((e) -> addPress());
 		btn_cancel.addActionListener((e) -> cancelPress());
-		super.addWindowListener(new WindowListener()
+		addWindowListener(new WindowListener()
 		{
 
 			@Override
