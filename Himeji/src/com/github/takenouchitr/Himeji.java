@@ -29,7 +29,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Properties;
-import java.util.Scanner;
 import java.awt.event.*;
 import java.awt.SystemColor;
 import java.awt.Toolkit;
@@ -65,11 +64,13 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
 	private static JCheckBox chk_renderUnderWater, chk_renderShadows, chk_renderBiomes;
 	private static JMenuBar bar_menu;
 	private static JMenuItem itm_exit, itm_colors;
-	private static BoundsFrame boundsFrame;
-	private static ColorPickerFrame colorFrame;
 	private static JPanel pnl_log;
 	private static JLabel lbl_log;
 	private static Properties props;
+	
+	private static BoundsFrame boundsFrame;
+	private static ColorPickerFrame colorFrame;
+	private static BiomeFrame biomeFrame;
 	
 	private static FileWriter writer;
 	private static boolean isWriting;
@@ -266,6 +267,7 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
 		log(message);
 	}
 	
+	@SuppressWarnings("unused")
 	public static void log(String line)
 	{
 		if (!CREATE_LOG)
@@ -275,7 +277,7 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
 		{
 			try
 			{
-				if (!isWriting)
+				if (!isWriting && CREATE_LOG)
 				{
 					isWriting = true;
 					writer = new FileWriter(new File("data/log.txt"));
@@ -354,6 +356,7 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
 		
 		colorFrame = new ColorPickerFrame(this);
 		boundsFrame = new BoundsFrame(props, this);
+		biomeFrame = new BiomeFrame(this);
 		
 		//construct pre-components
         JMenu fileMenu = new JMenu("File");
@@ -409,6 +412,12 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
         itm_colors = new JMenuItem("Block Colors");
         menu_config.add(menu_config.add(itm_colors));
         
+        JMenuItem itm_blockFlags = new JMenuItem("Block Flags");
+        menu_config.add(itm_blockFlags);
+        
+        JMenuItem itm_biomeColors = new JMenuItem("Biome Colors");
+        menu_config.add(itm_biomeColors);
+        
         btn_setBounds.setBounds(298, 154, 107, 23);
         getContentPane().add(btn_setBounds);
         
@@ -441,6 +450,7 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
         chk_renderShadows.addItemListener(this);
         chk_renderBiomes.addItemListener(this);
         itm_colors.addActionListener((e) -> openColorPicker());
+        itm_biomeColors.addActionListener((e) -> openBiomeFrame());
         btn_setBounds.addActionListener((e) -> openBoundsFrame());
         
         addWindowListener(new WindowListener() 
@@ -517,6 +527,18 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
 		setEnabled(false);
 		colorFrame.setLocationRelativeTo(this);
 		colorFrame.setVisible(true);
+	}
+	
+	private void openBiomeFrame()
+	{
+		if (biomeFrame == null)
+		{
+			biomeFrame = new BiomeFrame(this);
+		}
+		
+		setEnabled(false);
+		biomeFrame.setLocationRelativeTo(this);
+		biomeFrame.setVisible(true);
 	}
 	
 	private void openBoundsFrame()
