@@ -17,12 +17,11 @@ import javax.swing.JButton;
 import java.awt.Window.Type;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import javax.swing.SpinnerNumberModel;
 
 @SuppressWarnings("serial")
 public class ColorPickerFrame extends JFrame 
 {
-	private static int MAX_SPINNER_VALUE = 255;
-	
 	private JComboBox<String> com_namespaceIds;
 	private JSpinner spn_r, spn_g, spn_b;
 	private JPanel pnl_colorPreview;
@@ -44,14 +43,17 @@ public class ColorPickerFrame extends JFrame
 		getContentPane().add(com_namespaceIds);
 		
 		spn_r = new JSpinner();
+		spn_r.setModel(new SpinnerNumberModel(0, 0, 255, 1));
 		spn_r.setBounds(76, 73, 46, 20);
 		getContentPane().add(spn_r);
 		
 		spn_b = new JSpinner();
+		spn_b.setModel(new SpinnerNumberModel(0, 0, 255, 1));
 		spn_b.setBounds(76, 135, 46, 20);
 		getContentPane().add(spn_b);
 		
 		spn_g = new JSpinner();
+		spn_g.setModel(new SpinnerNumberModel(0, 0, 255, 1));
 		spn_g.setBounds(76, 104, 46, 20);
 		getContentPane().add(spn_g);
 		
@@ -94,14 +96,14 @@ public class ColorPickerFrame extends JFrame
 		getContentPane().add(btn_add);
 		
 		com_namespaceIds.addActionListener((e) -> loadColors());
-		spn_r.addChangeListener((e) -> updateSpinner(e));
-		spn_g.addChangeListener((e) -> updateSpinner(e));
-		spn_b.addChangeListener((e) -> updateSpinner(e));
+		spn_r.addChangeListener((e) -> updatePreview());
+		spn_g.addChangeListener((e) -> updatePreview());
+		spn_b.addChangeListener((e) -> updatePreview());
 		txt_hex.addActionListener((e) -> convertHex());
 		btn_update.addActionListener((e) -> saveChanges());
 		btn_save.addActionListener((e) -> saveToFile());
 		btn_add.addActionListener((e) -> openAddDialog());
-		this.addWindowListener(new WindowListener() 
+		addWindowListener(new WindowListener() 
 		{
 
 			@Override
@@ -248,25 +250,6 @@ public class ColorPickerFrame extends JFrame
 		spn_r.setValue(r);
 		spn_g.setValue(g);
 		spn_b.setValue(b);
-		
-		updatePreview();
-	}
-	
-	private void updateSpinner(ChangeEvent e)
-	{
-		JSpinner spinner = (JSpinner) e.getSource();
-		
-		int value = (Integer)spinner.getValue(); 
-		if (value > MAX_SPINNER_VALUE)
-		{
-			spinner.setValue(MAX_SPINNER_VALUE);
-			return;
-		}
-		if (value < 0)
-		{
-			spinner.setValue(0);
-			return;
-		}
 		
 		updatePreview();
 	}
