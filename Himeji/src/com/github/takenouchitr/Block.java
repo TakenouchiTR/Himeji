@@ -116,6 +116,34 @@ public class Block
 		}
 	}
 	
+	public static void saveBiomeColorFiles()
+	{
+		File grassFile = new File(Himeji.DATA_FOLDER + Himeji.GRASS_COLORS_FILE);
+		File foliageFile = new File(Himeji.DATA_FOLDER + Himeji.FOLIAGE_COLORS_FILE);
+		File waterFile = new File(Himeji.DATA_FOLDER + Himeji.WATER_COLORS_FILE);
+		try
+		{
+			FileWriter grassWriter = new FileWriter(grassFile);
+			FileWriter foliageWriter = new FileWriter(foliageFile);
+			FileWriter waterWriter = new FileWriter(waterFile);
+			
+			for (int i = 0; i < grassColors.length; i++)
+			{
+				grassWriter.write(grassColors[i] + "\n");
+				foliageWriter.write(foliageColors[i] + "\n");
+				waterWriter.write(waterColors[i] + "\n");
+			}
+			
+			grassWriter.close();
+			foliageWriter.close();
+			waterWriter.close();
+		} 
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
 	private static HashSet<String> loadStringList(File file)
 	{
 		HashSet<String> result = new HashSet<>();
@@ -404,6 +432,36 @@ public class Block
 	public static boolean idExists(String id)
 	{
 		return colors.containsKey(id);
+	}
+	
+	public static int getGrassColor(Biome biome)
+	{
+		return grassColors[biome.id];
+	}
+	
+	public static int getFoliageColor(Biome biome)
+	{
+		return foliageColors[biome.id];
+	}
+	
+	public static int getWaterColor(Biome biome)
+	{
+		return waterColors[biome.id];
+	}
+	
+	public static void setGrassColor(Biome biome, int color)
+	{
+		grassColors[biome.id] = color;
+	}
+	
+	public static void setFoliageColor(Biome biome, int color)
+	{
+		foliageColors[biome.id] = color;
+	}
+	
+	public static void setWaterColor(Biome biome, int color)
+	{
+		waterColors[biome.id] = color;
 	}
 	
 	public static int getBlockColor(String namespaceId)
