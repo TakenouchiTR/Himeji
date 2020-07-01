@@ -1,4 +1,4 @@
-package com.takenouchitr.himeji;
+package com.takenouchitr.himeji.frames;
 
 import javax.swing.JFrame;
 

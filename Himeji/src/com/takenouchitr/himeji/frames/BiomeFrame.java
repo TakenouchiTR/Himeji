@@ -1,4 +1,4 @@
-package com.takenouchitr.himeji;
+package com.takenouchitr.himeji.frames;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -13,6 +13,12 @@ import java.util.List;
 
 import javax.swing.border.LineBorder;
 import javax.swing.event.ChangeEvent;
+
+import com.takenouchitr.himeji.Biome;
+import com.takenouchitr.himeji.Block;
+import com.takenouchitr.himeji.Himeji;
+import com.takenouchitr.himeji.ListBiome;
+
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JRadioButton;

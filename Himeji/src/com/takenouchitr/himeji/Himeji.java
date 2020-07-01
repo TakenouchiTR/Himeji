@@ -38,6 +38,10 @@ import javax.swing.*;
 import javax.swing.border.LineBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import com.takenouchitr.himeji.frames.BiomeFrame;
+import com.takenouchitr.himeji.frames.BoundsFrame;
+import com.takenouchitr.himeji.frames.ColorPickerFrame;
+
 
 @SuppressWarnings("serial")
 public class Himeji extends JFrame implements ActionListener, ItemListener

@@ -1,4 +1,4 @@
-package com.takenouchitr.himeji;
+package com.takenouchitr.himeji.frames;
 
 import javax.swing.JFrame;
 import javax.swing.JComboBox;
@@ -6,6 +6,9 @@ import javax.swing.JSpinner;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 import javax.swing.event.ChangeEvent;
+
+import com.takenouchitr.himeji.Block;
+import com.takenouchitr.himeji.Himeji;
 
 import java.awt.Color;
 import java.util.ArrayList;
