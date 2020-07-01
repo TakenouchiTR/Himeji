@@ -40,9 +40,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import com.takenouchitr.himeji.MCCompat.Block;
 import com.takenouchitr.himeji.MCCompat.World;
-import com.takenouchitr.himeji.frames.BiomeFrame;
-import com.takenouchitr.himeji.frames.BoundsFrame;
-import com.takenouchitr.himeji.frames.ColorPickerFrame;
+import com.takenouchitr.himeji.frames.*;
 
 
 @SuppressWarnings("serial")
@@ -77,6 +75,7 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
 	private static BoundsFrame boundsFrame;
 	private static ColorPickerFrame colorFrame;
 	private static BiomeFrame biomeFrame;
+	private static FlagsFrame flagsFrame;
 	
 	private static FileWriter writer;
 	private static boolean isWriting;
@@ -457,6 +456,7 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
         chk_renderBiomes.addItemListener(this);
         itm_colors.addActionListener((e) -> openColorPicker());
         itm_biomeColors.addActionListener((e) -> openBiomeFrame());
+        itm_blockFlags.addActionListener((e) -> openFlagsFrame());
         btn_setBounds.addActionListener((e) -> openBoundsFrame());
         
         addWindowListener(new WindowListener() 
@@ -557,6 +557,15 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
 		boundsFrame.setVisible(true);
 	}
 	
+	private void openFlagsFrame()
+	{
+		if (flagsFrame == null)
+			flagsFrame = new FlagsFrame();
+		
+		setEnabled(false);
+		flagsFrame.setLocationRelativeTo(this);
+		flagsFrame.setVisible(true);
+	}
 	@Override
 	public void actionPerformed(ActionEvent e) 
 	{

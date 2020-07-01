@@ -35,6 +35,11 @@ import com.takenouchitr.himeji.Property;
 public class Block 
 {
 	public static final int MISSING_COLOR = 0xFFFF00FF;
+	public static final int COLORS_LIST = 0;
+	public static final int INVISIBLE_LIST = 1;
+	public static final int GRASS_LIST = 2;
+	public static final int FOLIAGE_LIST = 3;
+	public static final int WATER_LIST = 4;
 	
 	private static int[] foliageColors;
 	private static int[] grassColors;
@@ -143,6 +148,46 @@ public class Block
 			grassWriter.close();
 			foliageWriter.close();
 			waterWriter.close();
+		} 
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	public static void saveFlagFile(int listID)
+	{
+		File file;
+		HashSet<String> list;
+		switch (listID)
+		{
+			case INVISIBLE_LIST:
+				file = new File(Himeji.DATA_FOLDER + Himeji.INVISIBLE_FILE);
+				list = invisible;
+				break;
+			case GRASS_LIST:
+				file = new File(Himeji.DATA_FOLDER + Himeji.GRASS_FILE);
+				list = grass;
+				break;
+			case FOLIAGE_LIST:
+				file = new File(Himeji.DATA_FOLDER + Himeji.FOLIAGE_FILE);
+				list = foliage;
+				break;
+			case WATER_LIST:
+				file = new File(Himeji.DATA_FOLDER + Himeji.WATER_FILE);
+				list = water;
+				break;
+			default: 
+				return;
+		}
+		try
+		{
+			FileWriter writer = new FileWriter(file);
+			
+			for (String s : list)
+				writer.write(s + "\n");
+			
+			writer.close();
 		} 
 		catch (Exception e)
 		{
@@ -543,6 +588,94 @@ public class Block
 		return color;
 	}
 	
+	public static List<String> getList(int listID)
+	{
+		HashSet<String> list = null;
+		switch(listID)
+		{
+			case INVISIBLE_LIST:
+				list = invisible;
+				break;
+			case GRASS_LIST:
+				list = grass;
+				break;
+			case FOLIAGE_LIST:
+				list = foliage;
+				break;
+			case WATER_LIST:
+				list = water;
+				break;
+			default:
+				return null;
+		}
+		
+		List<String> result = new ArrayList<>();
+		for (String s : list)
+			result.add(s);
+		
+		return result;
+	}
+	
+	public static void addIdToList(String id, int listID)
+	{
+		HashSet<String> list = null;
+		
+		switch(listID)
+		{
+			case INVISIBLE_LIST:
+				list = invisible;
+				break;
+			case GRASS_LIST:
+				list = grass;
+				break;
+			case FOLIAGE_LIST:
+				list = foliage;
+				break;
+			case WATER_LIST:
+				list = water;
+				break;
+			default:
+				return;
+		}
+		
+		if (list.contains(id))
+			return;
+		
+		list.add(id);
+		for (ListChangeListener lcl : listeners)
+			lcl.OnItemAddition(id, listID);
+	}
+	
+	public static void removeIdFromList(String id, int listID)
+	{
+		HashSet<String> list = null;
+		
+		switch(listID)
+		{
+			case INVISIBLE_LIST:
+				list = invisible;
+				break;
+			case GRASS_LIST:
+				list = grass;
+				break;
+			case FOLIAGE_LIST:
+				list = foliage;
+				break;
+			case WATER_LIST:
+				list = water;
+				break;
+			default:
+				return;
+		}
+		
+		if (!list.contains(id))
+			return;
+		
+		list.remove(id);
+		for (ListChangeListener lcl : listeners)
+			lcl.OnItemRemoval(id, listID);
+	}
+	
 	/**
 	 * Gets the program's internal ID and metadata for a block's namespace ID. 
 	 * @param namespaceID a block's Minecraft namespace ID
@@ -558,7 +691,7 @@ public class Block
 		if (!colors.containsKey(id))
 		{
 			for (ListChangeListener lcl : listeners)
-				lcl.OnItemAddition(id);
+				lcl.OnItemAddition(id, COLORS_LIST);
 		}
 		
 		colors.put(id, color);

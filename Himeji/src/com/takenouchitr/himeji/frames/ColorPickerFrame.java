@@ -274,15 +274,15 @@ public class ColorPickerFrame extends JFrame implements ListChangeListener
 
 	
 	@Override
-	public void OnItemAddition(String name)
+	public void OnItemAddition(String name, int listID)
 	{
-		addBlockId(name);
-		
+		if (listID == Block.COLORS_LIST)
+			addBlockId(name);
 	}
 
 	
 	@Override
-	public void OnItemUpdate(String oldName, String newName)
+	public void OnItemUpdate(String oldName, String newName, int listID)
 	{
 		// TODO Auto-generated method stub
 		
@@ -290,9 +290,8 @@ public class ColorPickerFrame extends JFrame implements ListChangeListener
 
 	
 	@Override
-	public void OnItemRemoval(String name)
+	public void OnItemRemoval(String name, int listID)
 	{
-		// TODO Auto-generated method stub
 		
 	}	
 }
