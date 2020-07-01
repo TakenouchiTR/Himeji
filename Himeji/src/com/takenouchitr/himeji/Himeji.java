@@ -18,7 +18,7 @@
     along with HMV.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.github.takenouchitr;
+package com.takenouchitr.himeji;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -43,7 +43,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 public class Himeji extends JFrame implements ActionListener, ItemListener
 {
 	public static final boolean SHOW_ALL_EVENTS = true;
-	public static final boolean CREATE_LOG = false;
+	public static final boolean CREATE_LOG = true;
 	
 	public static Himeji frame;
 	public static final String SAVE_FOLDER = System.getenv("APPDATA") + "/.minecraft/saves/";

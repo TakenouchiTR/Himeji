@@ -18,7 +18,7 @@
     along with HMV.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.github.takenouchitr;
+package com.takenouchitr.himeji;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -29,6 +29,8 @@ import javax.swing.SwingWorker;
 
 public class MapWorker extends SwingWorker<Void, String>
 {
+	public static final int GIGABYTE = 1_073_741_824;
+	
 	@Override
 	protected Void doInBackground() throws Exception 
 	{
@@ -70,6 +72,20 @@ public class MapWorker extends SwingWorker<Void, String>
 				int startZ = Integer.parseInt(Himeji.getProperty(Property.START_Z));
 				int endX = Integer.parseInt(Himeji.getProperty(Property.END_X));
 				int endZ = Integer.parseInt(Himeji.getProperty(Property.END_Z));
+				
+				long width = startX - endX;
+				long height = startZ - endZ;
+				long size = width * height * 4;
+				
+				if (size > 1_073_741_824)
+				{
+					publish("Expected filesize too large: " + size + " bytes");
+					
+					JOptionPane.showMessageDialog(Himeji.frame, "Image file expected to exceed 1GB (" + 
+						(size / GIGABYTE) + "GB).\nPlease restict the render area to reduce the size.",
+						"Image size warning", JOptionPane.WARNING_MESSAGE); 
+					return null;
+				}
 				
 				dim = new Dimension(dimFile, startX, endX, startZ, endZ);
 				
@@ -115,10 +131,11 @@ public class MapWorker extends SwingWorker<Void, String>
 	@Override
 	protected void done()
 	{
-		if (Block.getMissingIds().size() > 0)
+		int size = Block.getMissingIds().size();
+		if (size > 0)
 		{
-			int result = JOptionPane.showConfirmDialog(Himeji.frame,"Missing block IDs found. Would you like " + 
-				"to add them now?", "Missing IDs found", JOptionPane.YES_NO_OPTION,
+			int result = JOptionPane.showConfirmDialog(Himeji.frame,size + " missing block ID(s) found. " + 
+				"Would you like to add them now?", "Missing IDs found", JOptionPane.YES_NO_OPTION,
 				JOptionPane.QUESTION_MESSAGE);
 			
 			if (result == JOptionPane.YES_OPTION)
@@ -133,9 +150,10 @@ public class MapWorker extends SwingWorker<Void, String>
 					Block.setBlockColor(s, 0xFF000000);
 				}
 				
-				JOptionPane.showConfirmDialog(Himeji.frame, "Missing IDs have been added. You can " + 
-					"change block colors by going to config>block colors.\nNewly added IDs are " + 
-					"at the bottom of the list.", "Missing IDs added", JOptionPane.OK_OPTION);
+				JOptionPane.showMessageDialog(Himeji.frame, "Please see bottom of the list in " + 
+					"\"Config>Block Colors\" for the new ids.\nThe addition(s) are black by default and " + 
+					"are not saved automatically.\nPlease update the color and save them there.", 
+					"Missing IDs added", JOptionPane.INFORMATION_MESSAGE);
 			}
 		}
 		Himeji.enableComponents();

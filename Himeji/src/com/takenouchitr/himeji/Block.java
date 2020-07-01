@@ -18,7 +18,7 @@
     along with HMV.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.github.takenouchitr;
+package com.takenouchitr.himeji;
 
 import java.io.File;
 import java.io.FileWriter;

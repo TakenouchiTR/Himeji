@@ -1,4 +1,4 @@
-package com.github.takenouchitr;
+package com.takenouchitr.himeji;
 
 public class ListBiome implements Comparable
 {

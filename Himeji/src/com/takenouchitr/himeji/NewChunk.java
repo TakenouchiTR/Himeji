@@ -18,7 +18,7 @@
     along with HMV.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.github.takenouchitr;
+package com.takenouchitr.himeji;
 
 import com.mojang.nbt.CompoundTag;
 import com.mojang.nbt.ListTag;

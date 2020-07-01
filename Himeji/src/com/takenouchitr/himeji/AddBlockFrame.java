@@ -1,4 +1,4 @@
-package com.github.takenouchitr;
+package com.takenouchitr.himeji;
 
 import javax.swing.JFrame;
 import javax.swing.JTextField;
