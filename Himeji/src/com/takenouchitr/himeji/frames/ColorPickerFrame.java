@@ -8,6 +8,7 @@ import javax.swing.border.LineBorder;
 import javax.swing.event.ChangeEvent;
 
 import com.takenouchitr.himeji.Himeji;
+import com.takenouchitr.himeji.ListChangeListener;
 import com.takenouchitr.himeji.MCCompat.Block;
 
 import java.awt.Color;
@@ -23,7 +24,7 @@ import java.awt.event.WindowListener;
 import javax.swing.SpinnerNumberModel;
 
 @SuppressWarnings("serial")
-public class ColorPickerFrame extends JFrame 
+public class ColorPickerFrame extends JFrame implements ListChangeListener
 {
 	private JComboBox<String> com_namespaceIds;
 	private JSpinner spn_r, spn_g, spn_b;
@@ -157,6 +158,8 @@ public class ColorPickerFrame extends JFrame
 				
 			}});
 		
+		Block.addListChangeListener(this);
+		
 		loadBlockIds();
 	}
 	
@@ -267,5 +270,29 @@ public class ColorPickerFrame extends JFrame
 		int colorVal = getColorInt();
 		String hex = Integer.toHexString(colorVal);
 		txt_hex.setText(hex.toUpperCase().substring(2));
+	}
+
+	
+	@Override
+	public void OnItemAddition(String name)
+	{
+		addBlockId(name);
+		
+	}
+
+	
+	@Override
+	public void OnItemUpdate(String oldName, String newName)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	
+	@Override
+	public void OnItemRemoval(String name)
+	{
+		// TODO Auto-generated method stub
+		
 	}	
 }

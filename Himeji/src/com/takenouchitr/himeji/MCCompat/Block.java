@@ -23,11 +23,13 @@ package com.takenouchitr.himeji.MCCompat;
 import java.io.File;
 import java.io.FileWriter;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
 import com.takenouchitr.himeji.Himeji;
+import com.takenouchitr.himeji.ListChangeListener;
 import com.takenouchitr.himeji.Property;
 
 public class Block 
@@ -44,6 +46,7 @@ public class Block
 	private static HashSet<String> water;
 	private static HashSet<String> invisible;
 	private static HashSet<String> missingIds;
+	private static List<ListChangeListener> listeners = new ArrayList<>();
 	
 	private int blockID;
 	private int metadata;
@@ -552,6 +555,12 @@ public class Block
 	*/
 	public static void setBlockColor(String id, int color)
 	{
+		if (!colors.containsKey(id))
+		{
+			for (ListChangeListener lcl : listeners)
+				lcl.OnItemAddition(id);
+		}
+		
 		colors.put(id, color);
 		if (missingIds.contains(id))
 			missingIds.remove(id);
@@ -570,6 +579,11 @@ public class Block
 	public static HashMap<String, Integer> getColors()
 	{
 		return colors;
+	}
+	
+	public static void addListChangeListener(ListChangeListener lcl)
+	{
+		listeners.add(lcl);
 	}
 	
 	/**

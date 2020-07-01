@@ -109,7 +109,6 @@ public class AddBlockFrame extends JFrame
 		}
 		else
 		{
-			colorFrame.addBlockId(id);
 			Block.setBlockColor(id, 0xFF000000);
 			colorFrame.setEnabled(true);
 			dispose();

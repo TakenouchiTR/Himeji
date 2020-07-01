@@ -150,7 +150,6 @@ public class MapWorker extends SwingWorker<Void, String>
 				
 				for (String s : ids)
 				{
-					Himeji.frame.addBlockId(s);
 					Block.setBlockColor(s, 0xFF000000);
 				}
 				

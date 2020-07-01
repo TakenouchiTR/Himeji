@@ -557,11 +557,6 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
 		boundsFrame.setVisible(true);
 	}
 	
-	public void addBlockId(String id)
-	{
-		colorFrame.addBlockId(id);
-	}
-	
 	@Override
 	public void actionPerformed(ActionEvent e) 
 	{
