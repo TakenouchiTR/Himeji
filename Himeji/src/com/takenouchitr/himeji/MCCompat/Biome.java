@@ -18,7 +18,7 @@
     along with HMV.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.takenouchitr.himeji;
+package com.takenouchitr.himeji.MCCompat;
 
 public enum Biome
 {

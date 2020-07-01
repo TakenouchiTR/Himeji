@@ -27,6 +27,10 @@ import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
 
+import com.takenouchitr.himeji.MCCompat.Block;
+import com.takenouchitr.himeji.MCCompat.Dimension;
+import com.takenouchitr.himeji.MCCompat.World;
+
 public class MapWorker extends SwingWorker<Void, String>
 {
 	public static final int GIGABYTE = 1_073_741_824;

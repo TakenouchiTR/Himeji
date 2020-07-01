@@ -14,10 +14,10 @@ import java.util.List;
 import javax.swing.border.LineBorder;
 import javax.swing.event.ChangeEvent;
 
-import com.takenouchitr.himeji.Biome;
-import com.takenouchitr.himeji.Block;
 import com.takenouchitr.himeji.Himeji;
 import com.takenouchitr.himeji.ListBiome;
+import com.takenouchitr.himeji.MCCompat.Biome;
+import com.takenouchitr.himeji.MCCompat.Block;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;

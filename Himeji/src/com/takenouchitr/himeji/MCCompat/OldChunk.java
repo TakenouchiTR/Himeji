@@ -18,13 +18,15 @@
     along with HMV.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.takenouchitr.himeji;
+package com.takenouchitr.himeji.MCCompat;
 
 import com.mojang.nbt.ByteArrayTag;
 import com.mojang.nbt.CompoundTag;
 import com.mojang.nbt.IntArrayTag;
 import com.mojang.nbt.ListTag;
 import com.mojang.nbt.Tag;
+import com.takenouchitr.himeji.Himeji;
+import com.takenouchitr.himeji.Property;
 
 public class OldChunk extends Chunk 
 {

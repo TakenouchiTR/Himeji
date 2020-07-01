@@ -3,7 +3,7 @@ package com.takenouchitr.himeji.frames;
 import javax.swing.JFrame;
 import javax.swing.JTextField;
 
-import com.takenouchitr.himeji.Block;
+import com.takenouchitr.himeji.MCCompat.Block;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;

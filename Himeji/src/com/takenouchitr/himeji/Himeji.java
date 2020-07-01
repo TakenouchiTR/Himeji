@@ -38,6 +38,8 @@ import javax.swing.*;
 import javax.swing.border.LineBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import com.takenouchitr.himeji.MCCompat.Block;
+import com.takenouchitr.himeji.MCCompat.World;
 import com.takenouchitr.himeji.frames.BiomeFrame;
 import com.takenouchitr.himeji.frames.BoundsFrame;
 import com.takenouchitr.himeji.frames.ColorPickerFrame;

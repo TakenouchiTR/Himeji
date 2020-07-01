@@ -4,5 +4,9 @@ import javax.swing.JFrame;
 
 public class FlagsFrame extends JFrame
 {
-
+	public FlagsFrame() 
+	{
+		
+	}
+	
 }

@@ -7,8 +7,8 @@ import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 import javax.swing.event.ChangeEvent;
 
-import com.takenouchitr.himeji.Block;
 import com.takenouchitr.himeji.Himeji;
+import com.takenouchitr.himeji.MCCompat.Block;
 
 import java.awt.Color;
 import java.util.ArrayList;

@@ -18,7 +18,7 @@
     along with HMV.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.takenouchitr.himeji;
+package com.takenouchitr.himeji.MCCompat;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -26,6 +26,9 @@ import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+
+import com.takenouchitr.himeji.Himeji;
+import com.takenouchitr.himeji.Property;
 
 public class Block 
 {

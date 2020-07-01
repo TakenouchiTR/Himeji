@@ -18,12 +18,16 @@
     along with HMV.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.takenouchitr.himeji;
+package com.takenouchitr.himeji.MCCompat;
 
 import java.io.*;
 import java.util.ArrayList;
 
 import com.mojang.nbt.*;
+import com.takenouchitr.himeji.Himeji;
+import com.takenouchitr.himeji.MapImage;
+import com.takenouchitr.himeji.MapWorker;
+import com.takenouchitr.himeji.Property;
 
 public class Dimension 
 {

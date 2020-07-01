@@ -1,5 +1,7 @@
 package com.takenouchitr.himeji;
 
+import com.takenouchitr.himeji.MCCompat.Biome;
+
 public class ListBiome implements Comparable
 {
 	private Biome biome;
