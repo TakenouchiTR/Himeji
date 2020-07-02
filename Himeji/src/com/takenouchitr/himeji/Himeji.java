@@ -65,7 +65,7 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
 	
 	private static JButton btn_folder, btn_start, btn_setBounds, btn_output;
 	private static JTextField txt_worldPath, txt_output;
-	private static JCheckBox chk_renderUnderWater, chk_renderShadows, chk_renderBiomes;
+	private static JCheckBox chk_renderUnderWater, chk_renderShadows, chk_renderBiomes, chk_night;
 	private static JMenuBar bar_menu;
 	private static JMenuItem itm_exit, itm_colors;
 	private static JPanel pnl_log;
@@ -76,6 +76,7 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
 	private static ColorPickerFrame colorFrame;
 	private static BiomeFrame biomeFrame;
 	private static FlagsFrame flagsFrame;
+	private static SettingsFrame settingsFrame;
 	
 	private static FileWriter writer;
 	private static boolean isWriting;
@@ -301,47 +302,11 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
 	 */
 	public static void fillUnloadedProperties()
 	{
-		if (!props.contains(Property.START_Y.key))
-			props.setProperty(Property.START_Y.key, "255");
-		
-		if (!props.contains(Property.END_Y.key))
-			props.setProperty(Property.END_Y.key, "0");
-		
-		if (!props.contains(Property.START_X.key))
-			props.setProperty(Property.START_X.key, "0");
-		
-		if (!props.contains(Property.END_X.key))
-			props.setProperty(Property.END_X.key, "0");
-		
-		if (!props.contains(Property.START_Z.key))
-			props.setProperty(Property.START_Z.key, "0");
-		
-		if (!props.contains(Property.END_Z.key))
-			props.setProperty(Property.END_Z.key, "0");
-		
-		if (!props.contains(Property.DIMENSION.key))
-			props.setProperty(Property.DIMENSION.key, "Overworld");
-		
-		if (!props.contains(Property.USE_AREA.key))
-			props.setProperty(Property.USE_AREA.key, "false");
-		
-		if (!props.contains(Property.RENDER_LIGHT.key))
-			props.setProperty(Property.RENDER_LIGHT.key, "false");
-		
-		if (!props.contains(Property.RENDER_UNDER_WATER.key))
-			props.setProperty(Property.RENDER_UNDER_WATER.key, "true");
-		
-		if (!props.contains(Property.RENDER_SHADOWS.key))
-			props.setProperty(Property.RENDER_SHADOWS.key, "true");
-		
-		if (!props.contains(Property.RENDER_BIOME_COLORS.key))
-			props.setProperty(Property.RENDER_BIOME_COLORS.key, "true");
-		
-		if (!props.contains(Property.WORLD_PATH.key))
-			props.setProperty(Property.WORLD_PATH.key, "");
-		
-		if (!props.contains(Property.OUTPUT_PATH.key))
-			props.setProperty(Property.OUTPUT_PATH.key, "");
+		for (Property p : Property.values())
+		{
+			if (!props.containsKey(p.key))
+				props.setProperty(p.key, p.defaultValue);
+		}
 	}
 	
 	/**
@@ -393,19 +358,25 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
         btn_folder = new JButton("World");
         txt_worldPath = new JTextField(400);
         chk_renderUnderWater = new JCheckBox("Render Underwater Blocks");
-        chk_renderUnderWater.setToolTipText("Show blocks that are under water. Blocks will be tinted by the water's color.");
+        chk_renderUnderWater.setToolTipText("Show blocks that are under water. " + 
+        		"Blocks will be tinted by the water's color.");
         chk_renderUnderWater.setSelected(true);
         chk_renderShadows = new JCheckBox("Render Shadows");
         chk_renderShadows.setToolTipText("Add shadows to show changes in elevation.");
         chk_renderShadows.setSelected(true);
         chk_renderBiomes = new JCheckBox("Render Biome Colors");
-        chk_renderBiomes.setToolTipText("Change the colors of grass, foliage, and water to match the biome they are in.");
+        chk_renderBiomes.setToolTipText("Change the colors of grass, foliage, " + 
+        		"and water to match the biome they are in.");
         chk_renderBiomes.setSelected(true);
+        chk_night = new JCheckBox("Render at Night");
         bar_menu = new JMenuBar();
         bar_menu.add(fileMenu);
         
         itm_exit = new JMenuItem("Exit");
         itm_exit.addActionListener(this);
+        
+        JMenuItem itm_settings = new JMenuItem("Settings");
+        fileMenu.add(itm_settings);
         fileMenu.add(itm_exit);
         
         btn_start = new JButton("Start");
@@ -422,16 +393,17 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
         getContentPane().add(chk_renderBiomes);
         getContentPane().add(bar_menu);
         getContentPane().add(btn_start);
+        getContentPane().add(chk_night);
 
         //set component bounds (only needed by Absolute Positioning)
         btn_folder.setBounds(15, 35, 80, 25);
         txt_worldPath.setBounds(105, 35, 370, 25);
-        chk_renderUnderWater.setBounds(15, 108, 181, 25);
+        chk_renderUnderWater.setBounds(15, 108, 188, 25);
         chk_renderShadows.setBounds(15, 133, 181, 25);
         chk_renderBiomes.setBounds(15, 158, 181, 20);
         bar_menu.setBounds(0, 0, 495, 25);
         btn_start.setBounds(415, 153, 65, 25);
-        
+        chk_night.setBounds(205, 109, 121, 23);
         
         bar_menu.add(menu_config);
         
@@ -475,9 +447,12 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
         chk_renderUnderWater.addItemListener(this);
         chk_renderShadows.addItemListener(this);
         chk_renderBiomes.addItemListener(this);
+        chk_night.addActionListener((e) -> 
+        	props.setProperty(Property.RENDER_LIGHT.key, chk_night.isSelected() + ""));
         itm_colors.addActionListener((e) -> openColorPicker());
         itm_biomeColors.addActionListener((e) -> openBiomeFrame());
         itm_blockFlags.addActionListener((e) -> openFlagsFrame());
+        itm_settings.addActionListener((e) -> openSettingsFrame());
         btn_setBounds.addActionListener((e) -> openBoundsFrame());
         
         this.addWindowListener(new WindowListener() 
@@ -530,7 +505,7 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
         
         setSize(500, pnl_log.getY() + pnl_log.getHeight() + bar_menu.getHeight() + 3);
         setLocation(getX() - getWidth() / 2, getY() - getHeight() / 2);
-		}
+	}
 	
 	/**
 	 * Applies the values of the program's properties to the form components.
@@ -542,6 +517,7 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
 		chk_renderUnderWater.setSelected(Boolean.parseBoolean(getProperty(Property.RENDER_UNDER_WATER)));
 		chk_renderShadows.setSelected(Boolean.parseBoolean(getProperty(Property.RENDER_SHADOWS)));
 		chk_renderBiomes.setSelected(Boolean.parseBoolean(getProperty(Property.RENDER_BIOME_COLORS)));
+		chk_night.setSelected(Boolean.parseBoolean(getProperty(Property.RENDER_LIGHT)));
 	}
 	
 	private void openColorPicker()
@@ -586,6 +562,17 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
 		setEnabled(false);
 		flagsFrame.setLocationRelativeTo(this);
 		flagsFrame.setVisible(true);
+	}
+	
+	private void openSettingsFrame()
+	{
+		if (settingsFrame == null)
+			settingsFrame = new SettingsFrame(props);
+		
+		setEnabled(false);
+		settingsFrame.applyProperties();
+		settingsFrame.setLocationRelativeTo(this);
+		settingsFrame.setVisible(true);
 	}
 	
 	@Override
@@ -640,6 +627,25 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
 			{
 				setProperty(Property.WORLD_PATH, txt_worldPath.getText());
 				setProperty(Property.OUTPUT_PATH, txt_output.getText());
+				
+				SessionProperties.nightBrightness = 
+					Integer.parseInt(props.getProperty(Property.NIGHT_BRIGHTNESS.key)) / 100f;
+				SessionProperties.biomeIntensity = 
+					Integer.parseInt(props.getProperty(Property.BIOME_INTENSITY.key)) / 100f;
+				SessionProperties.waterTransparency = 
+					Integer.parseInt(props.getProperty(Property.WATER_TRANSPARENCY.key)) / 100f;
+				SessionProperties.shadowIntensity = 
+					Integer.parseInt(props.getProperty(Property.SHADOW_INTENSITY.key)) / 100f;
+				
+				SessionProperties.renderLight = 
+					Boolean.parseBoolean(props.getProperty(Property.RENDER_LIGHT.key));
+				SessionProperties.renderBiomes = 
+					Boolean.parseBoolean(props.getProperty(Property.RENDER_BIOME_COLORS.key));
+				SessionProperties.renderUnderWater = 
+					Boolean.parseBoolean(props.getProperty(Property.RENDER_UNDER_WATER.key));
+				SessionProperties.renderShadows = 
+					Boolean.parseBoolean(props.getProperty(Property.RENDER_SHADOWS.key));
+				
 				disableComponents();
 				worker.execute();
 			}
