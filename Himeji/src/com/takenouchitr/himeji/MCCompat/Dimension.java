@@ -220,11 +220,11 @@ public class Dimension
 			finishedRegions++;
 			
 			Region region;
-			Region upRegion;
-			Region rightRegion;
+			Region upRegion = null;
+			Region rightRegion = null;
 			Chunk chunk;
-			Chunk upChunk;
-			Chunk rightChunk;
+			Chunk upChunk = null;
+			Chunk rightChunk = null;
 			File upFile;
 			File rightFile;
 			String regionName;
@@ -253,18 +253,15 @@ public class Dimension
 			
 			region = new Region(regionFile);
 			upFile = new File(String.format(regionFile.getParent() + 
-					"r.%1$d.%2$d.mca", regionX, regionZ - 1));
+					"\\r.%1$d.%2$d.mca", regionX, regionZ - 1));
 			rightFile = new File(String.format(regionFile.getParent() + 
-					"r.%1$d.%2$d.mca", regionX + 1, regionZ));
+					"\\r.%1$d.%2$d.mca", regionX + 1, regionZ));
 			
 			if (upFile.exists())
 				upRegion = new Region(upFile);
-			else
-				upRegion = null;
+			
 			if (rightFile.exists())
 				rightRegion = new Region(rightFile);
-			else
-				rightRegion = null;
 			
 			for (int chunkX = 0; chunkX < REGION_SIZE; chunkX++)
 			{
@@ -290,24 +287,14 @@ public class Dimension
 						if (chunkTag == null)
 							continue;
 						
-						upChunk = null;
-						rightChunk = null;
-						
 						if (chunkZ == 0)
 						{
-							if (upRegion != null)
+							if (upRegion != null && upRegion.hasChunk(chunkX, 31))
 							{
-								if (upRegion.hasChunk(chunkX, 31))
-								{
-									CompoundTag upTag = upRegion.getChunk(chunkX, REGION_SIZE - 1);
-									if (upTag != null)
-									{
-										if (upTag.getInt("DataVersion") > 1519)
-											upChunk = new NewChunk(upTag);
-										else
-											upChunk = new OldChunk(upTag);
-									}
-								}
+								CompoundTag upTag = upRegion.getChunk(chunkX, REGION_SIZE - 1);
+								
+								if (upTag != null)
+									upChunk = new Chunk(upTag);
 							}
 						}
 						else
@@ -315,31 +302,20 @@ public class Dimension
 							if (region.hasChunk(chunkX, chunkZ - 1))
 							{
 								CompoundTag upTag = region.getChunk(chunkX, chunkZ - 1);
+								
 								if (upTag != null)
-								{
-									if (upTag.getInt("DataVersion") > 1519)
-										upChunk = new NewChunk(upTag);
-									else
-										upChunk = new OldChunk(upTag);
-								}
+									upChunk = new Chunk(upTag);
 							}
 						}
 						
 						if (chunkX == REGION_SIZE - 1)
 						{
-							if (rightRegion != null)
+							if (rightRegion != null && rightRegion.hasChunk(0, chunkZ))
 							{
-								if (rightRegion.hasChunk(0, chunkZ))
-								{
-									CompoundTag rightTag = rightRegion.getChunk(0, chunkZ);
-									if (rightTag != null)
-									{
-										if (rightTag.getInt("DataVersion") > 1519)
-											rightChunk = new NewChunk(rightTag);
-										else
-											rightChunk = new OldChunk(rightTag);
-									}
-								}
+								CompoundTag rightTag = rightRegion.getChunk(0, chunkZ);
+								
+								if (rightTag != null)
+									rightChunk = new Chunk(rightTag);
 							}
 						}
 						else
@@ -347,23 +323,14 @@ public class Dimension
 							if (region.hasChunk(chunkX + 1, chunkZ))
 							{
 								CompoundTag rightTag = region.getChunk(chunkX + 1, chunkZ);
+								
 								if (rightTag != null)
-								{
-									if (rightTag.getInt("DataVersion") > 1519)
-										rightChunk = new NewChunk(rightTag);
-									else
-										rightChunk = new OldChunk(rightTag);
-								}
+									rightChunk = new Chunk(rightTag);
 							}
 						}
 						
-						int chunkVersion = chunkTag.getInt("DataVersion");
-						
-						if (chunkVersion >= 1519)
-							chunk = new NewChunk(chunkTag);
-						else
-							chunk = new OldChunk(chunkTag);
-						
+						chunk = new Chunk(chunkTag);
+							
 						int gridX = (chunk.getX() + chunkXOffset) * Chunk.CHUNK_SIZE;
 						int gridZ = (chunk.getZ() + chunkZOffset) * Chunk.CHUNK_SIZE;
 						

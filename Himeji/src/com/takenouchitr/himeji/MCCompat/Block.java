@@ -98,9 +98,7 @@ public class Block
 			for (String s : items)
 			{
 				String[] split = s.split("[,]");
-				legacyIds[index] = split;
-				
-				index++;
+				legacyIds[index++] = split;
 			}
 		}
 		catch (Exception e)
