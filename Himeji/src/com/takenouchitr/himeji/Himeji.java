@@ -47,7 +47,7 @@ import com.takenouchitr.himeji.frames.*;
 public class Himeji extends JFrame implements ActionListener, ItemListener
 {
 	public static final boolean SHOW_ALL_EVENTS = true;
-	public static final boolean CREATE_LOG = true;
+	public static final boolean CREATE_LOG = false;
 	
 	public static Himeji frame;
 	public static final String SAVE_FOLDER = System.getenv("APPDATA") + "/.minecraft/saves/";
@@ -90,10 +90,8 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
 		File configFile = new File(DATA_FOLDER + PROPERTIES_FILE);
 		props = new Properties();
 		
-		if (!configFile.exists())
-			props = createDefaultProperties();
-		else
-			props = loadProperties(configFile);
+		props = loadProperties(configFile);
+		fillUnloadedProperties();
 		
 		SwingUtilities.invokeLater(new Runnable()
 		{
@@ -301,25 +299,49 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
 	 * Creates a Properties object with the default values.
 	 * @return default Properties object
 	 */
-	public static Properties createDefaultProperties()
+	public static void fillUnloadedProperties()
 	{
-		Properties defaultProp = new Properties();
+		if (!props.contains(Property.START_Y.key))
+			props.setProperty(Property.START_Y.key, "255");
 		
-		defaultProp.setProperty("start_y", "255");
-		defaultProp.setProperty("end_y", "0");
-		defaultProp.setProperty("start_x", "0");
-		defaultProp.setProperty("end_x", "0");
-		defaultProp.setProperty("start_z", "0");
-		defaultProp.setProperty("end_z", "0");
-		defaultProp.setProperty("dimension", "Overworld");
-		defaultProp.setProperty("use_area", "false");
-		defaultProp.setProperty("render_under_water", "true");
-		defaultProp.setProperty("render_shadows", "true");
-		defaultProp.setProperty("render_biome_colors", "true");
-		defaultProp.setProperty("world_path", "");
-		defaultProp.setProperty("output_path", "");
+		if (!props.contains(Property.END_Y.key))
+			props.setProperty(Property.END_Y.key, "0");
 		
-		return defaultProp;
+		if (!props.contains(Property.START_X.key))
+			props.setProperty(Property.START_X.key, "0");
+		
+		if (!props.contains(Property.END_X.key))
+			props.setProperty(Property.END_X.key, "0");
+		
+		if (!props.contains(Property.START_Z.key))
+			props.setProperty(Property.START_Z.key, "0");
+		
+		if (!props.contains(Property.END_Z.key))
+			props.setProperty(Property.END_Z.key, "0");
+		
+		if (!props.contains(Property.DIMENSION.key))
+			props.setProperty(Property.DIMENSION.key, "Overworld");
+		
+		if (!props.contains(Property.USE_AREA.key))
+			props.setProperty(Property.USE_AREA.key, "false");
+		
+		if (!props.contains(Property.RENDER_LIGHT.key))
+			props.setProperty(Property.RENDER_LIGHT.key, "false");
+		
+		if (!props.contains(Property.RENDER_UNDER_WATER.key))
+			props.setProperty(Property.RENDER_UNDER_WATER.key, "true");
+		
+		if (!props.contains(Property.RENDER_SHADOWS.key))
+			props.setProperty(Property.RENDER_SHADOWS.key, "true");
+		
+		if (!props.contains(Property.RENDER_BIOME_COLORS.key))
+			props.setProperty(Property.RENDER_BIOME_COLORS.key, "true");
+		
+		if (!props.contains(Property.WORLD_PATH.key))
+			props.setProperty(Property.WORLD_PATH.key, "");
+		
+		if (!props.contains(Property.OUTPUT_PATH.key))
+			props.setProperty(Property.OUTPUT_PATH.key, "");
 	}
 	
 	/**
@@ -339,7 +361,6 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
 		catch (FileNotFoundException e) 
 		{
 		    System.out.println("File does not exist. Loading default properties.");
-		    loadedProp = createDefaultProperties();
 		} 
 		catch (IOException e) 
 		{
@@ -459,7 +480,7 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
         itm_blockFlags.addActionListener((e) -> openFlagsFrame());
         btn_setBounds.addActionListener((e) -> openBoundsFrame());
         
-        addWindowListener(new WindowListener() 
+        this.addWindowListener(new WindowListener() 
         {
 
         	@Override
@@ -504,7 +525,7 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
 			public void windowOpened(WindowEvent arg0){}
 		
         });
-		        
+		   
         applyProperties();
         
         setSize(500, pnl_log.getY() + pnl_log.getHeight() + bar_menu.getHeight() + 3);
@@ -566,6 +587,7 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
 		flagsFrame.setLocationRelativeTo(this);
 		flagsFrame.setVisible(true);
 	}
+	
 	@Override
 	public void actionPerformed(ActionEvent e) 
 	{
