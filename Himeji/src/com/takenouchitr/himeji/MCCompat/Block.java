@@ -30,7 +30,7 @@ import java.util.List;
 
 import com.takenouchitr.himeji.Himeji;
 import com.takenouchitr.himeji.ListChangeListener;
-import com.takenouchitr.himeji.Property;
+import com.takenouchitr.himeji.SessionProperties;
 
 public class Block 
 {
@@ -539,7 +539,7 @@ public class Block
 		
 		color = getBlockColor(id);
 		
-		if (Himeji.getProperty(Property.RENDER_BIOME_COLORS).equals("false"))
+		if (!SessionProperties.renderBiomes)
 			return color;
 		
 		if (hasFoliageColor(id))
@@ -558,6 +558,7 @@ public class Block
 			blend = true;
 		}
 		
+		//Blends the block color with the biome color
 		if (blend)
 		{
 			int a = 0;
@@ -565,17 +566,19 @@ public class Block
 			int g = 0;
 			int b = 0;
 			
-			a = 0xFF000000;
-			r += (color & 0x00FF0000) >>> 16;
-			r += ((secondColor & 0x00FF0000) >>> 16) * 2;
-			g += (color & 0x0000FF00) >>> 8;
-			g += ((secondColor & 0x0000FF00) >>> 8) * 2;
-			b += (color & 0x000000FF);
-			b += (secondColor & 0x000000FF) * 2;
+			float intensity = SessionProperties.biomeIntensity;
+			float inverseIntensity = 1 - intensity;
 			
-			r /= 3;
-			g /= 3;
-			b /= 3;
+			a = 0xFF000000;
+			
+			r += (int)(((color & 0x00FF0000) >>> 16) * inverseIntensity);
+			r += (int)(((secondColor & 0x00FF0000) >>> 16) * intensity);
+			
+			g += (int)(((color & 0x0000FF00) >>> 8) * inverseIntensity);
+			g += (int)(((secondColor & 0x0000FF00) >>> 8) * intensity);
+			
+			b += (int)(((color & 0x000000FF)) * inverseIntensity);
+			b += (int)((secondColor & 0x000000FF) * intensity);
 			
 			r <<= 16;
 			g <<= 8;

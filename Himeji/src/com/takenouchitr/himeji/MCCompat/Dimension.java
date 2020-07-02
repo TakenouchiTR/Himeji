@@ -28,10 +28,12 @@ import com.takenouchitr.himeji.Himeji;
 import com.takenouchitr.himeji.MapImage;
 import com.takenouchitr.himeji.MapWorker;
 import com.takenouchitr.himeji.Property;
+import com.takenouchitr.himeji.SessionProperties;
 
 public class Dimension 
 {
 	public static final int REGION_SIZE = 32;
+	public static final String[] EXTENSIONS = {".mca", ".mcr"};
 	
 	protected int blockHeight;
 	protected int blockWidth;
@@ -232,6 +234,7 @@ public class Dimension
 			int regionX;
 			int regionZ;
 			int curYVal;
+			int light;
 			int upYVal;
 			int rightYVal;
 			
@@ -252,16 +255,30 @@ public class Dimension
 					regionName, finishedRegions, regions.length));
 			
 			region = new Region(regionFile);
-			upFile = new File(String.format(regionFile.getParent() + 
-					"\\r.%1$d.%2$d.mca", regionX, regionZ - 1));
-			rightFile = new File(String.format(regionFile.getParent() + 
-					"\\r.%1$d.%2$d.mca", regionX + 1, regionZ));
 			
-			if (upFile.exists())
-				upRegion = new Region(upFile);
+			for (String s : EXTENSIONS)
+			{
+				upFile = new File(String.format(regionFile.getParent() + 
+						"\\r.%1$d.%2$d%3$s", regionX, regionZ - 1, s));
+				
+				if (upFile.exists())
+				{
+					upRegion = new Region(upFile);
+					break;
+				}
+			}
 			
-			if (rightFile.exists())
-				rightRegion = new Region(rightFile);
+			for (String s : EXTENSIONS)
+			{
+				rightFile = new File(String.format(regionFile.getParent() + 
+						"\\r.%1$d.%2$d%3$s", regionX + 1, regionZ, s));
+				
+				if (rightFile.exists())
+				{
+					rightRegion = new Region(rightFile);
+					break;
+				}
+			}
 			
 			for (int chunkX = 0; chunkX < REGION_SIZE; chunkX++)
 			{
@@ -354,8 +371,9 @@ public class Dimension
 								
 								curColor = chunkMap[blockX][blockZ][0];
 								curYVal = chunkMap[blockX][blockZ][1];
+								light = chunkMap[blockX][blockZ][2];
 								
-								if (Himeji.getProperty(Property.RENDER_SHADOWS).equals("true"))
+								if (SessionProperties.renderShadows)
 								{
 									if (blockZ == 0)
 									{
@@ -363,7 +381,7 @@ public class Dimension
 											upYVal = curYVal;
 										else
 										{
-											if (Himeji.getProperty(Property.RENDER_UNDER_WATER).equals("true"))
+											if (SessionProperties.renderUnderWater)
 												upYVal = upChunk.getTopBlockYIgnoreWater(blockX, 
 													Chunk.CHUNK_SIZE - 1, startY, endY);
 											else
@@ -382,7 +400,7 @@ public class Dimension
 											rightYVal = curYVal;
 										else
 										{	
-											if (Himeji.getProperty(Property.RENDER_UNDER_WATER).equals("true"))
+											if (SessionProperties.renderUnderWater)
 												rightYVal = rightChunk.getTopBlockYIgnoreWater(0, blockZ, startY, endY);
 											else
 												rightYVal = rightChunk.getTopBlockY(0,  blockZ, startY, endY);
@@ -393,11 +411,11 @@ public class Dimension
 										rightYVal = chunkMap[blockX + 1][blockZ][1];
 									}
 									
-									curColor = applyShading(curColor, curYVal, upYVal, rightYVal);
+									curColor = applyShading(curColor, light, curYVal, upYVal, rightYVal);
 								}
 								else
 								{
-									curColor = applyShading(curColor, curYVal, curYVal, curYVal);
+									curColor = applyShading(curColor, light, curYVal, curYVal, curYVal);
 								}
 								
 								try
@@ -522,39 +540,54 @@ public class Dimension
 				new File(Himeji.getProperty(Property.OUTPUT_PATH)));
 	}
 	
-	public int applyShading(int color, int yVal, int upYVal, int rightYVal)
+	public int applyShading(int color, int light, int yVal, int upYVal, int rightYVal)
 	{
 		int a, r, g, b;
+		boolean applyMult = false;
+		float lightMult = 1;
+		float heightMult = 1f;
+		
+		float brightness = SessionProperties.nightBrightness;
+		float shadowIntensity = SessionProperties.shadowIntensity; 
+		
+		if (light < 15)
+		{
+			applyMult = true;
+			lightMult = (light / 15f * (1f - brightness)) + brightness;
+		}
 		
 		if (yVal < upYVal || yVal < rightYVal)
 		{
-			a = (color & 0xFF000000);
-			r = (int) (((color & 0x00FF0000) >>> 16) * .85f);
-			g = (int) (((color & 0x0000FF00) >>> 8) * .85f);
-			b = (int) ((color & 0x000000FF) * .85f);
-			
-			if (r < 0)
-				r = 0;
-			if (g < 0)
-				g = 0;
-			if (b < 0)
-				b = 0;
-			
-			color = a | (r << 16) | (g << 8) | b;
+			applyMult = true;
+			heightMult = 1 - shadowIntensity;
 		}
 		else if (yVal > upYVal || yVal > rightYVal)
 		{
+			applyMult = true;
+			heightMult = 1 + shadowIntensity;
+		}
+		
+		if (applyMult)
+		{
 			a = (color & 0xFF000000);
-			r = (int) (((color & 0x00FF0000) >>> 16) * 1.15f);
-			g = (int) (((color & 0x0000FF00) >>> 8) * 1.15f);
-			b = (int) ((color & 0x000000FF) * 1.15f);
+			r = (int) (((color & 0x00FF0000) >>> 16) * heightMult * lightMult);
+			g = (int) (((color & 0x0000FF00) >>> 8) * heightMult * lightMult);
+			b = (int) ((color & 0x000000FF) * heightMult * lightMult);
 			
 			if (r > 255)
 				r = 255;
+			else if (r < 0)
+				r = 0;
+			
 			if (g > 255)
 				g = 255;
+			else if (g < 0)
+				g = 0;
+			
 			if (b > 255)
 				b = 255;
+			else if (g < 0)
+				g = 0;
 			
 			color = a | (r << 16) | (g << 8) | b;
 		}

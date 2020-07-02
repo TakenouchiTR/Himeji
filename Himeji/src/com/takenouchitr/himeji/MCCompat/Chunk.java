@@ -25,8 +25,7 @@ import com.mojang.nbt.CompoundTag;
 import com.mojang.nbt.IntArrayTag;
 import com.mojang.nbt.ListTag;
 import com.mojang.nbt.Tag;
-import com.takenouchitr.himeji.Himeji;
-import com.takenouchitr.himeji.Property;
+import com.takenouchitr.himeji.SessionProperties;
 
 public class Chunk 
 {
@@ -35,6 +34,8 @@ public class Chunk
 	
 	private String[][][] blocks;
 	private int[][][] biome;
+	private int[][][] blockLight;
+	private int[][][] skyLight;
 	private int biomeHeight;
 	protected CompoundTag levelTag;
 	
@@ -46,6 +47,8 @@ public class Chunk
 	public Chunk(CompoundTag baseTag) 
 	{
 		blocks = new String[CHUNK_SIZE][CHUNK_HEIGHT][CHUNK_SIZE];
+		blockLight = new int[CHUNK_SIZE][CHUNK_HEIGHT][CHUNK_SIZE];
+		skyLight = new int[CHUNK_SIZE][CHUNK_HEIGHT][CHUNK_SIZE];
 		
 		levelTag = baseTag.getCompound("Level");
 		if (!baseTag.contains("DataVersion"))
@@ -72,6 +75,8 @@ public class Chunk
 		
 		byte[] blockData = levelTag.getByteArray("Blocks");
 		byte[] metadataData = levelTag.getByteArray("Data");
+		byte[] skyLightData = levelTag.getByteArray("SkyLight");
+		byte[] blockLightData = levelTag.getByteArray("BlockLight");
 		int index = 0;
 		
 		for (int x = 0; x < CHUNK_SIZE; x++) 
@@ -82,10 +87,13 @@ public class Chunk
 				{
 					int block = getPositiveByte(blockData[index]);
 					int meta = getHalfIndexValue(metadataData, index);
-					blocks[x][0][z] = Block.getNamespacedId(block, meta);
+					blocks[x][y][z] = Block.getNamespacedId(block, meta);
+					skyLight[x][y][z] = getHalfIndexValue(skyLightData, index);
+					blockLight[x][y][z] = getHalfIndexValue(blockLightData, index);
+					
 					index++;
-					biome[x][0][z] = Biome.FOREST.id;
 				}
+				biome[x][0][z] = Biome.FOREST.id;
 			}
 		}
 		
@@ -95,8 +103,7 @@ public class Chunk
 			{
 				for (int y = 128; y < CHUNK_HEIGHT; y++) 
 				{
-					blocks[x][0][z] = Block.getNamespacedId(0, 0);
-					biome[x][0][z] = Biome.FOREST.id;
+					blocks[x][y][z] = Block.getNamespacedId(0, 0);
 				}
 			}
 		}
@@ -135,6 +142,8 @@ public class Chunk
 			
 			byte[] blockData = section.getByteArray("Blocks");
 			byte[] metadataData = section.getByteArray("Data");
+			byte[] blockLightData = section.getByteArray("BlockLight");
+			byte[] skyLightData = section.getByteArray("SkyLight");
 			
 			//Skips the section if there is no block data
 			if (blockData.length == 0)
@@ -149,6 +158,8 @@ public class Chunk
 						int block = getPositiveByte(blockData[getIndex(x, y, z)]);
 						int meta = getHalfIndexValue(metadataData, x, y, z);
 						blocks[x][y + sectionY][z] = Block.getNamespacedId(block, meta);
+						blockLight[x][y + sectionY][z] = getHalfIndexValue(blockLightData, x, y, z);
+						skyLight[x][y + sectionY][z] = getHalfIndexValue(skyLightData, x, y, z);
 					}
 				}
 			}
@@ -220,6 +231,8 @@ public class Chunk
 			sections[i] = new Section((CompoundTag)sectionTags.get(i));
 			String[][][] sectionBlocks = sections[i].getBlocks();
 			int sectionY = (sections[i].getSectionTag().getByte("Y")) * 16;
+			byte[] blockLightData = sections[i].getBlockLight();
+			byte[] skyLightData = sections[i].getSkyLight();
 			
 			//Skips a section if there are no blocks stored
 			if (sectionBlocks == null)
@@ -233,6 +246,10 @@ public class Chunk
 					for(int z = 0; z < CHUNK_SIZE; z++) 
 					{
 						blocks[x][y + sectionY][z] = sectionBlocks[x][y][z];
+						if (blockLightData != null)
+							blockLight[x][y + sectionY][z] = getHalfIndexValue(blockLightData, x, y, z);
+						if (skyLightData != null)
+							skyLight[x][y + sectionY][z] = getHalfIndexValue(skyLightData, x, y, z);
 					}
 				}
 			}
@@ -404,7 +421,7 @@ public class Chunk
 	 */
 	public int[][][] getTopColors(int startY, int endY)
 	{
-		int[][][] result = new int[CHUNK_SIZE][CHUNK_SIZE][2];
+		int[][][] result = new int[CHUNK_SIZE][CHUNK_SIZE][3];
 		
 		if (blocks == null || biome == null)
 			return null;
@@ -415,13 +432,17 @@ public class Chunk
 			{
 				int y = getTopBlockY(x, z, startY, endY);
 				int dy = y;
-				if (Himeji.getProperty(Property.RENDER_UNDER_WATER).equals("true"))
+				if (SessionProperties.renderUnderWater)
 					dy = getTopBlockYIgnoreWater(x, z, startY, endY);
 				
 				int biomeWidth = CHUNK_SIZE / biome.length;
 				
 				int color = Block.getBlockColor(blocks[x][dy][z], 
 						biome[x / biomeWidth][dy / biomeHeight][z / biomeWidth]);
+				
+				int light = 15;
+				if (y < CHUNK_HEIGHT - 1 && SessionProperties.renderLight)
+					light = blockLight[x][y + 1][z];
 				
 				//Adds a blue effect to blocks under water
 				if (y != dy)
@@ -433,18 +454,19 @@ public class Chunk
 					int g = 0;
 					int b = 0;
 					
+					float intensity = 1 - SessionProperties.waterTransparency;
+					float inverseIntensity = 1 - intensity;
+					
 					a = 0xFF000000;
 					
-					r += ((color & 0x00FF0000) >>> 16);
-					r += ((waterColor & 0x00FF0000) >>> 16) * 3;
-					g += ((color & 0x0000FF00) >>> 8);
-					g += ((waterColor & 0x0000FF00) >>> 8) * 3;
-					b += (color & 0x000000FF);
-					b += (waterColor & 0x000000FF) * 3;
+					r += (int)(((color & 0x00FF0000) >>> 16) * inverseIntensity);
+					r += (int)(((waterColor & 0x00FF0000) >>> 16) * intensity);
 					
-					r /= 4;
-					g /= 4;
-					b /= 4;
+					g += (int)(((color & 0x0000FF00) >>> 8) * inverseIntensity);
+					g += (int)(((waterColor & 0x0000FF00) >>> 8) * intensity);
+					
+					b += (int)(((color & 0x000000FF)) * inverseIntensity);
+					b += (int)((waterColor & 0x000000FF) * intensity);
 					
 					r <<= 16;
 					g <<= 8;
@@ -454,6 +476,7 @@ public class Chunk
 				
 				result[x][z][0] = color;
 				result[x][z][1] = dy;
+				result[x][z][2] = light;
 			}
 		}
 		
