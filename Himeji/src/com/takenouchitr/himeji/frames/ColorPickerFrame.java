@@ -37,7 +37,6 @@ public class ColorPickerFrame extends JFrame implements ListChangeListener
 	public ColorPickerFrame(Himeji himeji) 
 	{
 		setTitle("Color Editor");
-		setType(Type.UTILITY);
 		setSize(287,230);
 		setResizable(false);
 		getContentPane().setLayout(null);

@@ -20,12 +20,13 @@
 
 package com.takenouchitr.himeji.frames;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.io.File;
+import java.io.FileWriter;
+import java.nio.file.Files;
 import java.util.Properties;
 
 import javax.swing.JFrame;
@@ -34,6 +35,7 @@ import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import com.takenouchitr.himeji.Himeji;
 import com.takenouchitr.himeji.Property;
@@ -48,28 +50,29 @@ import java.awt.GridLayout;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.JCheckBox;
+import javax.swing.JFileChooser;
+
 import java.awt.FlowLayout;
 import javax.swing.JButton;
 
 @SuppressWarnings("serial")
-public class BoundsFrame extends JFrame implements ActionListener, ItemListener, ChangeListener, WindowListener
+public class BoundsFrame extends JFrame implements ItemListener, ChangeListener
 {
+	private static final String BOUNDS_FOLDER = "bounds\\";
+	
 	private JButton btn_confirm;
 	private JCheckBox chk_chunks;
 	private JSpinner spn_maxX, spn_minX, spn_maxZ, spn_minZ, spn_maxY, spn_minY;
 	private JRadioButton rad_overworld, rad_nether, rad_end;
 	private Properties props;
-	private Himeji himeji;
 	
 	public BoundsFrame(Properties props, Himeji himeji) 
 	{
 		this.props = props;
-		this.himeji = himeji;
 		
-		setType(Type.UTILITY);
 		setTitle("Set Bounds");
 		setFont(new Font("Tahoma", Font.PLAIN, 11));
-		setSize(440, 175);
+		setSize(440, 195);
 		setResizable(false);
 		getContentPane().setLayout(null);
 		
@@ -162,7 +165,7 @@ public class BoundsFrame extends JFrame implements ActionListener, ItemListener,
 		flowLayout.setAlignment(FlowLayout.LEFT);
 		pnl_chunks.add(pnl_chunksBottom, BorderLayout.SOUTH);
 		
-		chk_chunks = new JCheckBox("Use render area");
+		chk_chunks = new JCheckBox("Limit render to area selection");
 		chk_chunks.setToolTipText("Render one the area within the specified chunk bounds.");
 		chk_chunks.addItemListener(this);
 		pnl_chunksBottom.add(chk_chunks);
@@ -209,8 +212,9 @@ public class BoundsFrame extends JFrame implements ActionListener, ItemListener,
 		pnl_chunksCenter.add(spn_minZ);
 		
 		btn_confirm = new JButton("Confirm");
-		btn_confirm.addActionListener(this);
-		btn_confirm.setBounds(315, 104, 94, 23);
+		btn_confirm.addActionListener((e) -> 
+			dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING)));
+		btn_confirm.setBounds(315, 132, 94, 23);
 		getContentPane().add(btn_confirm);
 		
 		ButtonGroup dimensionGroup = new ButtonGroup();
@@ -218,9 +222,170 @@ public class BoundsFrame extends JFrame implements ActionListener, ItemListener,
 		dimensionGroup.add(rad_nether);
 		dimensionGroup.add(rad_end);
 		
-		addWindowListener(this);
+		JButton btn_save = new JButton("Save Area");
+		btn_save.setBounds(10, 132, 89, 23);
+		getContentPane().add(btn_save);
+		
+		JButton btn_load = new JButton("Load Area");
+		btn_load.setBounds(109, 132, 89, 23);
+		getContentPane().add(btn_load);
+		
+		btn_save.addActionListener((e) -> savePress());
+		btn_load.addActionListener((e) -> loadPress());
+		this.addWindowListener(new WindowListener() 
+		{
+
+			@Override
+			public void windowActivated(WindowEvent arg0)
+			{
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void windowClosed(WindowEvent arg0)
+			{
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void windowClosing(WindowEvent arg0)
+			{
+				if (rad_overworld.isSelected())
+					props.setProperty(Property.DIMENSION.key, "Overworld");
+				else if (rad_nether.isSelected())
+					props.setProperty(Property.DIMENSION.key, "Nether");
+				else
+					props.setProperty(Property.DIMENSION.key, "End");
+				
+				
+				props.setProperty(Property.START_Y.key, "" + ((int)spn_maxY.getValue()));
+				props.setProperty(Property.END_Y.key, "" + ((int)spn_minY.getValue()));
+				props.setProperty(Property.START_X.key, "" + ((int)spn_maxX.getValue()));
+				props.setProperty(Property.END_X.key, "" + ((int)spn_minX.getValue()));
+				props.setProperty(Property.START_Z.key, "" + ((int)spn_maxZ.getValue()));
+				props.setProperty(Property.END_Z.key, "" + ((int)spn_minZ.getValue()));
+				
+				props.setProperty(Property.USE_AREA.key, "" + chk_chunks.isSelected());
+			}
+
+			@Override
+			public void windowDeactivated(WindowEvent arg0)
+			{
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void windowDeiconified(WindowEvent arg0)
+			{
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void windowIconified(WindowEvent arg0)
+			{
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void windowOpened(WindowEvent arg0)
+			{
+				// TODO Auto-generated method stub
+				
+			}});
 		
 		loadProperties();
+	}
+
+	private void loadPress()
+	{
+		File folder = new File(Himeji.DATA_FOLDER + BOUNDS_FOLDER);
+		if (!folder.exists())
+			folder.mkdir();
+		
+		JFileChooser fileChooser = new JFileChooser(Himeji.DATA_FOLDER + BOUNDS_FOLDER);
+		//fileChooser.setFileFilter(new FileNameExtensionFilter("Comma Separated Value (.csv)", ".csv", ".CSV"));
+		if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION)
+		{
+			File file = fileChooser.getSelectedFile();
+			
+			try
+			{
+				Object[] split = Files.readAllLines(file.toPath()).toArray(); 
+				
+				spn_maxX.setValue(Integer.parseInt((split[0].toString())));
+				spn_minX.setValue(Integer.parseInt((split[1].toString())));
+				spn_maxY.setValue(Integer.parseInt((split[2].toString())));
+				spn_minY.setValue(Integer.parseInt((split[3].toString())));
+				spn_maxZ.setValue(Integer.parseInt((split[4].toString())));
+				spn_minZ.setValue(Integer.parseInt((split[5].toString())));
+				chk_chunks.setSelected(Boolean.parseBoolean(split[6].toString()));
+				switch (split[7].toString())
+				{
+					case "Nether":
+						rad_nether.setSelected(true);
+						break;
+					case "End":
+						rad_end.setSelected(true);
+						break;
+					default:
+						rad_overworld.setSelected(true);
+						break;
+				}
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
+		}
+	}
+
+	private void savePress()
+	{
+		File folder = new File(Himeji.DATA_FOLDER + BOUNDS_FOLDER);
+		if (!folder.exists())
+			folder.mkdir();
+		
+		JFileChooser fileChooser = new JFileChooser(Himeji.DATA_FOLDER + BOUNDS_FOLDER);
+		fileChooser.setFileFilter(new FileNameExtensionFilter("Comma Separated Value (.csv)", ".csv"));
+		if (fileChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION)
+		{
+			File file = fileChooser.getSelectedFile();
+			String path = file.getPath();
+			if (!path.endsWith(".csv"))
+				path += ".csv";
+			
+			File saveFile = new File(path);
+			try
+			{
+				FileWriter writer = new FileWriter(saveFile);
+				
+				writer.write(spn_maxX.getValue() + "\n");
+				writer.write(spn_minX.getValue() + "\n");
+				writer.write(spn_maxY.getValue() + "\n");
+				writer.write(spn_minY.getValue() + "\n");
+				writer.write(spn_maxZ.getValue() + "\n");
+				writer.write(spn_minZ.getValue() + "\n");
+				writer.write(chk_chunks.isSelected() + "\n");
+				
+				if (rad_overworld.isSelected())
+					writer.write("Overworld");
+				else if (rad_nether.isSelected())
+					writer.write("Nether");
+				else
+					writer.write("End");
+				
+				writer.close();
+			} 
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
+		}
 	}
 
 	private void loadProperties()
@@ -248,12 +413,6 @@ public class BoundsFrame extends JFrame implements ActionListener, ItemListener,
 		chk_chunks.setSelected(Boolean.parseBoolean(props.getProperty(Property.USE_AREA.key)));
 	}
 	
-	@Override
-	public void actionPerformed(ActionEvent e) 
-	{
-		dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
-	}
-
 	@Override
 	public void stateChanged(ChangeEvent e) 
 	{
@@ -300,62 +459,5 @@ public class BoundsFrame extends JFrame implements ActionListener, ItemListener,
 		
 		if (min > max)
 			top.setValue(min);
-	}
-	
-	@Override
-	public void windowActivated(WindowEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void windowClosed(WindowEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void windowClosing(WindowEvent arg0) 
-	{
-		himeji.setEnabled(true);
-	}
-
-	@Override
-	public void windowDeactivated(WindowEvent e) 
-	{
-		if (rad_overworld.isSelected())
-			props.setProperty(Property.DIMENSION.key, "Overworld");
-		else if (rad_nether.isSelected())
-			props.setProperty(Property.DIMENSION.key, "Nether");
-		else
-			props.setProperty(Property.DIMENSION.key, "End");
-		
-		
-		props.setProperty(Property.START_Y.key, "" + ((int)spn_maxY.getValue()));
-		props.setProperty(Property.END_Y.key, "" + ((int)spn_minY.getValue()));
-		props.setProperty(Property.START_X.key, "" + ((int)spn_maxX.getValue()));
-		props.setProperty(Property.END_X.key, "" + ((int)spn_minX.getValue()));
-		props.setProperty(Property.START_Z.key, "" + ((int)spn_maxZ.getValue()));
-		props.setProperty(Property.END_Z.key, "" + ((int)spn_minZ.getValue()));
-		
-		props.setProperty(Property.USE_AREA.key, "" + chk_chunks.isSelected());
-	}
-
-	@Override
-	public void windowDeiconified(WindowEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void windowIconified(WindowEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void windowOpened(WindowEvent arg0) {
-		// TODO Auto-generated method stub
-		
 	}
 }

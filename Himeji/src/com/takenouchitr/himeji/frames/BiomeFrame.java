@@ -37,7 +37,6 @@ public class BiomeFrame extends JFrame
 	
 	public BiomeFrame(Himeji himeji) 
 	{
-		setType(Type.UTILITY);
 		setTitle("Biome Color Picker");
 		setResizable(false);
 		setSize(320, 280);

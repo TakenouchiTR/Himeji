@@ -41,7 +41,6 @@ public class FlagsFrame extends JDialog implements ListChangeListener
 		currentList = Block.INVISIBLE_LIST;
 		
 		setTitle("Block Flags");
-		setType(Type.UTILITY);
 		setResizable(false);
 		setSize(325, 345);
 		

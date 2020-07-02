@@ -26,7 +26,6 @@ public class AddBlockFrame extends JFrame
 		
 		setSize(275, 110);
 		setTitle("New Block ID");
-		setType(Type.UTILITY);
 		getContentPane().setLayout(null);
 		
 		txt_id = new JTextField();
@@ -104,15 +103,9 @@ public class AddBlockFrame extends JFrame
 		String id = txt_id.getText().toLowerCase();
 		
 		if (Block.idExists(id))
-		{
 			JOptionPane.showMessageDialog(this, "ID already exists.");
-		}
 		else
-		{
 			Block.setBlockColor(id, 0xFF000000);
-			colorFrame.setEnabled(true);
-			dispose();
-		}
 	}
 	
 	private void cancelPress()
