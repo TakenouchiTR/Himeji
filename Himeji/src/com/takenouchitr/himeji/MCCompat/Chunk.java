@@ -32,12 +32,13 @@ public class Chunk
 	public static final int CHUNK_SIZE = 16;
 	public static final int CHUNK_HEIGHT = 256;
 	
+	private int highestBlock;
+	private int biomeHeight;
 	private String[][][] blocks;
 	private int[][][] biome;
 	private int[][][] blockLight;
 	private int[][][] skyLight;
-	private int biomeHeight;
-	protected CompoundTag levelTag;
+	private CompoundTag levelTag;
 	
 	/**
 	 * Creates a chunk and sets the NBT for the chunk's info. The rest of the 
@@ -72,11 +73,19 @@ public class Chunk
 	{
 		biome = new int[CHUNK_SIZE][1][CHUNK_HEIGHT];
 		biomeHeight = CHUNK_HEIGHT;
+		highestBlock = 127;
 		
 		byte[] blockData = levelTag.getByteArray("Blocks");
 		byte[] metadataData = levelTag.getByteArray("Data");
-		byte[] skyLightData = levelTag.getByteArray("SkyLight");
-		byte[] blockLightData = levelTag.getByteArray("BlockLight");
+		
+		byte[] blockLightData = null;
+		byte[] skyLightData = null;
+		
+		if (SessionProperties.renderLight)
+		{
+			skyLightData = levelTag.getByteArray("SkyLight");
+			blockLightData = levelTag.getByteArray("BlockLight");
+		}
 		int index = 0;
 		
 		for (int x = 0; x < CHUNK_SIZE; x++) 
@@ -88,8 +97,12 @@ public class Chunk
 					int block = getPositiveByte(blockData[index]);
 					int meta = getHalfIndexValue(metadataData, index);
 					blocks[x][y][z] = Block.getNamespacedId(block, meta);
-					skyLight[x][y][z] = getHalfIndexValue(skyLightData, index);
-					blockLight[x][y][z] = getHalfIndexValue(blockLightData, index);
+					
+					if (SessionProperties.renderLight)
+					{
+						skyLight[x][y][z] = getHalfIndexValue(skyLightData, index);
+						blockLight[x][y][z] = getHalfIndexValue(blockLightData, index);
+					}
 					
 					index++;
 				}
@@ -97,6 +110,7 @@ public class Chunk
 			}
 		}
 		
+		/*
 		for (int x = 0; x < CHUNK_SIZE; x++) 
 		{
 			for (int z = 0; z < CHUNK_SIZE; z++) 
@@ -107,6 +121,7 @@ public class Chunk
 				}
 			}
 		}
+		*/
 	}
 	
 	/**
@@ -119,7 +134,7 @@ public class Chunk
 		
 		ListTag<? extends Tag> sections = levelTag.getList("Sections");
 		
-		//Fills all blocks with the default block namespace ID
+		/*Fills all blocks with the default block namespace ID
 		for(int x = 0; x < CHUNK_SIZE; x++) 
 		{
 			for(int z = 0; z < CHUNK_SIZE; z++) 
@@ -130,7 +145,7 @@ public class Chunk
 				}
 			}
 		}
-		
+		*/
 		//Loads up the blocks stored in each of the sections
 		for(int i = 0; i < sections.size(); i++) 
 		{
@@ -140,10 +155,18 @@ public class Chunk
 			if (sectionY < 0)
 				continue;
 			
+			highestBlock = highestBlock > sectionY + 15 ? highestBlock : sectionY + 15;
+			
 			byte[] blockData = section.getByteArray("Blocks");
 			byte[] metadataData = section.getByteArray("Data");
-			byte[] blockLightData = section.getByteArray("BlockLight");
-			byte[] skyLightData = section.getByteArray("SkyLight");
+			byte[] blockLightData = null;
+			byte[] skyLightData = null;
+			
+			if (SessionProperties.renderLight)
+			{
+				blockLightData = section.getByteArray("BlockLight");
+				skyLightData = section.getByteArray("SkyLight");
+			}
 			
 			//Skips the section if there is no block data
 			if (blockData.length == 0)
@@ -158,8 +181,12 @@ public class Chunk
 						int block = getPositiveByte(blockData[getIndex(x, y, z)]);
 						int meta = getHalfIndexValue(metadataData, x, y, z);
 						blocks[x][y + sectionY][z] = Block.getNamespacedId(block, meta);
-						blockLight[x][y + sectionY][z] = getHalfIndexValue(blockLightData, x, y, z);
-						skyLight[x][y + sectionY][z] = getHalfIndexValue(skyLightData, x, y, z);
+						
+						if (SessionProperties.renderLight)
+						{
+							blockLight[x][y + sectionY][z] = getHalfIndexValue(blockLightData, x, y, z);
+							skyLight[x][y + sectionY][z] = getHalfIndexValue(skyLightData, x, y, z);
+						}
 					}
 				}
 			}
@@ -209,7 +236,7 @@ public class Chunk
 		
 		blocks = new String[CHUNK_SIZE][CHUNK_HEIGHT][CHUNK_SIZE];
 		
-		//Fills all blocks with the default block namespace ID
+		/*Fills all blocks with the default block namespace ID
 		for(int x = 0; x < CHUNK_SIZE; x++) 
 		{
 			for(int z = 0; z < CHUNK_SIZE; z++) 
@@ -220,7 +247,7 @@ public class Chunk
 				}
 			}
 		}
-		
+		*/
 		//Stops if there is no block data stored in the tag
 		if (sections == null)
 			return;
@@ -231,12 +258,21 @@ public class Chunk
 			sections[i] = new Section((CompoundTag)sectionTags.get(i));
 			String[][][] sectionBlocks = sections[i].getBlocks();
 			int sectionY = (sections[i].getSectionTag().getByte("Y")) * 16;
-			byte[] blockLightData = sections[i].getBlockLight();
-			byte[] skyLightData = sections[i].getSkyLight();
 			
 			//Skips a section if there are no blocks stored
 			if (sectionBlocks == null)
 				continue;
+			
+			byte[] blockLightData = null;
+			byte[] skyLightData = null;
+			
+			if (SessionProperties.renderLight)
+			{
+				blockLightData = sections[i].getBlockLight();
+				skyLightData = sections[i].getSkyLight();
+			}
+			
+			highestBlock = highestBlock > sectionY + 15 ? highestBlock : sectionY + 15;
 			
 			//Loads each of the blocks in the section
 			for(int x = 0; x < CHUNK_SIZE; x++) 
@@ -246,6 +282,7 @@ public class Chunk
 					for(int z = 0; z < CHUNK_SIZE; z++) 
 					{
 						blocks[x][y + sectionY][z] = sectionBlocks[x][y][z];
+						
 						if (blockLightData != null)
 							blockLight[x][y + sectionY][z] = getHalfIndexValue(blockLightData, x, y, z);
 						if (skyLightData != null)
@@ -433,7 +470,7 @@ public class Chunk
 				int y = getTopBlockY(x, z, startY, endY);
 				int dy = y;
 				if (SessionProperties.renderUnderWater)
-					dy = getTopBlockYIgnoreWater(x, z, startY, endY);
+					dy = getTopBlockYIgnoreWater(x, z, y, endY);
 				
 				int biomeWidth = CHUNK_SIZE / biome.length;
 				
@@ -505,11 +542,11 @@ public class Chunk
 	 */
 	public int getTopBlockY(int x, int z, int startY, int endY)
 	{
-		for(int y = startY; y >= endY; y--) 
+		for (int y = startY < highestBlock ? startY : highestBlock; y >= endY; y--) 
 		{
 			String blockName = blocks[x][y][z];
 			
-			if (Block.isBlockVisible(blockName))
+			if (blockName != null && Block.isBlockVisible(blockName))
 			{
 				return y;
 			}
@@ -527,13 +564,14 @@ public class Chunk
 	 */
 	public int getTopBlockYIgnoreWater(int x, int z, int startY, int endY)
 	{
-		for(int y = startY; y >= endY; y--) 
+		for (int y = startY < highestBlock ? startY : highestBlock; y >= endY; y--) 
 		{
 			try
 			{
 				String blockName = blocks[x][y][z];
 				
-				if (Block.isBlockVisible(blockName) && 
+				if (blockName != null && 
+					Block.isBlockVisible(blockName) && 
 					!Block.hasWaterColor(blockName))
 				{
 					return y;

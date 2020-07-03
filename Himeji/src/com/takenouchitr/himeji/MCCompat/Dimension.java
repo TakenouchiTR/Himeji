@@ -42,7 +42,6 @@ public class Dimension
 	protected int chunkXOffset;
 	protected int chunkZOffset;
 	protected int totalChunks;
-	protected int currentChunk;
 	protected File directory;
 	protected MapWorker worker;
 	private MapImage image;
@@ -204,14 +203,12 @@ public class Dimension
 		File[] regions;
 		FileFilter mcaFilter = new FileFilter()
 		{
-
 			@Override
 			public boolean accept(File pathname) 
 			{
 				return pathname.getName().endsWith(".mca") || 
 						pathname.getName().endsWith(".mcr");
 			}
-	
 		};
 		
 		regions = directory.listFiles(mcaFilter);
@@ -282,28 +279,31 @@ public class Dimension
 			
 			for (int chunkX = 0; chunkX < REGION_SIZE; chunkX++)
 			{
-				currentChunk++;
-				
 				int absChunkX = chunkX + regionX * 32; 
 				if (absChunkX < minX || absChunkX > maxX)
 					continue;
 				
+				upChunk = null;
+				
 				for (int chunkZ = 0; chunkZ < REGION_SIZE; chunkZ++)
 				{
 					int absChunkZ = chunkZ + regionZ * 32; 
-					if (absChunkZ < minZ || absChunkZ > maxZ)
-						continue;
 					
-					
-					if (!region.hasChunk(chunkX, chunkZ))
+					if (absChunkZ < minZ || absChunkZ > maxZ || 
+							!region.hasChunk(chunkX, chunkZ))
+					{
+						upChunk = null;
 						continue;
+					}
 					
 					try
 					{
 						CompoundTag chunkTag = region.getChunk(chunkX, chunkZ);
 						if (chunkTag == null)
+						{
+							upChunk = null;
 							continue;
-						
+						}
 						if (chunkZ == 0)
 						{
 							if (upRegion != null && upRegion.hasChunk(chunkX, 31))
@@ -316,7 +316,7 @@ public class Dimension
 						}
 						else
 						{
-							if (region.hasChunk(chunkX, chunkZ - 1))
+							if (upChunk == null && region.hasChunk(chunkX, chunkZ - 1))
 							{
 								CompoundTag upTag = region.getChunk(chunkX, chunkZ - 1);
 								
@@ -428,15 +428,16 @@ public class Dimension
 								}
 							}
 						}
+						upChunk = chunk;
 					}
 					catch (Exception e) 
 					{
 						e.printStackTrace();
+						upChunk = null;
 					}
 				}
 			}
 		}
-		
 	}
 	
 	public void drawEntitiesToBuffer(int startY)
