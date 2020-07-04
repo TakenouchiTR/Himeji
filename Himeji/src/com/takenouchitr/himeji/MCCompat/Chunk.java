@@ -20,6 +20,8 @@
 
 package com.takenouchitr.himeji.MCCompat;
 
+import java.util.Arrays;
+
 import com.mojang.nbt.ByteArrayTag;
 import com.mojang.nbt.CompoundTag;
 import com.mojang.nbt.IntArrayTag;
@@ -60,7 +62,7 @@ public class Chunk
 		
 		int version = baseTag.getInt("DataVersion");
 		
-		if (version < 1520)
+		if (version < 1519)
 			readPreFlatChunk();
 		else
 			readPostFlatChunk();
@@ -125,7 +127,7 @@ public class Chunk
 	}
 	
 	/**
-	 * Reads a chunk using the Anvil format, pre-flattening
+	 * Reads a chunk using the Anvil format, pre-flattening (<1.13)
 	 */
 	private void readPreFlatChunk()
 	{
@@ -199,10 +201,19 @@ public class Chunk
 		{
 			int[] biomeData = levelTag.getIntArray("Biomes");
 			
+			//Defaults the biome to Forest if the data is missing for some reason.
+			//It happened in one file, and I cannot figure out why.
+			if (biomeData.length == 0)
+			{
+				biomeData = new int[256];
+				Arrays.fill(biomeData, Biome.FOREST.id);
+				return;
+			}
+			
 			for(int x = 0; x < CHUNK_SIZE; x++) 
 			{
 				for(int z = 0; z < CHUNK_SIZE; z++) 
-				{
+				{ 
 					biome[x][0][z] = biomeData[getIndex(x, z)];
 				}
 			}
@@ -232,22 +243,10 @@ public class Chunk
 		ListTag<? extends Tag> sectionTags = levelTag.getList("Sections");
 		
 		if (sectionTags.size() != 0)
-			sections = new Section[sectionTags.size() - 1];
+			sections = new Section[sectionTags.size()];
 		
 		blocks = new String[CHUNK_SIZE][CHUNK_HEIGHT][CHUNK_SIZE];
 		
-		/*Fills all blocks with the default block namespace ID
-		for(int x = 0; x < CHUNK_SIZE; x++) 
-		{
-			for(int z = 0; z < CHUNK_SIZE; z++) 
-			{
-				for(int y = 0; y < CHUNK_HEIGHT; y++) 
-				{
-					blocks[x][y][z] = "minecraft:air";
-				}
-			}
-		}
-		*/
 		//Stops if there is no block data stored in the tag
 		if (sections == null)
 			return;
@@ -463,6 +462,8 @@ public class Chunk
 		if (blocks == null || biome == null)
 			return null;
 		
+		startY = (startY < highestBlock) ? startY : highestBlock;
+		
 		for (int x = 0; x < CHUNK_SIZE; x++)
 		{
 			for (int z = 0; z < CHUNK_SIZE; z++)
@@ -484,7 +485,7 @@ public class Chunk
 				//Adds a blue effect to blocks under water
 				if (y != dy)
 				{
-					int waterColor = Block.getBlockColor("minecraft:water", 
+					int waterColor = Block.getBlockColor(blocks[x][y][z], 
 							biome[x / biomeWidth][y / biomeHeight][z / biomeWidth]);
 					int a = 0;
 					int r = 0;
@@ -542,7 +543,7 @@ public class Chunk
 	 */
 	public int getTopBlockY(int x, int z, int startY, int endY)
 	{
-		for (int y = startY < highestBlock ? startY : highestBlock; y >= endY; y--) 
+		for (int y = startY; y >= endY; y--) 
 		{
 			String blockName = blocks[x][y][z];
 			
@@ -564,7 +565,7 @@ public class Chunk
 	 */
 	public int getTopBlockYIgnoreWater(int x, int z, int startY, int endY)
 	{
-		for (int y = startY < highestBlock ? startY : highestBlock; y >= endY; y--) 
+		for (int y = startY; y >= endY; y--) 
 		{
 			try
 			{
