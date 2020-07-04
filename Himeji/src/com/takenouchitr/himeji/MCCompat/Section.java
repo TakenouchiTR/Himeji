@@ -109,7 +109,21 @@ public class Section
 		
 		return result;
 	}
-
+	
+	public byte[] getBlockLight()
+	{
+		if (sectionTag.contains("BlockLight"))
+			return sectionTag.getByteArray("BlockLight");
+		return null;
+	}
+	
+	public byte[] getSkyLight()
+	{
+		if (sectionTag.contains("SkyLight"))
+			return sectionTag.getByteArray("SkyLight");
+		return null;
+	}
+	
 	/**
 	 * Gets the section's NBT.
 	 * @return the section's NBT
