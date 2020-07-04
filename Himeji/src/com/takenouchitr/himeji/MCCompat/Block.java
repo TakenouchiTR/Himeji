@@ -51,6 +51,7 @@ public class Block
 	private static HashSet<String> water;
 	private static HashSet<String> invisible;
 	private static HashSet<String> missingIds;
+	private static HashSet<Integer> unknownBiomes;
 	private static List<ListChangeListener> listeners = new ArrayList<>();
 	
 	private int blockID;
@@ -60,6 +61,7 @@ public class Block
 	{
 		final String DATA_FOLDER = Himeji.DATA_FOLDER;
 		missingIds = new HashSet<>();
+		unknownBiomes = new HashSet<>();
 		colors = new HashMap<>();
 		
 		try
@@ -438,7 +440,7 @@ public class Block
 	 */
 	public static int getFoliageColor(int biome)
 	{
-		return foliageColors[biome];
+		return getBiomeColor(foliageColors, biome);
 	}
 	
 	/**
@@ -448,7 +450,7 @@ public class Block
 	 */
 	public static int getGrassColor(int biome)
 	{
-		return grassColors[biome];
+		return getBiomeColor(grassColors, biome);
 	}
 	
 	/**
@@ -458,7 +460,7 @@ public class Block
 	 */
 	public static int getWaterColor(int biome)
 	{
-		return waterColors[biome];
+		return getBiomeColor(waterColors, biome);
 	}
 	
 	/**
@@ -483,19 +485,30 @@ public class Block
 		return colors.containsKey(id);
 	}
 	
+	public static int getBiomeColor(int[] biomeColors, int biomeID)
+	{
+		if (biomeColors.length < biomeID || biomeColors[biomeID] == 0)
+		{
+			unknownBiomes.add(biomeID);
+			return biomeColors[Biome.FOREST.id];
+		}
+		
+		return biomeColors[biomeID];
+	}
+	
 	public static int getGrassColor(Biome biome)
 	{
-		return grassColors[biome.id];
+		return getBiomeColor(grassColors, biome.id);
 	}
 	
 	public static int getFoliageColor(Biome biome)
 	{
-		return foliageColors[biome.id];
+		return getBiomeColor(foliageColors, biome.id);
 	}
 	
 	public static int getWaterColor(Biome biome)
 	{
-		return waterColors[biome.id];
+		return getBiomeColor(waterColors, biome.id);
 	}
 	
 	public static void setGrassColor(Biome biome, int color)
@@ -708,6 +721,11 @@ public class Block
 	public static HashSet<String> getMissingIds()
 	{
 		return missingIds;
+	}
+	
+	public static HashSet<Integer> getUnknownBiomes()
+	{
+		return unknownBiomes;
 	}
 	
 	public static HashMap<String, Integer> getColors()
