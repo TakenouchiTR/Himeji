@@ -77,6 +77,15 @@ public class Dimension
 		chunkZOffset = size[3];
 	}
 	
+	public Dimension(File dimDir, int[] size)
+	{
+		directory = dimDir;
+		setChunkWidth(size[0]);
+		setChunkHeight(size[1]);
+		chunkXOffset = size[2];
+		chunkZOffset = size[3];
+	}
+	
 	/**
 	 * Calculates how large the dimension is from the file names in its
 	 * directory.
@@ -345,7 +354,6 @@ public class Dimension
 									rightChunk = new Chunk(rightTag);
 							}
 						}
-						
 						chunk = new Chunk(chunkTag);
 							
 						int gridX = (chunk.getX() + chunkXOffset) * Chunk.CHUNK_SIZE;
