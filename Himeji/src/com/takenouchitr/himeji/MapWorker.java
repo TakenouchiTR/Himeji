@@ -69,6 +69,17 @@ public class MapWorker extends SwingWorker<Void, String>
 			int startY = Integer.parseInt(Himeji.getProperty(Property.START_Y));
 			int endY = Integer.parseInt(Himeji.getProperty(Property.END_Y));
 			
+			if (!dimFile.exists())
+			{
+				Himeji.log("Dimension does not exist");
+				
+				JOptionPane.showMessageDialog(Himeji.frame, "Dimension does not exist.\n" + 
+					"Please change the selected dimension.", "Dimension not found", 
+					JOptionPane.WARNING_MESSAGE);
+				
+				return null;
+			}
+			
 			publish("Getting area size...");
 			if (Himeji.getProperty(Property.USE_AREA).equals("true"))
 			{
@@ -101,7 +112,23 @@ public class MapWorker extends SwingWorker<Void, String>
 			else
 			{
 				Himeji.log("Creating dimension " + dimensionName + "...");
-				dim = new Dimension(dimFile);
+				int[] dimBounds = Dimension.calcDimSize(dimFile);
+				
+				long width = dimBounds[0] * 16;
+				long height = dimBounds[1] * 16;
+				long size = width * height * 4;
+				
+				if (size > 1_073_741_824)
+				{
+					publish("Expected filesize too large: " + size + " bytes");
+					
+					JOptionPane.showMessageDialog(Himeji.frame, "Image file expected to exceed 1GB (" + 
+						(size / GIGABYTE) + "GB).\nPlease restict the render area to reduce the size.",
+						"Image size warning", JOptionPane.WARNING_MESSAGE); 
+					return null;
+				}
+				
+				dim = new Dimension(dimFile, dimBounds);
 				
 				Himeji.log("Creating render grid");
 				dim.createRenderGrid();
@@ -138,7 +165,7 @@ public class MapWorker extends SwingWorker<Void, String>
 		int size = Block.getMissingIds().size();
 		if (size > 0)
 		{
-			int result = JOptionPane.showConfirmDialog(Himeji.frame,size + " missing block ID(s) found. " + 
+			int result = JOptionPane.showConfirmDialog(Himeji.frame,size + " missing block ID(s) found.\n" + 
 				"Would you like to add them now?", "Missing IDs found", JOptionPane.YES_NO_OPTION,
 				JOptionPane.QUESTION_MESSAGE);
 			
@@ -159,6 +186,18 @@ public class MapWorker extends SwingWorker<Void, String>
 					"Missing IDs added", JOptionPane.INFORMATION_MESSAGE);
 			}
 		}
-		Himeji.enableComponents();
+		
+		size = Block.getUnknownBiomes().size();
+		if (size > 0)
+		{
+			JOptionPane.showMessageDialog(Himeji.frame, "Unknown biomes detected.\nAll colors have been " + 
+				"rendered using Forest colors by default.\nIf you have mods installed, this may be the issue." + 
+				"\nThere is little I can do at the moment without resorting to guesswork on the user's part.", 
+				"Unknown biomes found", JOptionPane.INFORMATION_MESSAGE);
+			
+			Block.getUnknownBiomes().clear();
+		}
+		
+		Himeji.setComponentsEnabled(true);
 	}
 }
