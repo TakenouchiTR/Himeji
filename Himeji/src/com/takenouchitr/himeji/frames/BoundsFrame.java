@@ -268,6 +268,8 @@ public class BoundsFrame extends JFrame implements ItemListener, ChangeListener
 				props.setProperty(Property.END_Z.key, "" + ((int)spn_minZ.getValue()));
 				
 				props.setProperty(Property.USE_AREA.key, "" + chk_chunks.isSelected());
+				
+				Himeji.frame.setEnabled(true);
 			}
 
 			@Override
@@ -308,7 +310,8 @@ public class BoundsFrame extends JFrame implements ItemListener, ChangeListener
 			folder.mkdir();
 		
 		JFileChooser fileChooser = new JFileChooser(Himeji.DATA_FOLDER + BOUNDS_FOLDER);
-		//fileChooser.setFileFilter(new FileNameExtensionFilter("Comma Separated Value (.csv)", ".csv", ".CSV"));
+		fileChooser.setFileFilter(new FileNameExtensionFilter("Comma Separated Value (.csv)", 
+				".csv", ".CSV"));
 		if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION)
 		{
 			File file = fileChooser.getSelectedFile();
