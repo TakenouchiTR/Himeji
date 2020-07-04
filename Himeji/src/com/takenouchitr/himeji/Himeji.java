@@ -33,6 +33,7 @@ import java.awt.event.*;
 import java.awt.SystemColor;
 import java.awt.Toolkit;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.FlowLayout;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -179,38 +180,12 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
 		}
 	}
 
-	/**
-	 * Disables all components. Prevents any changes while the program is actively rendering a map.
-	 */
-	public static void disableComponents()
+	public static void setComponentsEnabled(boolean enabled)
 	{
-		btn_start.setEnabled(false);
-		btn_folder.setEnabled(false);
-		btn_setBounds.setEnabled(false);
-		btn_output.setEnabled(false);
-		chk_renderUnderWater.setEnabled(false);
-		chk_renderShadows.setEnabled(false);
-		chk_renderBiomes.setEnabled(false);
-		txt_worldPath.setEnabled(false);
-		txt_output.setEnabled(false);
-		bar_menu.setEnabled(false);
-	}
-	
-	/**
-	 * Enables all components.
-	 */
-	public static void enableComponents()
-	{
-		btn_start.setEnabled(true);
-		btn_folder.setEnabled(true);
-		btn_setBounds.setEnabled(true);
-		btn_output.setEnabled(true);
-		chk_renderUnderWater.setEnabled(true);
-		chk_renderShadows.setEnabled(true);
-		chk_renderBiomes.setEnabled(true);
-		txt_worldPath.setEnabled(true);
-		txt_output.setEnabled(true);
-		bar_menu.setEnabled(true);
+		
+		
+		for (Component c : frame.getContentPane().getComponents())
+			c.setEnabled(enabled);
 	}
 	
 	/**
@@ -223,6 +198,8 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
 		return props.getProperty(key);
 	}
 	
+	
+	
 	/**
 	 * Gets a config from the program's properties using a Property enum.
 	 * @param key Property enum
@@ -233,6 +210,7 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
 		return getProperty(prop.key);
 	}
 	
+	
 	/**
 	 * Sets the value for a Property. 
 	 * @param prop  Property enum of the value to update
@@ -242,6 +220,7 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
 	{
 		props.setProperty(prop.key, value);
 	}
+	
 	
 	/**
 	 * Saves the program's Properties to file.
@@ -261,6 +240,7 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
 		}
 	}
 	
+	
 	/**
 	 * Displays a message using the label at the bottom of the frame
 	 * @param message message to display
@@ -270,6 +250,7 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
 		lbl_log.setText(message);
 		log(message);
 	}
+	
 	
 	@SuppressWarnings("unused")
 	public static void log(String line)
@@ -335,6 +316,7 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
 		
 		return loadedProp;
 	}
+	
 	
 	private Himeji()
 	{
@@ -507,6 +489,7 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
         setLocation(getX() - getWidth() / 2, getY() - getHeight() / 2);
 	}
 	
+	
 	/**
 	 * Applies the values of the program's properties to the form components.
 	 */
@@ -520,6 +503,7 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
 		chk_night.setSelected(Boolean.parseBoolean(getProperty(Property.RENDER_LIGHT)));
 	}
 	
+	
 	private void openColorPicker()
 	{
 		if (colorFrame == null)
@@ -531,6 +515,7 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
 		colorFrame.setLocationRelativeTo(this);
 		colorFrame.setVisible(true);
 	}
+	
 	
 	private void openBiomeFrame()
 	{
@@ -544,6 +529,7 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
 		biomeFrame.setVisible(true);
 	}
 	
+	
 	private void openBoundsFrame()
 	{
 		if (boundsFrame == null)
@@ -553,6 +539,7 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
 		boundsFrame.setLocationRelativeTo(this);
 		boundsFrame.setVisible(true);
 	}
+	
 	
 	private void openFlagsFrame()
 	{
@@ -564,6 +551,7 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
 		flagsFrame.setVisible(true);
 	}
 	
+	
 	private void openSettingsFrame()
 	{
 		if (settingsFrame == null)
@@ -574,6 +562,7 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
 		settingsFrame.setLocationRelativeTo(this);
 		settingsFrame.setVisible(true);
 	}
+	
 	
 	@Override
 	public void actionPerformed(ActionEvent e) 
@@ -646,7 +635,7 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
 				SessionProperties.renderShadows = 
 					Boolean.parseBoolean(props.getProperty(Property.RENDER_SHADOWS.key));
 				
-				disableComponents();
+				setComponentsEnabled(false);
 				worker.execute();
 			}
 			catch(Exception ex)
