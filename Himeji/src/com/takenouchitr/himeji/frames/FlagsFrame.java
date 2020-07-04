@@ -101,7 +101,7 @@ public class FlagsFrame extends JDialog implements ListChangeListener
 		buttonGroup.add(rad_water);
 		
 		JButton btn_save = new JButton("Save to File");
-		btn_save.setBounds(215, 233, 94, 23);
+		btn_save.setBounds(205, 233, 104, 23);
 		getContentPane().add(btn_save);
 		
 		rad_invisible.addActionListener((e) -> loadList(Block.INVISIBLE_LIST));
