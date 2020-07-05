@@ -79,6 +79,7 @@ minecraft:magenta_wool,-3319610
 minecraft:prismarine_bricks,-8869470
 minecraft:red_wall_banner,-6806752
 minecraft:crafting_table,-5279162
+minecraft:soul_lantern,-12300957
 minecraft:soul_fire_lantern,-12300957
 minecraft:lever,-9874381
 minecraft:warped_pressure_plate,-13864340
@@ -249,7 +250,9 @@ minecraft:trapped_chest,-5539539
 minecraft:dropper,-9868951
 minecraft:pink_bed,-1144921
 minecraft:potatoes,-16734180
+minecraft:soul_torch,-13702673
 minecraft:soul_fire_torch,-13702673
+minecraft:soul_fire_wall_torch,-13702673
 minecraft:coarse_dirt,-10994648
 minecraft:chest,-5539539
 minecraft:dark_oak_log,-15002356
@@ -473,7 +476,7 @@ minecraft:quartz_pillar,-1644826
 minecraft:light_blue_bed,-13524016
 minecraft:birch_log,-5525845
 minecraft:orange_shulker_box,-3115462
-minecraft:soul_fire_wall_torch,-13702673
+minecraft:soul_wall_torch,-13702673
 minecraft:light_gray_wall_banner,-7434610
 minecraft:spruce_wall_sign,-8956107
 minecraft:cyan_bed,-8902231
