@@ -40,6 +40,7 @@ public class Block
 	public static final int GRASS_LIST = 2;
 	public static final int FOLIAGE_LIST = 3;
 	public static final int WATER_LIST = 4;
+	public static final int BIOME_LIST = 5;
 	
 	private static String[][] legacyIds;
 	private static HashMap<String, Integer> colors;
@@ -501,6 +502,11 @@ public class Block
 		return colors.containsKey(id);
 	}
 	
+	public static boolean biomeExists(int id)
+	{
+		return biomes.containsKey(id);
+	}
+	
 	public static int getBiomeColor(HashMap<Integer, Integer> biomeColors, int biomeID)
 	{
 		if (!biomeColors.containsKey(biomeID))
@@ -681,6 +687,19 @@ public class Block
 			lcl.OnItemAddition(id, listID);
 	}
 	
+ 	public static void addBiome(int id, String name)
+ 	{
+ 		biomes.put(id, name);
+ 		grassColors.put(id, 0xFF000000);
+ 		foliageColors.put(id, 0xFF000000);
+ 		waterColors.put(id, 0xFF000000);
+ 		
+ 		for (ListChangeListener lcl : listeners)
+ 		{
+ 			lcl.OnItemAddition(id + "", BIOME_LIST);
+ 		}
+ 	}
+ 	
 	public static void removeIdFromList(String id, int listID)
 	{
 		HashSet<String> list = null;

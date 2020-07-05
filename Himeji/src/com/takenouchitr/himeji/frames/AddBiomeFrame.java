@@ -6,44 +6,50 @@ import javax.swing.JTextField;
 import com.takenouchitr.himeji.Himeji;
 import com.takenouchitr.himeji.MCCompat.Block;
 
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
 import javax.swing.JButton;
-import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JSpinner;
 
-public class AddBlockFrame extends JFrame
+public class AddBiomeFrame extends JFrame
 {
-	private JTextField txt_id;
-	private ColorPickerFrame colorFrame;
+	private JTextField txt_name;
+	private JSpinner spn_id;
 	
-	public AddBlockFrame() 
+	public AddBiomeFrame() 
 	{
+		setTitle("New Biome");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		
-		setSize(275, 110);
-		setTitle("New Block ID");
+		setSize(360, 110);
 		getContentPane().setLayout(null);
 		
-		txt_id = new JTextField();
-		txt_id.setBounds(30, 11, 219, 20);
-		getContentPane().add(txt_id);
-		txt_id.setColumns(10);
+		txt_name = new JTextField();
+		txt_name.setColumns(10);
+		txt_name.setBounds(114, 11, 219, 20);
+		getContentPane().add(txt_name);
+		
+		JButton btn_cancel = new JButton("Cancel");
+		btn_cancel.setBounds(180, 40, 75, 23);
+		getContentPane().add(btn_cancel);
+		
+		JButton btn_add = new JButton("Add");
+		btn_add.setBounds(265, 40, 68, 23);
+		getContentPane().add(btn_add);
 		
 		JLabel lbl_id = new JLabel("ID");
 		lbl_id.setBounds(10, 14, 46, 14);
 		getContentPane().add(lbl_id);
 		
-		JButton btn_add = new JButton("Add");
-		btn_add.setBounds(181, 40, 68, 23);
-		getContentPane().add(btn_add);
+		spn_id = new JSpinner();
+		spn_id.setBounds(25, 11, 46, 20);
+		getContentPane().add(spn_id);
 		
-		JButton btn_cancel = new JButton("Cancel");
-		btn_cancel.setBounds(96, 40, 75, 23);
-		getContentPane().add(btn_cancel);
+		JLabel lbl_name = new JLabel("Name");
+		lbl_name.setBounds(81, 14, 46, 14);
+		getContentPane().add(lbl_name);
 		
 		btn_add.addActionListener((e) -> addPress());
 		btn_cancel.addActionListener((e) -> cancelPress());
@@ -97,19 +103,30 @@ public class AddBlockFrame extends JFrame
 			
 		});
 	}
-	
-	private void addPress()
-	{
-		String id = txt_id.getText().toLowerCase();
-		
-		if (Block.idExists(id))
-			JOptionPane.showMessageDialog(this, "ID already exists.");
-		else
-			Block.setBlockColor(id, 0xFF000000);
-	}
-	
+
 	private void cancelPress()
 	{
 		dispose();
+	}
+
+	private void addPress()
+	{
+		int id = (int) spn_id.getValue();
+		
+		if (Block.biomeExists(id))
+		{
+			JOptionPane.showMessageDialog(this, "Biome with ID " + id + " already exists.");
+			return;
+		}
+		
+		String name = txt_name.getText().trim();
+		
+		if (name.length() == 0)
+		{
+			JOptionPane.showMessageDialog(this, "Please enter a biome name");
+			return;
+		}
+		
+		Block.addBiome(id, name);
 	}
 }

@@ -447,6 +447,7 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
         itm_biomeColors.addActionListener((e) -> openBiomeFrame());
         itm_blockFlags.addActionListener((e) -> openFlagsFrame());
         itm_settings.addActionListener((e) -> openSettingsFrame());
+        itm_biome.addActionListener((e) -> openAddBiomeFrame());
         btn_setBounds.addActionListener((e) -> openBoundsFrame());
         
         this.addWindowListener(new WindowListener() 
@@ -499,14 +500,6 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
         
         setSize(500, pnl_log.getY() + pnl_log.getHeight() + bar_menu.getHeight() + 3);
         setLocation(getX() - getWidth() / 2, getY() - getHeight() / 2);
-	}
-	
-	private void openAddBlockFrame()
-	{
-		AddBlockFrame abf = new AddBlockFrame();
-		setComponentsEnabled(false);
-		abf.setLocationRelativeTo(this);
-		abf.setVisible(true);
 	}
 	
 
@@ -576,6 +569,22 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
 		settingsFrame.applyProperties();
 		settingsFrame.setLocationRelativeTo(this);
 		settingsFrame.setVisible(true);
+	}
+
+	private void openAddBiomeFrame()
+	{
+		AddBiomeFrame abf = new AddBiomeFrame();
+		setComponentsEnabled(false);
+		abf.setLocationRelativeTo(this);
+		abf.setVisible(true);
+	}
+
+	private void openAddBlockFrame()
+	{
+		AddBlockFrame abf = new AddBlockFrame();
+		setComponentsEnabled(false);
+		abf.setLocationRelativeTo(this);
+		abf.setVisible(true);
 	}
 	
 	@Override

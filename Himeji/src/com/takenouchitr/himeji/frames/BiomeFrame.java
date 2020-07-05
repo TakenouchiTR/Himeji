@@ -17,6 +17,7 @@ import javax.swing.event.ChangeEvent;
 
 import com.takenouchitr.himeji.Himeji;
 import com.takenouchitr.himeji.ListBiome;
+import com.takenouchitr.himeji.ListChangeListener;
 import com.takenouchitr.himeji.MCCompat.Biome;
 import com.takenouchitr.himeji.MCCompat.Block;
 
@@ -164,6 +165,33 @@ public class BiomeFrame extends JFrame
 			public void windowOpened(WindowEvent e)
 			{
 			}
+		});
+		Block.addListChangeListener(new ListChangeListener() 
+		{
+
+			@Override
+			public void OnItemAddition(String name, int listID)
+			{
+				if (listID != Block.BIOME_LIST)
+					return;
+				
+				int id = Integer.parseInt(name);
+				String biomeName = Block.getBiomes().get(id);
+				
+				ListBiome lb = new ListBiome(id, biomeName);
+				com_biomeNames.addItem(lb);
+			}
+
+			@Override
+			public void OnItemUpdate(String oldName, String newName, int listID)
+			{
+			}
+
+			@Override
+			public void OnItemRemoval(String name, int listID)
+			{
+			}
+			
 		});
 		
 		loadBiomes();
