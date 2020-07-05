@@ -1,5 +1,5 @@
 # Himeji
-Himeji Map Viewer (HMV) is an application used top create top-down renders of Minecraft maps. HMV was created with the goal of being as accessible as possible, while still giving the user as many choices for map customization as possible. Java was specifically chosen as users must already have it installed to play minecraft, greatly reducing the barrier to entry. HMV has many options for customizing map renders, including personalizing block colors, adjusting biome colors, and selecting specific regions of the map to render by themselves. Himeji Map Viewer is currently under development with more planned features coming in the future.
+Himeji Map Viewer (HMV) is an application used to create top-down renders of Minecraft maps. HMV was created with the goal of being as accessible as possible, while still giving the user as many choices for map customization as possible. Java was specifically chosen as users must already have it installed to play minecraft, greatly reducing the barrier to entry. HMV has many options for customizing map renders, including personalizing block colors, adjusting biome colors, and selecting specific regions of the map to render by themselves. Himeji Map Viewer is currently under development with more planned features coming in the future.
 
 ![picture alt](https://tknouchi.files.wordpress.com/2020/03/sample.png)
 
@@ -38,16 +38,16 @@ All features can be done within the program, using the program's UI:
 
 
 ## Previews
-Biome Colors:\
+**Biome Colors:**\
 ![picture alt](https://i.imgur.com/SYd99pF.gif)
 
-Night Brightness:\
+**Night Brightness:**\
 ![picture alt](https://i.imgur.com/JBekjB1.gif)
 
-Shadow Intensity:\
+**Shadow Intensity:**\
 ![picture alt](https://i.imgur.com/tkDDjjN.gif)
 
-Water Transparency:\
+**Water Transparency:**\
 ![picture alt](https://i.imgur.com/0lmmjIx.gif)
 
 ## References
