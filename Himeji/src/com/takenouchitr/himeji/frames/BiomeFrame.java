@@ -9,6 +9,7 @@ import java.awt.Color;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.swing.border.LineBorder;
@@ -171,7 +172,7 @@ public class BiomeFrame extends JFrame
 	public void saveChanges()
 	{
 		ListBiome lb = (ListBiome) com_biomeNames.getSelectedItem();
-		Biome biome = lb.getBiome();
+		int biome = lb.getBiome();
 		
 		Block.setGrassColor(biome, grassColor);
 		Block.setFoliageColor(biome, foliageColor);
@@ -219,14 +220,16 @@ public class BiomeFrame extends JFrame
 	
 	private void loadBiomes()
 	{
-		List<ListBiome> biomes = new ArrayList<>();
+		HashMap<Integer, String> biomes = Block.getBiomes();
 		
-		for (Biome b : Biome.values())
-			biomes.add(new ListBiome(b));
+		List<ListBiome> listBiomes = new ArrayList<>();
 		
-		biomes.sort(null);
+		for (Integer i : biomes.keySet())
+			listBiomes.add(new ListBiome(i, biomes.get(i)));
 		
-		for (ListBiome lb : biomes)
+		listBiomes.sort(null);
+		
+		for (ListBiome lb : listBiomes)
 			com_biomeNames.addItem(lb);
 		
 		loadColors();
@@ -249,7 +252,7 @@ public class BiomeFrame extends JFrame
 	private void loadColors()
 	{
 		ListBiome lb = (ListBiome)com_biomeNames.getSelectedItem(); 
-		Biome biome = lb.getBiome();
+		int biome = lb.getBiome();
 		
 		grassColor = Block.getGrassColor(biome);
 		foliageColor = Block.getFoliageColor(biome);

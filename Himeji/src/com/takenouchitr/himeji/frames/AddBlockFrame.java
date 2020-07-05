@@ -3,6 +3,7 @@ package com.takenouchitr.himeji.frames;
 import javax.swing.JFrame;
 import javax.swing.JTextField;
 
+import com.takenouchitr.himeji.Himeji;
 import com.takenouchitr.himeji.MCCompat.Block;
 
 import javax.swing.JLabel;
@@ -19,10 +20,9 @@ public class AddBlockFrame extends JFrame
 	private JTextField txt_id;
 	private ColorPickerFrame colorFrame;
 	
-	public AddBlockFrame(ColorPickerFrame colorFrame) 
+	public AddBlockFrame() 
 	{
-		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-		this.colorFrame = colorFrame;
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
 		setSize(275, 110);
 		setTitle("New Block ID");
@@ -67,7 +67,7 @@ public class AddBlockFrame extends JFrame
 			@Override
 			public void windowClosing(WindowEvent arg0)
 			{
-				colorFrame.setEnabled(true);
+				Himeji.setComponentsEnabled(true);
 			}
 
 			@Override

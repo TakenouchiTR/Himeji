@@ -55,6 +55,7 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
 	public static final String DATA_FOLDER = "data/";
 	public static final String PROPERTIES_FILE = "config.properties";
 	public static final String BLOCK_COLORS_FILE = "colors.csv";
+	public static final String BIOMES_FILE = "biomes.csv";
 	public static final String FOLIAGE_FILE = "foliage.csv";
 	public static final String FOLIAGE_COLORS_FILE = "foliage_colors.csv";
 	public static final String GRASS_FILE = "grass.csv";
@@ -125,29 +126,36 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
 		if (!idFile.exists())
 			copyFromResource(LEGACY_ID_FILE);
 		
+		File biomeFile = new File(DATA_FOLDER + BIOMES_FILE);
+		if (!biomeFile.exists())
+			copyFromResource(BIOMES_FILE);
+		
 		File foliageFile = new File(DATA_FOLDER + FOLIAGE_FILE);
 		if (!foliageFile.exists())
 			copyFromResource(FOLIAGE_FILE);
 		
+		/*
 		File foliageColors = new File(DATA_FOLDER + FOLIAGE_COLORS_FILE);
 		if (!foliageColors.exists())
-			copyFromResource(FOLIAGE_COLORS_FILE);
+			copyFromResource(FOLIAGE_COLORS_FILE);*/
 		
 		File grassFile = new File(DATA_FOLDER + GRASS_FILE);
 		if (!grassFile.exists())
 			copyFromResource(GRASS_FILE);
 		
+		/*
 		File grassColors = new File(DATA_FOLDER + GRASS_COLORS_FILE);
 		if (!grassColors.exists())
-			copyFromResource(GRASS_COLORS_FILE);
+			copyFromResource(GRASS_COLORS_FILE);*/
 		
 		File waterFile = new File(DATA_FOLDER + WATER_FILE);
 		if (!waterFile.exists())
 			copyFromResource(WATER_FILE);
 		
+		/*
 		File waterColors = new File(DATA_FOLDER + WATER_COLORS_FILE);
 		if (!waterColors.exists())
-			copyFromResource(WATER_COLORS_FILE);
+			copyFromResource(WATER_COLORS_FILE);*/
 		
 		File invisFile = new File(DATA_FOLDER + INVISIBLE_FILE);
 		if (!invisFile.exists())
@@ -182,7 +190,8 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
 
 	public static void setComponentsEnabled(boolean enabled)
 	{
-		
+		for (Component c : bar_menu.getComponents())
+			c.setEnabled(enabled);
 		
 		for (Component c : frame.getContentPane().getComponents())
 			c.setEnabled(enabled);
@@ -198,8 +207,6 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
 		return props.getProperty(key);
 	}
 	
-	
-	
 	/**
 	 * Gets a config from the program's properties using a Property enum.
 	 * @param key Property enum
@@ -210,7 +217,6 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
 		return getProperty(prop.key);
 	}
 	
-	
 	/**
 	 * Sets the value for a Property. 
 	 * @param prop  Property enum of the value to update
@@ -220,7 +226,6 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
 	{
 		props.setProperty(prop.key, value);
 	}
-	
 	
 	/**
 	 * Saves the program's Properties to file.
@@ -240,7 +245,6 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
 		}
 	}
 	
-	
 	/**
 	 * Displays a message using the label at the bottom of the frame
 	 * @param message message to display
@@ -250,7 +254,6 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
 		lbl_log.setText(message);
 		log(message);
 	}
-	
 	
 	@SuppressWarnings("unused")
 	public static void log(String line)
@@ -316,8 +319,7 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
 		
 		return loadedProp;
 	}
-	
-	
+
 	private Himeji()
 	{
 		super("Himeji Map Viewer");
@@ -398,6 +400,15 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
         JMenuItem itm_biomeColors = new JMenuItem("Biome Colors");
         menu_config.add(itm_biomeColors);
         
+        JMenu mnAdd = new JMenu("Add");
+        bar_menu.add(mnAdd);
+        
+        JMenuItem itm_blockID = new JMenuItem("New Block ID");
+        mnAdd.add(itm_blockID);
+        
+        JMenuItem itm_biome = new JMenuItem("New Biome");
+        mnAdd.add(itm_biome);
+        
         btn_setBounds.setBounds(298, 154, 107, 23);
         getContentPane().add(btn_setBounds);
         
@@ -432,6 +443,7 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
         chk_night.addActionListener((e) -> 
         	props.setProperty(Property.RENDER_LIGHT.key, chk_night.isSelected() + ""));
         itm_colors.addActionListener((e) -> openColorPicker());
+        itm_blockID.addActionListener((e) -> openAddBlockFrame());
         itm_biomeColors.addActionListener((e) -> openBiomeFrame());
         itm_blockFlags.addActionListener((e) -> openFlagsFrame());
         itm_settings.addActionListener((e) -> openSettingsFrame());
@@ -489,7 +501,15 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
         setLocation(getX() - getWidth() / 2, getY() - getHeight() / 2);
 	}
 	
+	private void openAddBlockFrame()
+	{
+		AddBlockFrame abf = new AddBlockFrame();
+		setComponentsEnabled(false);
+		abf.setLocationRelativeTo(this);
+		abf.setVisible(true);
+	}
 	
+
 	/**
 	 * Applies the values of the program's properties to the form components.
 	 */
@@ -503,7 +523,6 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
 		chk_night.setSelected(Boolean.parseBoolean(getProperty(Property.RENDER_LIGHT)));
 	}
 	
-	
 	private void openColorPicker()
 	{
 		if (colorFrame == null)
@@ -515,7 +534,6 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
 		colorFrame.setLocationRelativeTo(this);
 		colorFrame.setVisible(true);
 	}
-	
 	
 	private void openBiomeFrame()
 	{
@@ -529,7 +547,6 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
 		biomeFrame.setVisible(true);
 	}
 	
-	
 	private void openBoundsFrame()
 	{
 		if (boundsFrame == null)
@@ -540,7 +557,6 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
 		boundsFrame.setVisible(true);
 	}
 	
-	
 	private void openFlagsFrame()
 	{
 		if (flagsFrame == null)
@@ -550,8 +566,7 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
 		flagsFrame.setLocationRelativeTo(this);
 		flagsFrame.setVisible(true);
 	}
-	
-	
+
 	private void openSettingsFrame()
 	{
 		if (settingsFrame == null)
@@ -562,7 +577,6 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
 		settingsFrame.setLocationRelativeTo(this);
 		settingsFrame.setVisible(true);
 	}
-	
 	
 	@Override
 	public void actionPerformed(ActionEvent e) 
