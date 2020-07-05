@@ -32,7 +32,6 @@ public class ColorPickerFrame extends JFrame implements ListChangeListener
 	private JTextField txt_hex;
 	private JButton btn_update;
 	private JButton btn_save;
-	private JButton btn_add;
 	
 	public ColorPickerFrame(Himeji himeji) 
 	{
@@ -94,10 +93,6 @@ public class ColorPickerFrame extends JFrame implements ListChangeListener
 		btn_save.setBounds(95, 166, 99, 23);
 		getContentPane().add(btn_save);
 		
-		btn_add = new JButton("Add");
-		btn_add.setBounds(204, 166, 63, 23);
-		getContentPane().add(btn_add);
-		
 		com_namespaceIds.addActionListener((e) -> loadColors());
 		spn_r.addChangeListener((e) -> updatePreview());
 		spn_g.addChangeListener((e) -> updatePreview());
@@ -105,7 +100,6 @@ public class ColorPickerFrame extends JFrame implements ListChangeListener
 		txt_hex.addActionListener((e) -> convertHex());
 		btn_update.addActionListener((e) -> saveChanges());
 		btn_save.addActionListener((e) -> saveToFile());
-		btn_add.addActionListener((e) -> openAddDialog());
 		addWindowListener(new WindowListener() 
 		{
 
@@ -177,14 +171,6 @@ public class ColorPickerFrame extends JFrame implements ListChangeListener
 	public void saveToFile()
 	{
 		Block.saveColorFile();
-	}
-	
-	public void openAddDialog()
-	{
-		AddBlockFrame dialog = new AddBlockFrame(this);
-		setEnabled(false);
-		dialog.setLocationRelativeTo(this);
-		dialog.setVisible(true);
 	}
 	
  	private void convertHex()
