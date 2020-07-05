@@ -40,7 +40,7 @@ public class BiomeFrame extends JFrame
 	{
 		setTitle("Biome Color Picker");
 		setResizable(false);
-		setSize(320, 280);
+		setSize(320, 269);
 		getContentPane().setLayout(null);
 		
 		JLabel lbl_hex = new JLabel("Hex");
@@ -86,7 +86,7 @@ public class BiomeFrame extends JFrame
 		pnl_colorPreview.setBounds(132, 42, 170, 132);
 		getContentPane().add(pnl_colorPreview);
 		
-		JButton btn_update = new JButton("Update");
+		JButton btn_update = new JButton("Apply");
 		btn_update.setBounds(227, 185, 75, 23);
 		getContentPane().add(btn_update);
 		
@@ -181,6 +181,7 @@ public class BiomeFrame extends JFrame
 	
 	public void saveToFile()
 	{
+		saveChanges();
 		Block.saveBiomeColorFiles();
 	}
 	

@@ -85,7 +85,7 @@ public class ColorPickerFrame extends JFrame implements ListChangeListener
 		getContentPane().add(txt_hex);
 		txt_hex.setColumns(6);
 		
-		btn_update = new JButton("Update");
+		btn_update = new JButton("Apply");
 		btn_update.setBounds(10, 166, 75, 23);
 		getContentPane().add(btn_update);
 		
@@ -170,6 +170,7 @@ public class ColorPickerFrame extends JFrame implements ListChangeListener
 	
 	public void saveToFile()
 	{
+		saveChanges();
 		Block.saveColorFile();
 	}
 	
