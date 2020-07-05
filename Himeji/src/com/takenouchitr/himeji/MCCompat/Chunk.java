@@ -111,19 +111,6 @@ public class Chunk
 				biome[x][0][z] = Biome.FOREST.id;
 			}
 		}
-		
-		/*
-		for (int x = 0; x < CHUNK_SIZE; x++) 
-		{
-			for (int z = 0; z < CHUNK_SIZE; z++) 
-			{
-				for (int y = 128; y < CHUNK_HEIGHT; y++) 
-				{
-					blocks[x][y][z] = Block.getNamespacedId(0, 0);
-				}
-			}
-		}
-		*/
 	}
 	
 	/**
@@ -136,18 +123,6 @@ public class Chunk
 		
 		ListTag<? extends Tag> sections = levelTag.getList("Sections");
 		
-		/*Fills all blocks with the default block namespace ID
-		for(int x = 0; x < CHUNK_SIZE; x++) 
-		{
-			for(int z = 0; z < CHUNK_SIZE; z++) 
-			{
-				for(int y = 0; y < CHUNK_HEIGHT; y++) 
-				{
-					blocks[x][y][z] = "minecraft:air";
-				}
-			}
-		}
-		*/
 		//Loads up the blocks stored in each of the sections
 		for(int i = 0; i < sections.size(); i++) 
 		{
@@ -474,11 +449,18 @@ public class Chunk
 					dy = getTopBlockYIgnoreWater(x, z, y, endY);
 				
 				int biomeWidth = CHUNK_SIZE / biome.length;
+				int biomeID = biome[x / biomeWidth][dy / biomeHeight][z / biomeWidth];
 				
-				int color = Block.getBlockColor(blocks[x][dy][z], 
-						biome[x / biomeWidth][dy / biomeHeight][z / biomeWidth]);
+				int color = Block.getBlockColor(blocks[x][dy][z], biomeID);
+				
+				/*
+				if (!Block.biomeExists(biomeID) && !Block.getUnknownBiomes().containsKey(biomeID))
+				{
+					Block.addUnknownBiome(biomeID,new int[] {x, y, z});
+				}*/
 				
 				int light = 15;
+				
 				if (y < CHUNK_HEIGHT - 1 && SessionProperties.renderLight)
 					light = blockLight[x][y + 1][z];
 				

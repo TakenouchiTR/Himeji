@@ -30,6 +30,7 @@ import javax.swing.SwingWorker;
 import com.takenouchitr.himeji.MCCompat.Block;
 import com.takenouchitr.himeji.MCCompat.Dimension;
 import com.takenouchitr.himeji.MCCompat.World;
+import com.takenouchitr.himeji.frames.MissingBiomesFrame;
 
 public class MapWorker extends SwingWorker<Void, String>
 {
@@ -147,8 +148,6 @@ public class MapWorker extends SwingWorker<Void, String>
 				seconds / 60, seconds % 60, (end - start) % 1000);
 			
 			publish(elapsed);
-			
-			done();
 		}
 		return null;
 	}
@@ -185,16 +184,27 @@ public class MapWorker extends SwingWorker<Void, String>
 					"are not saved automatically.\nPlease update the color and save them there.", 
 					"Missing IDs added", JOptionPane.INFORMATION_MESSAGE);
 			}
+			
+			Block.getMissingIds().clear();
 		}
 		
+		Block.addUnknownBiome(1000, new int[] {0, 0, 0});
 		size = Block.getUnknownBiomes().size();
 		if (size > 0)
 		{
-			JOptionPane.showMessageDialog(Himeji.frame, "Unknown biomes detected.\nAll colors have been " + 
-				"rendered using Forest colors by default.\nIf you have mods installed, this may be the issue." + 
-				"\nThere is little I can do at the moment without resorting to guesswork on the user's part.", 
-				"Unknown biomes found", JOptionPane.INFORMATION_MESSAGE);
+			int result = JOptionPane.showConfirmDialog(Himeji.frame,
+					"Unknown biomes detected.\n"
+					+ "All colors have been rendered using Forest colors by default.\n"
+					+ "Would you like to see a list of IDs and the first coordinate they were found at?", 
+					"Unknown biomes found", JOptionPane.YES_NO_OPTION,
+					JOptionPane.QUESTION_MESSAGE);
 			
+			if (result == JOptionPane.YES_OPTION)
+			{
+				MissingBiomesFrame mbf = new MissingBiomesFrame();
+				mbf.setLocationRelativeTo(Himeji.frame);
+				mbf.setVisible(true);
+			}
 			Block.getUnknownBiomes().clear();
 		}
 		

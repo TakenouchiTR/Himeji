@@ -21,6 +21,7 @@ public class AddBiomeFrame extends JFrame
 	
 	public AddBiomeFrame() 
 	{
+		setResizable(false);
 		setTitle("New Biome");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setSize(360, 110);
