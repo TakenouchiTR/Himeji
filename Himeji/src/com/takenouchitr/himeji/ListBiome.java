@@ -1,32 +1,17 @@
 package com.takenouchitr.himeji;
 
-import com.takenouchitr.himeji.MCCompat.Biome;
-
 public class ListBiome implements Comparable
 {
-	private Biome biome;
+	private int biome;
 	private String name;
 	
-	public ListBiome(Biome biome)
+	public ListBiome(int biome, String name)
 	{
 		this.biome = biome;
-		StringBuilder sb = new StringBuilder(biome.toString().toLowerCase());
-		sb.setCharAt(0, Character.toUpperCase(sb.charAt(0)));
-		
-		for (int i = 1; i < sb.length(); i++)
-		{
-			char c = sb.charAt(i);
-			if (c == '_')
-			{
-				sb.setCharAt(i++, ' ');
-				sb.setCharAt(i, Character.toUpperCase(sb.charAt(i)));
-			}
-		}
-		
-		name = sb.toString();
+		this.name = name;
 	}
 	
-	public Biome getBiome()
+	public int getBiome()
 	{
 		return biome;
 	}

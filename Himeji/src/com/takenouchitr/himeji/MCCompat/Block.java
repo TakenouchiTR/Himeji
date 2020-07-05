@@ -41,11 +41,12 @@ public class Block
 	public static final int FOLIAGE_LIST = 3;
 	public static final int WATER_LIST = 4;
 	
-	private static int[] foliageColors;
-	private static int[] grassColors;
-	private static int[] waterColors;
 	private static String[][] legacyIds;
 	private static HashMap<String, Integer> colors;
+	private static HashMap<Integer, String> biomes;
+	private static HashMap<Integer, Integer> grassColors;
+	private static HashMap<Integer, Integer> foliageColors;
+	private static HashMap<Integer, Integer> waterColors;
 	private static HashSet<String> foliage;
 	private static HashSet<String> grass;
 	private static HashSet<String> water;
@@ -84,10 +85,32 @@ public class Block
 		grass = loadStringList(new File(DATA_FOLDER + Himeji.GRASS_FILE));
 		water = loadStringList(new File(DATA_FOLDER + Himeji.WATER_FILE));
 		invisible = loadStringList(new File(DATA_FOLDER + Himeji.INVISIBLE_FILE));
+			
+		biomes = new HashMap<>();
+		foliageColors = new HashMap<>();
+		grassColors = new HashMap<>();
+		waterColors = new HashMap<>();
+		
+		try
+		{
+			File file = new File(DATA_FOLDER + Himeji.BIOMES_FILE);
+			List<String> lines = Files.readAllLines(file.toPath());
+			
+			for (String s : lines)
+			{
+				String[] split = s.split("[,]");
+				int id = Integer.parseInt(split[1]);
 				
-		foliageColors = loadIntArray(new File(DATA_FOLDER + Himeji.FOLIAGE_COLORS_FILE));
-		grassColors = loadIntArray(new File(DATA_FOLDER + Himeji.GRASS_COLORS_FILE));
-		waterColors = loadIntArray(new File(DATA_FOLDER + Himeji.WATER_COLORS_FILE));
+				biomes.put(id, split[0]);
+				grassColors.put(id, Integer.parseInt(split[2]));
+				foliageColors.put(id, Integer.parseInt(split[3]));
+				waterColors.put(id, Integer.parseInt(split[4]));
+			}
+		}
+		catch (Exception e)
+		{
+			
+		}
 		
 		try
 		{
@@ -129,25 +152,18 @@ public class Block
 	
 	public static void saveBiomeColorFiles()
 	{
-		File grassFile = new File(Himeji.DATA_FOLDER + Himeji.GRASS_COLORS_FILE);
-		File foliageFile = new File(Himeji.DATA_FOLDER + Himeji.FOLIAGE_COLORS_FILE);
-		File waterFile = new File(Himeji.DATA_FOLDER + Himeji.WATER_COLORS_FILE);
+		File biomeFile = new File(Himeji.DATA_FOLDER + Himeji.BIOMES_FILE);
 		try
 		{
-			FileWriter grassWriter = new FileWriter(grassFile);
-			FileWriter foliageWriter = new FileWriter(foliageFile);
-			FileWriter waterWriter = new FileWriter(waterFile);
+			FileWriter writer = new FileWriter(biomeFile);
 			
-			for (int i = 0; i < grassColors.length; i++)
+			for (Integer i : biomes.keySet())
 			{
-				grassWriter.write(grassColors[i] + "\n");
-				foliageWriter.write(foliageColors[i] + "\n");
-				waterWriter.write(waterColors[i] + "\n");
+				writer.write(String.format("%1$s,%2$d,%3$d,%4$d,%5$d\n", biomes.get(i), i,
+						grassColors.get(i), foliageColors.get(i), waterColors.get(i)));
 			}
 			
-			grassWriter.close();
-			foliageWriter.close();
-			waterWriter.close();
+			writer.close();
 		} 
 		catch (Exception e)
 		{
@@ -485,45 +501,30 @@ public class Block
 		return colors.containsKey(id);
 	}
 	
-	public static int getBiomeColor(int[] biomeColors, int biomeID)
+	public static int getBiomeColor(HashMap<Integer, Integer> biomeColors, int biomeID)
 	{
-		if (biomeColors.length < biomeID || biomeColors[biomeID] == 0)
+		if (!biomeColors.containsKey(biomeID))
 		{
 			unknownBiomes.add(biomeID);
-			return biomeColors[Biome.FOREST.id];
+			return biomeColors.get(Biome.FOREST.id);
 		}
 		
-		return biomeColors[biomeID];
+		return biomeColors.get(biomeID);
 	}
 	
-	public static int getGrassColor(Biome biome)
+	public static void setGrassColor(int biome, int color)
 	{
-		return getBiomeColor(grassColors, biome.id);
+		grassColors.put(biome, color);
 	}
 	
-	public static int getFoliageColor(Biome biome)
+	public static void setFoliageColor(int biome, int color)
 	{
-		return getBiomeColor(foliageColors, biome.id);
+		foliageColors.put(biome, color);
 	}
 	
-	public static int getWaterColor(Biome biome)
+	public static void setWaterColor(int biome, int color)
 	{
-		return getBiomeColor(waterColors, biome.id);
-	}
-	
-	public static void setGrassColor(Biome biome, int color)
-	{
-		grassColors[biome.id] = color;
-	}
-	
-	public static void setFoliageColor(Biome biome, int color)
-	{
-		foliageColors[biome.id] = color;
-	}
-	
-	public static void setWaterColor(Biome biome, int color)
-	{
-		waterColors[biome.id] = color;
+		waterColors.put(biome, color);
 	}
 	
 	public static int getBlockColor(String namespaceId)
@@ -630,7 +631,27 @@ public class Block
 		return result;
 	}
 	
-	public static void addIdToList(String id, int listID)
+	public static HashMap<Integer, String> getBiomes()
+	{
+		return biomes;
+	}
+	
+	public static HashMap<Integer, Integer> getGrassColors()
+	{
+		return grassColors;
+	}
+	
+	public static HashMap<Integer, Integer> getFoliageColors()
+	{
+		return foliageColors;
+	}
+	
+	public static HashMap<Integer, Integer> getWaterColors()
+	{
+		return waterColors;
+	}
+	
+ 	public static void addIdToList(String id, int listID)
 	{
 		HashSet<String> list = null;
 		
