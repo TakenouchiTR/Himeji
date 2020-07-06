@@ -760,6 +760,23 @@ public class Block
 		unknownBiomes.put(id, pos);
 	}
 	
+	public static void removeBlock(String id)
+	{
+		if (colors.remove(id) != null) 
+		{
+			for (ListChangeListener lcl : listeners)
+				lcl.OnItemRemoval(id, COLORS_LIST);
+		}
+	}
+	
+	public static void removeBiome(int id)
+	{
+		if (biomes.remove(id) != null)
+		{
+			for (ListChangeListener lcl : listeners)
+				lcl.OnItemRemoval(id + "", BIOME_LIST);
+		}
+	}
 	
 	public static HashSet<String> getMissingIds()
 	{
