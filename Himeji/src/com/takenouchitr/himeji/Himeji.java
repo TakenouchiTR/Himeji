@@ -45,12 +45,11 @@ import com.takenouchitr.himeji.frames.*;
 
 
 @SuppressWarnings("serial")
-public class Himeji extends JFrame implements ActionListener, ItemListener
+public class Himeji extends JFrame implements ActionListener
 {
 	public static final boolean SHOW_ALL_EVENTS = true;
 	public static final boolean CREATE_LOG = false;
 	
-	public static Himeji frame;
 	public static final String SAVE_FOLDER = System.getenv("APPDATA") + "/.minecraft/saves/";
 	public static final String DATA_FOLDER = "data/";
 	public static final String PROPERTIES_FILE = "config.properties";
@@ -65,9 +64,10 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
 	public static final String INVISIBLE_FILE = "invis.csv";
 	public static final String LEGACY_ID_FILE = "legacyIds.csv";
 	
+	public static Himeji frame;
+	
 	private static JButton btn_folder, btn_start, btn_setBounds, btn_output;
 	private static JTextField txt_worldPath, txt_output;
-	private static JCheckBox chk_renderUnderWater, chk_renderShadows, chk_renderBiomes, chk_night;
 	private static JMenuBar bar_menu;
 	private static JMenuItem itm_exit, itm_colors;
 	private static JPanel pnl_log;
@@ -83,6 +83,9 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
 	private static FileWriter writer;
 	private static boolean isWriting;
 	private static Object key = new Object();
+	
+	private String worldPath;
+	private String outputPath; 
 	
 	public static void main(String[] args) 
 	{
@@ -134,28 +137,13 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
 		if (!foliageFile.exists())
 			copyFromResource(FOLIAGE_FILE);
 		
-		/*
-		File foliageColors = new File(DATA_FOLDER + FOLIAGE_COLORS_FILE);
-		if (!foliageColors.exists())
-			copyFromResource(FOLIAGE_COLORS_FILE);*/
-		
 		File grassFile = new File(DATA_FOLDER + GRASS_FILE);
 		if (!grassFile.exists())
 			copyFromResource(GRASS_FILE);
 		
-		/*
-		File grassColors = new File(DATA_FOLDER + GRASS_COLORS_FILE);
-		if (!grassColors.exists())
-			copyFromResource(GRASS_COLORS_FILE);*/
-		
 		File waterFile = new File(DATA_FOLDER + WATER_FILE);
 		if (!waterFile.exists())
 			copyFromResource(WATER_FILE);
-		
-		/*
-		File waterColors = new File(DATA_FOLDER + WATER_COLORS_FILE);
-		if (!waterColors.exists())
-			copyFromResource(WATER_COLORS_FILE);*/
 		
 		File invisFile = new File(DATA_FOLDER + INVISIBLE_FILE);
 		if (!invisFile.exists())
@@ -329,7 +317,7 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
 		setResizable(false);
 		setLocationRelativeTo(null);
 		
-		colorFrame = new ColorPickerFrame(this);
+		colorFrame = new ColorPickerFrame();
 		boundsFrame = new BoundsFrame(props, this);
 		biomeFrame = new BiomeFrame(this);
 		
@@ -341,18 +329,6 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
         btn_setBounds = new JButton("Set Bounds");
         btn_folder = new JButton("World");
         txt_worldPath = new JTextField(400);
-        chk_renderUnderWater = new JCheckBox("Render Underwater Blocks");
-        chk_renderUnderWater.setToolTipText("Show blocks that are under water. " + 
-        		"Blocks will be tinted by the water's color.");
-        chk_renderUnderWater.setSelected(true);
-        chk_renderShadows = new JCheckBox("Render Shadows");
-        chk_renderShadows.setToolTipText("Add shadows to show changes in elevation.");
-        chk_renderShadows.setSelected(true);
-        chk_renderBiomes = new JCheckBox("Render Biome Colors");
-        chk_renderBiomes.setToolTipText("Change the colors of grass, foliage, " + 
-        		"and water to match the biome they are in.");
-        chk_renderBiomes.setSelected(true);
-        chk_night = new JCheckBox("Render at Night");
         bar_menu = new JMenuBar();
         bar_menu.add(fileMenu);
         
@@ -372,22 +348,14 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
         //add components
         getContentPane().add(btn_folder);
         getContentPane().add(txt_worldPath);
-        getContentPane().add(chk_renderUnderWater);
-        getContentPane().add(chk_renderShadows);
-        getContentPane().add(chk_renderBiomes);
         getContentPane().add(bar_menu);
         getContentPane().add(btn_start);
-        getContentPane().add(chk_night);
 
         //set component bounds (only needed by Absolute Positioning)
         btn_folder.setBounds(15, 35, 80, 25);
         txt_worldPath.setBounds(105, 35, 370, 25);
-        chk_renderUnderWater.setBounds(15, 108, 188, 25);
-        chk_renderShadows.setBounds(15, 133, 181, 25);
-        chk_renderBiomes.setBounds(15, 158, 181, 20);
         bar_menu.setBounds(0, 0, 495, 25);
-        btn_start.setBounds(415, 153, 65, 25);
-        chk_night.setBounds(205, 109, 121, 23);
+        btn_start.setBounds(410, 109, 65, 25);
         
         bar_menu.add(menu_config);
         
@@ -409,7 +377,7 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
         JMenuItem itm_biome = new JMenuItem("New Biome");
         mnAdd.add(itm_biome);
         
-        btn_setBounds.setBounds(298, 154, 107, 23);
+        btn_setBounds.setBounds(293, 110, 107, 23);
         getContentPane().add(btn_setBounds);
         
         btn_output = new JButton("Output");
@@ -427,7 +395,7 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
         FlowLayout fl_pnl_log = (FlowLayout) pnl_log.getLayout();
         fl_pnl_log.setVgap(0);
         fl_pnl_log.setAlignment(FlowLayout.LEFT);
-        pnl_log.setBounds(-1, 187, 496, 17);
+        pnl_log.setBounds(-1, 137, 496, 17);
         getContentPane().add(pnl_log);
         
         lbl_log = new JLabel("Welcome!");
@@ -437,11 +405,6 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
         btn_folder.addActionListener(this);
         btn_output.addActionListener(this);
         btn_start.addActionListener(this);
-        chk_renderUnderWater.addItemListener(this);
-        chk_renderShadows.addItemListener(this);
-        chk_renderBiomes.addItemListener(this);
-        chk_night.addActionListener((e) -> 
-        	props.setProperty(Property.RENDER_LIGHT.key, chk_night.isSelected() + ""));
         itm_colors.addActionListener((e) -> openColorPicker());
         itm_blockID.addActionListener((e) -> openAddBlockFrame());
         itm_biomeColors.addActionListener((e) -> openBiomeFrame());
@@ -449,6 +412,8 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
         itm_settings.addActionListener((e) -> openSettingsFrame());
         itm_biome.addActionListener((e) -> openAddBiomeFrame());
         btn_setBounds.addActionListener((e) -> openBoundsFrame());
+        btn_folder.addActionListener((e) -> folderPress());
+        btn_output.addActionListener((e) -> outputPress());
         
         this.addWindowListener(new WindowListener() 
         {
@@ -464,7 +429,11 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
 			{
 				setProperty(Property.WORLD_PATH, txt_worldPath.getText());
 				setProperty(Property.OUTPUT_PATH, txt_output.getText());
+				setProperty(Property.LAST_WORLD_FOLDER, worldPath);
+				setProperty(Property.LAST_OUTPUT_FOLDER, outputPath);
+				
 				saveProperties();
+				
 				if (isWriting)
 				{
 					try
@@ -510,20 +479,22 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
 	{
 		txt_worldPath.setText(getProperty(Property.WORLD_PATH));
 		txt_output.setText(getProperty(Property.OUTPUT_PATH));
-		chk_renderUnderWater.setSelected(Boolean.parseBoolean(getProperty(Property.RENDER_UNDER_WATER)));
-		chk_renderShadows.setSelected(Boolean.parseBoolean(getProperty(Property.RENDER_SHADOWS)));
-		chk_renderBiomes.setSelected(Boolean.parseBoolean(getProperty(Property.RENDER_BIOME_COLORS)));
-		chk_night.setSelected(Boolean.parseBoolean(getProperty(Property.RENDER_LIGHT)));
+		
+		worldPath = props.getProperty(Property.LAST_WORLD_FOLDER.key);
+		outputPath = props.getProperty(Property.LAST_OUTPUT_FOLDER.key);
+		
+		if (worldPath.trim().length() == 0)
+			worldPath = SAVE_FOLDER;
+		
+		if (outputPath.trim().length() == 0)
+			outputPath = SAVE_FOLDER;
 	}
 	
 	private void openColorPicker()
 	{
 		if (colorFrame == null)
-		{
-			colorFrame = new ColorPickerFrame(this);
-		}
+			colorFrame = new ColorPickerFrame();
 		
-		setEnabled(false);
 		colorFrame.setLocationRelativeTo(this);
 		colorFrame.setVisible(true);
 	}
@@ -531,11 +502,8 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
 	private void openBiomeFrame()
 	{
 		if (biomeFrame == null)
-		{
 			biomeFrame = new BiomeFrame(this);
-		}
 		
-		setEnabled(false);
 		biomeFrame.setLocationRelativeTo(this);
 		biomeFrame.setVisible(true);
 	}
@@ -545,7 +513,6 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
 		if (boundsFrame == null)
 			boundsFrame = new BoundsFrame(props, this);
 		
-		setEnabled(false);
 		boundsFrame.setLocationRelativeTo(this);
 		boundsFrame.setVisible(true);
 	}
@@ -555,7 +522,6 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
 		if (flagsFrame == null)
 			flagsFrame = new FlagsFrame();
 		
-		setEnabled(false);
 		flagsFrame.setLocationRelativeTo(this);
 		flagsFrame.setVisible(true);
 	}
@@ -565,7 +531,6 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
 		if (settingsFrame == null)
 			settingsFrame = new SettingsFrame(props);
 		
-		setEnabled(false);
 		settingsFrame.applyProperties();
 		settingsFrame.setLocationRelativeTo(this);
 		settingsFrame.setVisible(true);
@@ -574,7 +539,7 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
 	private void openAddBiomeFrame()
 	{
 		AddBiomeFrame abf = new AddBiomeFrame();
-		setComponentsEnabled(false);
+		
 		abf.setLocationRelativeTo(this);
 		abf.setVisible(true);
 	}
@@ -582,9 +547,40 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
 	private void openAddBlockFrame()
 	{
 		AddBlockFrame abf = new AddBlockFrame();
-		setComponentsEnabled(false);
+		
 		abf.setLocationRelativeTo(this);
 		abf.setVisible(true);
+	}
+	
+	private void folderPress()
+	{
+		JFileChooser fileChooser = new JFileChooser(worldPath);
+		fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+		if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION)
+		{
+			txt_worldPath.setText(fileChooser.getSelectedFile().getPath());
+			
+			File folder = new File(fileChooser.getSelectedFile().getPath());
+			worldPath = folder.getParent();
+		}
+	}
+	
+	private void outputPress()
+	{
+		JFileChooser fileChooser = new JFileChooser(outputPath);
+		fileChooser.setFileFilter(new FileNameExtensionFilter("Image (.png)", "png", "PNG"));
+		
+		if (fileChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION)
+		{
+			File file = fileChooser.getSelectedFile();
+			String path = file.getPath();
+			
+			if (!path.endsWith(".png"))
+				path += ".png";
+			
+			txt_output.setText(path);
+			outputPath = file.getParent();
+		}
 	}
 	
 	@Override
@@ -592,29 +588,7 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
 	{
 		Object source = e.getSource();
 		
-		if (source == btn_folder)
-		{
-			JFileChooser fileChooser = new JFileChooser(SAVE_FOLDER);
-			fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-			if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION)
-			{
-				txt_worldPath.setText(fileChooser.getSelectedFile().getPath());
-			}
-		}
-		else if (source == btn_output)
-		{
-			JFileChooser fileChooser = new JFileChooser(SAVE_FOLDER);
-			fileChooser.setFileFilter(new FileNameExtensionFilter("Image (.png)", "png", "PNG"));
-			if (fileChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION)
-			{
-				File file = fileChooser.getSelectedFile();
-				String path = file.getPath();
-				if (!path.endsWith(".png"))
-					path += ".png";
-				txt_output.setText(path);
-			}
-		}
-		else if (source == btn_start)
+		if (source == btn_start)
 		{
 			if (!World.validateDir(new File(txt_worldPath.getText())))
 			{
@@ -670,18 +644,5 @@ public class Himeji extends JFrame implements ActionListener, ItemListener
 		{
 			dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
 		}
-	}
-	
-	@Override
-	public void itemStateChanged(ItemEvent e) 
-	{
-		Object source = e.getSource();
-		
-		if (chk_renderUnderWater == source)
-			setProperty(Property.RENDER_UNDER_WATER, "" + chk_renderUnderWater.isSelected());
-		if (chk_renderShadows == source)
-			setProperty(Property.RENDER_SHADOWS, "" + chk_renderShadows.isSelected());
-		if (chk_renderBiomes == source)
-			setProperty(Property.RENDER_BIOME_COLORS, "" + chk_renderBiomes.isSelected());
 	}
 }
