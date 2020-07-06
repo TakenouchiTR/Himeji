@@ -528,13 +528,15 @@ public class Block
 		waterColors.put(biome, color);
 	}
 	
-	public static int getBlockColor(String namespaceId)
+	public static int getBlockColor(String namespaceID)
 	{
-		if (colors.containsKey(namespaceId))
-			return colors.get(namespaceId);
+		if (colors.containsKey(namespaceID))
+			return colors.get(namespaceID);
 		else
 		{
-			missingIds.add(namespaceId);
+			if (namespaceID != null)
+				missingIds.add(namespaceID);
+			
 			return MISSING_COLOR;
 		}
 		

@@ -36,6 +36,7 @@ public class Chunk
 	
 	private int highestBlock;
 	private int biomeHeight;
+	private int version;
 	private String[][][] blocks;
 	private int[][][] biome;
 	private int[][][] blockLight;
@@ -60,7 +61,7 @@ public class Chunk
 			return;
 		}
 		
-		int version = baseTag.getInt("DataVersion");
+		version = baseTag.getInt("DataVersion");
 		
 		if (version < 1519)
 			readPreFlatChunk();
@@ -227,10 +228,16 @@ public class Chunk
 			return;
 		
 		//Loads data from each of the sections
-		for(int i = 0; i < sections.length; i++) 
+		for (int i = 0; i < sections.length; i++) 
 		{
 			sections[i] = new Section((CompoundTag)sectionTags.get(i));
-			String[][][] sectionBlocks = sections[i].getBlocks();
+			String[][][] sectionBlocks;
+			
+			if (version >= 2529)
+				sectionBlocks = sections[i].getTruncatedBlocks();
+			else
+				sectionBlocks = sections[i].getBlocks();
+			
 			int sectionY = (sections[i].getSectionTag().getByte("Y")) * 16;
 			
 			//Skips a section if there are no blocks stored
