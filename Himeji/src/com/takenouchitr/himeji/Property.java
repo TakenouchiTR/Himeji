@@ -29,7 +29,8 @@ public enum Property
 	WORLD_SETTING       ("world_option",        "last"),
 	OUTPUT_SETTING      ("output_setting",      "last"),
 	SPECIFIED_WORLD     ("specified_world",     ""),
-	SPECIFIED_OUTPUT    ("specified_output",    "");
+	SPECIFIED_OUTPUT    ("specified_output",    ""),
+	OPEN_IMAGE_SETTING  ("open_image_setting",  "ignore");
 	
 	
 	public final String key;

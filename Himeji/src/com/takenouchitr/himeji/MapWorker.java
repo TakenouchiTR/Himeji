@@ -20,7 +20,9 @@
 
 package com.takenouchitr.himeji;
 
+import java.awt.Desktop;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -162,6 +164,7 @@ public class MapWorker extends SwingWorker<Void, String>
 	protected void done()
 	{
 		int size = Block.getMissingIds().size();
+		
 		if (size > 0 && Himeji.getProperty(Property.SHOW_MISSING_BLOCK).equals("true"))
 		{
 			int result = JOptionPane.showConfirmDialog(Himeji.frame,size + " missing block ID(s) found.\n" + 
@@ -205,6 +208,54 @@ public class MapWorker extends SwingWorker<Void, String>
 				mbf.setVisible(true);
 			}
 			Block.getUnknownBiomes().clear();
+		}
+
+		String fileString = null;
+		int result;
+		
+		switch (Himeji.getProperty(Property.OPEN_IMAGE_SETTING.key))
+		{
+			case "ask_image":
+				result = JOptionPane.showConfirmDialog(Himeji.frame,
+						"Would you like to open the image?", 
+						"Open image?", JOptionPane.YES_NO_OPTION,
+						JOptionPane.QUESTION_MESSAGE);
+				
+				if (result == JOptionPane.YES_OPTION)
+					fileString = Himeji.getProperty(Property.OUTPUT_PATH.key);
+				break;
+				
+			case "ask_folder":
+				result = JOptionPane.showConfirmDialog(Himeji.frame,
+						"Would you like to open the image's folder?", 
+						"Open folder?", JOptionPane.YES_NO_OPTION,
+						JOptionPane.QUESTION_MESSAGE);
+				
+				if (result == JOptionPane.YES_OPTION)
+					fileString = new File(Himeji.getProperty(Property.OUTPUT_PATH.key)).getParent();
+				break;
+				
+			case "always_image":
+				fileString = Himeji.getProperty(Property.OUTPUT_PATH.key);
+				break;
+				
+			case "always_folder":
+				fileString = new File(Himeji.getProperty(Property.OUTPUT_PATH.key)).getParent();
+				break;
+		}
+		
+		if (fileString != null)
+		{
+			try
+			{
+				File outputFile = new File(fileString);
+				
+				Desktop.getDesktop().open(outputFile);
+			} 
+			catch (IOException e)
+			{
+				e.printStackTrace();
+			}
 		}
 		
 		Himeji.setComponentsEnabled(true);
