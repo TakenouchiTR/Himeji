@@ -1,6 +1,7 @@
 package com.takenouchitr.himeji.frames;
 
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.JSpinner;
 import javax.swing.JPanel;
@@ -16,6 +17,7 @@ import javax.swing.border.LineBorder;
 import com.takenouchitr.himeji.Himeji;
 import com.takenouchitr.himeji.ListBiome;
 import com.takenouchitr.himeji.ListChangeListener;
+import com.takenouchitr.himeji.Property;
 import com.takenouchitr.himeji.MCCompat.Block;
 
 import javax.swing.ButtonGroup;
@@ -25,6 +27,7 @@ import javax.swing.JComboBox;
 import javax.swing.JDialog;
 
 import javax.swing.SpinnerNumberModel;
+import java.awt.Window.Type;
 
 public class BiomeFrame extends JDialog
 {
@@ -34,6 +37,7 @@ public class BiomeFrame extends JDialog
 	private JSpinner spn_r, spn_g, spn_b;
 	private JPanel pnl_colorPreview;
 	private JRadioButton rad_grass, rad_foliage, rad_water;
+	private JButton btn_remove;
 	
 	public BiomeFrame(Himeji himeji) 
 	{
@@ -104,7 +108,7 @@ public class BiomeFrame extends JDialog
 		getContentPane().add(rad_foliage);
 		
 		rad_water = new JRadioButton("Water");
-		rad_water.setBounds(10, 211, 109, 23);
+		rad_water.setBounds(10, 211, 88, 23);
 		getContentPane().add(rad_water);
 		
 		ButtonGroup biomeRadios = new ButtonGroup();
@@ -116,6 +120,10 @@ public class BiomeFrame extends JDialog
 		com_biomeNames.setBounds(10, 11, 292, 20);
 		getContentPane().add(com_biomeNames);
 		
+		btn_remove = new JButton("Remove");
+		btn_remove.setBounds(104, 211, 89, 23);
+		getContentPane().add(btn_remove);
+		
 		com_biomeNames.addActionListener((e) -> loadColors());
 		spn_r.addChangeListener((e) -> updatePreview());
 		spn_g.addChangeListener((e) -> updatePreview());
@@ -126,6 +134,7 @@ public class BiomeFrame extends JDialog
 		txt_hex.addActionListener((e) -> convertHex());
 		btn_update.addActionListener((e) -> saveChanges());
 		btn_save.addActionListener((e) -> saveToFile());
+		btn_remove.addActionListener((e) -> removePress());
 		Block.addListChangeListener(new ListChangeListener() 
 		{
 
@@ -150,6 +159,20 @@ public class BiomeFrame extends JDialog
 			@Override
 			public void OnItemRemoval(String name, int listID)
 			{
+				if (listID == Block.BIOME_LIST)
+				{
+					int id = Integer.parseInt(name);
+					
+					for (int i = 0, size = com_biomeNames.getItemCount(); i < size; i++)
+					{
+						ListBiome lb = (ListBiome)com_biomeNames.getItemAt(i);
+						if (lb.getBiome() == id)
+						{
+							com_biomeNames.removeItemAt(i);
+							break;
+						}
+					}
+				}
 			}
 			
 		});
@@ -169,8 +192,37 @@ public class BiomeFrame extends JDialog
 	
 	public void saveToFile()
 	{
+		if (Himeji.getProperty(Property.SHOW_BIOME_SAVE.key).equals("true"))
+		{
+			int result = JOptionPane.showConfirmDialog(this,
+					"Are you sure you wish to save all changes? This cannot be undone.\n" + 
+					"If you wish to make changes only for this session, please press \"Apply\" instead.", 
+					"Save biome confirmation", JOptionPane.YES_NO_OPTION,
+					JOptionPane.QUESTION_MESSAGE);
+			
+			if (result != JOptionPane.YES_OPTION)
+				return;
+		}
 		saveChanges();
 		Block.saveBiomeColorFiles();
+	}
+	
+	private void removePress()
+	{
+		if (Himeji.getProperty(Property.SHOW_BIOME_REMOVE.key).equals("true"))
+		{
+			int result = JOptionPane.showConfirmDialog(this,
+					"Are you sure you wish to remove the biome?\n" + 
+					"It will be immediately removed from the list, without having to press \"Accept.\"", 
+					"Remove biome confirmation", JOptionPane.YES_NO_OPTION,
+					JOptionPane.QUESTION_MESSAGE);
+			
+			if (result != JOptionPane.YES_OPTION)
+				return;
+		}
+		
+		ListBiome lb = (ListBiome) com_biomeNames.getSelectedItem();
+		Block.removeBiome(lb.getBiome());
 	}
 	
  	private void convertHex()

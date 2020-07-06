@@ -7,13 +7,16 @@ import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 
 import com.takenouchitr.himeji.Himeji;
+import com.takenouchitr.himeji.ListBiome;
 import com.takenouchitr.himeji.ListChangeListener;
+import com.takenouchitr.himeji.Property;
 import com.takenouchitr.himeji.MCCompat.Block;
 
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.awt.event.WindowEvent;
@@ -29,17 +32,18 @@ public class ColorPickerFrame extends JDialog implements ListChangeListener
 	private JTextField txt_hex;
 	private JButton btn_update;
 	private JButton btn_save;
+	private JButton btn_remove;
 	
 	public ColorPickerFrame() 
 	{
 		setTitle("Color Editor");
-		setSize(287,230);
+		setSize(310,230);
 		setResizable(false);
 		setModal(true);
 		getContentPane().setLayout(null);
 		
 		com_namespaceIds = new JComboBox<String>();
-		com_namespaceIds.setBounds(10, 11, 257, 20);
+		com_namespaceIds.setBounds(10, 11, 284, 20);
 		getContentPane().add(com_namespaceIds);
 		
 		spn_r = new JSpinner();
@@ -59,7 +63,7 @@ public class ColorPickerFrame extends JDialog implements ListChangeListener
 		
 		pnl_colorPreview = new JPanel();
 		pnl_colorPreview.setBorder(new LineBorder(new Color(0, 0, 0)));
-		pnl_colorPreview.setBounds(132, 42, 135, 113);
+		pnl_colorPreview.setBounds(132, 42, 162, 113);
 		getContentPane().add(pnl_colorPreview);
 		
 		JLabel lbl_r = new JLabel("Red");
@@ -84,12 +88,16 @@ public class ColorPickerFrame extends JDialog implements ListChangeListener
 		txt_hex.setColumns(6);
 		
 		btn_update = new JButton("Apply");
-		btn_update.setBounds(10, 166, 75, 23);
+		btn_update.setBounds(115, 166, 66, 23);
 		getContentPane().add(btn_update);
 		
 		btn_save = new JButton("Save to File");
-		btn_save.setBounds(95, 166, 99, 23);
+		btn_save.setBounds(191, 166, 103, 23);
 		getContentPane().add(btn_save);
+		
+		btn_remove = new JButton("Remove");
+		btn_remove.setBounds(10, 166, 95, 23);
+		getContentPane().add(btn_remove);
 		
 		com_namespaceIds.addActionListener((e) -> loadColors());
 		spn_r.addChangeListener((e) -> updatePreview());
@@ -98,6 +106,7 @@ public class ColorPickerFrame extends JDialog implements ListChangeListener
 		txt_hex.addActionListener((e) -> convertHex());
 		btn_update.addActionListener((e) -> saveChanges());
 		btn_save.addActionListener((e) -> saveToFile());
+		btn_remove.addActionListener((e) -> removePress());
 		Block.addListChangeListener(this);
 		
 		loadBlockIds();
@@ -106,6 +115,23 @@ public class ColorPickerFrame extends JDialog implements ListChangeListener
 	public void addBlockId(String id)
 	{
 		com_namespaceIds.addItem(id);
+	}
+	
+	public void removePress() 
+	{
+		if (Himeji.getProperty(Property.SHOW_BLOCK_REMOVE.key).equals("true"))
+		{
+			int result = JOptionPane.showConfirmDialog(this,
+					"Are you sure you wish to remove the block?\n" + 
+					"It will be immediately removed from the list, without having to press \"Accept.\"", 
+					"Remove block confirmation", JOptionPane.YES_NO_OPTION,
+					JOptionPane.QUESTION_MESSAGE);
+			
+			if (result != JOptionPane.YES_OPTION)
+				return;
+		}
+		
+		Block.removeBlock(com_namespaceIds.getSelectedItem().toString());
 	}
 	
 	public void saveChanges()
@@ -117,6 +143,18 @@ public class ColorPickerFrame extends JDialog implements ListChangeListener
 	
 	public void saveToFile()
 	{
+		if (Himeji.getProperty(Property.SHOW_BLOCK_SAVE.key).equals("true"))
+		{
+			int result = JOptionPane.showConfirmDialog(this,
+					"Are you sure you wish to save all changes? This cannot be undone.\n" + 
+					"If you wish to make changes only for this session, please press \"Apply\" instead.", 
+					"Save block confirmation", JOptionPane.YES_NO_OPTION,
+					JOptionPane.QUESTION_MESSAGE);
+			
+			if (result != JOptionPane.YES_OPTION)
+				return;
+		}
+		
 		saveChanges();
 		Block.saveColorFile();
 	}
@@ -205,7 +243,6 @@ public class ColorPickerFrame extends JDialog implements ListChangeListener
 		txt_hex.setText(hex.toUpperCase().substring(2));
 	}
 
-	
 	@Override
 	public void OnItemAddition(String name, int listID)
 	{
@@ -213,7 +250,6 @@ public class ColorPickerFrame extends JDialog implements ListChangeListener
 			addBlockId(name);
 	}
 
-	
 	@Override
 	public void OnItemUpdate(String oldName, String newName, int listID)
 	{
@@ -221,10 +257,19 @@ public class ColorPickerFrame extends JDialog implements ListChangeListener
 		
 	}
 
-	
 	@Override
 	public void OnItemRemoval(String name, int listID)
 	{
-		
+		if (listID == Block.COLORS_LIST)
+		{
+			for (int i = 0, size = com_namespaceIds.getItemCount(); i < size; i++)
+			{
+				if (com_namespaceIds.getItemAt(i).equals(name))
+				{
+					com_namespaceIds.removeItemAt(i);
+					break;
+				}
+			}
+		}
 	}	
 }
