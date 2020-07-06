@@ -84,9 +84,6 @@ public class Himeji extends JFrame implements ActionListener
 	private static boolean isWriting;
 	private static Object key = new Object();
 	
-	private String worldPath;
-	private String outputPath; 
-	
 	public static void main(String[] args) 
 	{
 		checkFiles();
@@ -355,7 +352,7 @@ public class Himeji extends JFrame implements ActionListener
         btn_folder.setBounds(15, 35, 80, 25);
         txt_worldPath.setBounds(105, 35, 370, 25);
         bar_menu.setBounds(0, 0, 495, 25);
-        btn_start.setBounds(410, 109, 65, 25);
+        btn_start.setBounds(410, 107, 65, 23);
         
         bar_menu.add(menu_config);
         
@@ -377,7 +374,7 @@ public class Himeji extends JFrame implements ActionListener
         JMenuItem itm_biome = new JMenuItem("New Biome");
         mnAdd.add(itm_biome);
         
-        btn_setBounds.setBounds(293, 110, 107, 23);
+        btn_setBounds.setBounds(293, 107, 107, 23);
         getContentPane().add(btn_setBounds);
         
         btn_output = new JButton("Output");
@@ -429,8 +426,6 @@ public class Himeji extends JFrame implements ActionListener
 			{
 				setProperty(Property.WORLD_PATH, txt_worldPath.getText());
 				setProperty(Property.OUTPUT_PATH, txt_output.getText());
-				setProperty(Property.LAST_WORLD_FOLDER, worldPath);
-				setProperty(Property.LAST_OUTPUT_FOLDER, outputPath);
 				
 				saveProperties();
 				
@@ -480,14 +475,14 @@ public class Himeji extends JFrame implements ActionListener
 		txt_worldPath.setText(getProperty(Property.WORLD_PATH));
 		txt_output.setText(getProperty(Property.OUTPUT_PATH));
 		
-		worldPath = props.getProperty(Property.LAST_WORLD_FOLDER.key);
-		outputPath = props.getProperty(Property.LAST_OUTPUT_FOLDER.key);
+		String worldPath = props.getProperty(Property.LAST_WORLD_FOLDER.key);
+		String outputPath = props.getProperty(Property.LAST_OUTPUT_FOLDER.key);
 		
 		if (worldPath.trim().length() == 0)
-			worldPath = SAVE_FOLDER;
+			props.setProperty(Property.LAST_WORLD_FOLDER.key, SAVE_FOLDER);
 		
 		if (outputPath.trim().length() == 0)
-			outputPath = SAVE_FOLDER;
+			props.setProperty(Property.LAST_OUTPUT_FOLDER.key, SAVE_FOLDER);
 	}
 	
 	private void openColorPicker()
@@ -554,20 +549,22 @@ public class Himeji extends JFrame implements ActionListener
 	
 	private void folderPress()
 	{
-		JFileChooser fileChooser = new JFileChooser(worldPath);
+		JFileChooser fileChooser = new JFileChooser(props.getProperty(Property.LAST_WORLD_FOLDER.key));
 		fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION)
 		{
 			txt_worldPath.setText(fileChooser.getSelectedFile().getPath());
 			
 			File folder = new File(fileChooser.getSelectedFile().getPath());
-			worldPath = folder.getParent();
+			
+			if (props.getProperty(Property.WORLD_SETTING.key).equals("last"))
+				props.setProperty(Property.LAST_WORLD_FOLDER.key, folder.getParent());
 		}
 	}
 	
 	private void outputPress()
 	{
-		JFileChooser fileChooser = new JFileChooser(outputPath);
+		JFileChooser fileChooser = new JFileChooser(props.getProperty(Property.LAST_OUTPUT_FOLDER.key));
 		fileChooser.setFileFilter(new FileNameExtensionFilter("Image (.png)", "png", "PNG"));
 		
 		if (fileChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION)
@@ -579,7 +576,9 @@ public class Himeji extends JFrame implements ActionListener
 				path += ".png";
 			
 			txt_output.setText(path);
-			outputPath = file.getParent();
+			
+			if (props.getProperty(Property.OUTPUT_SETTING.key).equals("last"))
+				props.setProperty(Property.LAST_OUTPUT_FOLDER.key, file.getParent());
 		}
 	}
 	
@@ -622,6 +621,8 @@ public class Himeji extends JFrame implements ActionListener
 					Integer.parseInt(props.getProperty(Property.WATER_TRANSPARENCY.key)) / 100f;
 				SessionProperties.shadowIntensity = 
 					Integer.parseInt(props.getProperty(Property.SHADOW_INTENSITY.key)) / 100f;
+				SessionProperties.highlightIntensity = 
+					Integer.parseInt(props.getProperty(Property.HIGHLIGHT_INTENSITY.key)) / 100f;
 				
 				SessionProperties.renderLight = 
 					Boolean.parseBoolean(props.getProperty(Property.RENDER_LIGHT.key));

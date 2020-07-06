@@ -162,7 +162,7 @@ public class MapWorker extends SwingWorker<Void, String>
 	protected void done()
 	{
 		int size = Block.getMissingIds().size();
-		if (size > 0)
+		if (size > 0 && Himeji.getProperty(Property.SHOW_MISSING_BLOCK).equals("true"))
 		{
 			int result = JOptionPane.showConfirmDialog(Himeji.frame,size + " missing block ID(s) found.\n" + 
 				"Would you like to add them now?", "Missing IDs found", JOptionPane.YES_NO_OPTION,
@@ -188,9 +188,8 @@ public class MapWorker extends SwingWorker<Void, String>
 			Block.getMissingIds().clear();
 		}
 		
-		Block.addUnknownBiome(1000, new int[] {0, 0, 0});
 		size = Block.getUnknownBiomes().size();
-		if (size > 0)
+		if (size > 0 && Himeji.getProperty(Property.SHOW_UNKNOWN_BIOME).equals("true"))
 		{
 			int result = JOptionPane.showConfirmDialog(Himeji.frame,
 					"Unknown biomes detected.\n"

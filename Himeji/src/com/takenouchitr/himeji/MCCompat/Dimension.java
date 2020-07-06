@@ -557,7 +557,8 @@ public class Dimension
 		float heightMult = 1f;
 		
 		float brightness = SessionProperties.nightBrightness;
-		float shadowIntensity = SessionProperties.shadowIntensity; 
+		float shadowIntensity = SessionProperties.shadowIntensity;
+		float highlightIntensity = SessionProperties.highlightIntensity;
 		
 		if (light < 15)
 		{
@@ -573,7 +574,7 @@ public class Dimension
 		else if (yVal > upYVal || yVal > rightYVal)
 		{
 			applyMult = true;
-			heightMult = 1 + shadowIntensity;
+			heightMult = 1 + highlightIntensity;
 		}
 		
 		if (applyMult)
