@@ -324,8 +324,8 @@ public class BoundsFrame extends JDialog implements ChangeListener
 			folder.mkdir();
 		
 		JFileChooser fileChooser = new JFileChooser(Himeji.DATA_FOLDER + BOUNDS_FOLDER);
-		fileChooser.setFileFilter(new FileNameExtensionFilter("Comma Separated Value (.csv)", 
-				".csv", ".CSV"));
+		//fileChooser.setFileFilter(new FileNameExtensionFilter("Comma Separated Value (.csv)", 
+		//		".csv", ".CSV"));
 		if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION)
 		{
 			File file = fileChooser.getSelectedFile();
