@@ -70,19 +70,23 @@ public class FlagsFrame extends JDialog implements ListChangeListener
 		getContentPane().add(scroll);
 		
 		JRadioButton rad_invisible = new JRadioButton("Invisible");
+		rad_invisible.setToolTipText("Blocks that are ignored during the render.");
 		rad_invisible.setSelected(true);
 		rad_invisible.setBounds(10, 207, 109, 23);
 		getContentPane().add(rad_invisible);
 		
 		JRadioButton rad_grass = new JRadioButton("Grass");
+		rad_grass.setToolTipText("Blocks that are colorshifted by a biome's \"Grass\" color.");
 		rad_grass.setBounds(10, 233, 109, 23);
 		getContentPane().add(rad_grass);
 		
 		JRadioButton rad_foliage = new JRadioButton("Foliage");
+		rad_foliage.setToolTipText("Blocks that are colorshifted by a biome's \"Foliage\" color.");
 		rad_foliage.setBounds(10, 259, 109, 23);
 		getContentPane().add(rad_foliage);
 		
 		JRadioButton rad_water = new JRadioButton("Water");
+		rad_water.setToolTipText("Blocks that are colorshifted by a biome's \"Water\" color.");
 		rad_water.setBounds(10, 285, 109, 23);
 		getContentPane().add(rad_water);
 		

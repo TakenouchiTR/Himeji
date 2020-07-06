@@ -67,18 +67,22 @@ public class ColorPickerFrame extends JDialog implements ListChangeListener
 		getContentPane().add(pnl_colorPreview);
 		
 		JLabel lbl_r = new JLabel("Red");
+		lbl_r.setToolTipText("The red component of a color (0 - 255).");
 		lbl_r.setBounds(10, 76, 46, 14);
 		getContentPane().add(lbl_r);
 		
 		JLabel lbl_g = new JLabel("Green");
+		lbl_g.setToolTipText("The green component of a color (0 - 255).");
 		lbl_g.setBounds(10, 107, 46, 14);
 		getContentPane().add(lbl_g);
 		
 		JLabel lbl_b = new JLabel("Blue");
+		lbl_b.setToolTipText("The blue component of a color (0 - 255).");
 		lbl_b.setBounds(10, 138, 46, 14);
 		getContentPane().add(lbl_b);
 		
 		JLabel lbl_hex = new JLabel("Hex");
+		lbl_hex.setToolTipText("The six-digit hexadecimal value to represent a color.");
 		lbl_hex.setBounds(10, 45, 46, 14);
 		getContentPane().add(lbl_hex);
 		

@@ -30,6 +30,7 @@ public class AddBlockFrame extends JDialog
 		txt_id.setColumns(10);
 		
 		JLabel lbl_id = new JLabel("ID");
+		lbl_id.setToolTipText("The namespaced block ID.");
 		lbl_id.setBounds(10, 14, 46, 14);
 		getContentPane().add(lbl_id);
 		

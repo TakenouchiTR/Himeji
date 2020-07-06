@@ -48,6 +48,7 @@ public class BiomeFrame extends JDialog
 		getContentPane().setLayout(null);
 		
 		JLabel lbl_hex = new JLabel("Hex");
+		lbl_hex.setToolTipText("The six-digit hexadecimal value to represent a color.");
 		lbl_hex.setBounds(10, 45, 46, 14);
 		getContentPane().add(lbl_hex);
 		
@@ -58,6 +59,7 @@ public class BiomeFrame extends JDialog
 		getContentPane().add(txt_hex);
 		
 		JLabel lbl_r = new JLabel("Red");
+		lbl_r.setToolTipText("The red component of a color (0 - 255).");
 		lbl_r.setBounds(10, 76, 46, 14);
 		getContentPane().add(lbl_r);
 		
@@ -67,6 +69,7 @@ public class BiomeFrame extends JDialog
 		getContentPane().add(spn_r);
 		
 		JLabel lbl_g = new JLabel("Green");
+		lbl_g.setToolTipText("The red component of a color (0 - 255).");
 		lbl_g.setBounds(10, 107, 46, 14);
 		getContentPane().add(lbl_g);
 		
@@ -76,6 +79,7 @@ public class BiomeFrame extends JDialog
 		getContentPane().add(spn_g);
 		
 		JLabel lbl_b = new JLabel("Blue");
+		lbl_b.setToolTipText("The red component of a color (0 - 255).");
 		lbl_b.setBounds(10, 138, 46, 14);
 		getContentPane().add(lbl_b);
 		
@@ -99,15 +103,18 @@ public class BiomeFrame extends JDialog
 		getContentPane().add(btn_save);
 		
 		rad_grass = new JRadioButton("Grass");
+		rad_grass.setToolTipText("Color shift for blocks that are flagged as \"Grass.\"");
 		rad_grass.setSelected(true);
 		rad_grass.setBounds(10, 159, 109, 23);
 		getContentPane().add(rad_grass);
 		
 		rad_foliage = new JRadioButton("Foliage");
+		rad_foliage.setToolTipText("Color shift for blocks that are flagged as \"Foliage.\"");
 		rad_foliage.setBounds(10, 185, 109, 23);
 		getContentPane().add(rad_foliage);
 		
 		rad_water = new JRadioButton("Water");
+		rad_water.setToolTipText("Color shift for blocks that are flagged as \"Water.\"");
 		rad_water.setBounds(10, 211, 88, 23);
 		getContentPane().add(rad_water);
 		
