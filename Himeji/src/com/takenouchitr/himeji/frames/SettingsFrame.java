@@ -3,11 +3,15 @@ package com.takenouchitr.himeji.frames;
 import javax.swing.JSlider;
 
 import com.takenouchitr.himeji.Himeji;
+import com.takenouchitr.himeji.ListBiome;
 import com.takenouchitr.himeji.Property;
+import com.takenouchitr.himeji.MCCompat.Block;
 
 import java.awt.Dimension;
 import java.awt.event.WindowEvent;
-import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Properties;
 
 import javax.swing.JLabel;
@@ -21,6 +25,8 @@ import javax.swing.JCheckBox;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.JScrollPane;
+import javax.swing.JComboBox;
+import javax.swing.ScrollPaneConstants;
 
 public class SettingsFrame extends JDialog
 {
@@ -50,9 +56,16 @@ public class SettingsFrame extends JDialog
 	private JRadioButton rad_imageAlways;
 	private JRadioButton rad_imageFolderAsk;
 	private JRadioButton rad_imageFolderAlways;
+	private JRadioButton rad_blockColor;
+	private JRadioButton rad_blockIgnore;
 	private JTextField txt_world;
 	private JTextField txt_output;
-	private JScrollPane scrollPane;
+	private JLabel lbl_defaultBiome;
+	private JComboBox<ListBiome> com_biomeNames; 
+	private JCheckBox chk_saveBlock;
+	private JCheckBox chk_removeBlock;
+	private JCheckBox chk_saveBiome;
+	private JCheckBox chk_removeBiome;
 	
 	public SettingsFrame(Properties props) 
 	{
@@ -71,13 +84,17 @@ public class SettingsFrame extends JDialog
 		
 		getContentPane().add(tab_pane);
 		
-		scrollPane = new JScrollPane();
-		tab_pane.addTab("Preferences", null, scrollPane, null);
+		JScrollPane scr_preferences = new JScrollPane();
+		tab_pane.addTab("Preferences", null, scr_preferences, null);
+		
+		JScrollPane scr_rendering = new JScrollPane();
+		scr_rendering.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		tab_pane.addTab("Rendering", null, scr_rendering, null);
 		
 		JPanel pnl_preferences = new JPanel();
 		pnl_preferences.setLayout(null);
 		pnl_preferences.setPreferredSize(new Dimension(pnl_preferences.getSize().width, 360));
-		scrollPane.setViewportView(pnl_preferences);
+		scr_preferences.setViewportView(pnl_preferences);
 		
 		rad_worldLast = new JRadioButton("Open the last folder used when selecting a world");
 		rad_worldLast.setBounds(6, 7, 423, 23);
@@ -150,8 +167,9 @@ public class SettingsFrame extends JDialog
 		outputGroup.add(rad_outputOther);
 		
 		JPanel pnl_render = new JPanel();
-		tab_pane.addTab("Rendering", null, pnl_render, null);
 		pnl_render.setLayout(null);
+		pnl_render.setPreferredSize(new Dimension(pnl_render.getMaximumSize().width, 330));
+		scr_rendering.setViewportView(pnl_render);
 		
 		JPanel pnl_popup = new JPanel();
 		tab_pane.addTab("Pop-ups", null, pnl_popup, null);
@@ -159,7 +177,7 @@ public class SettingsFrame extends JDialog
 		
 		sld_brightness = new JSlider();
 		sld_brightness.setEnabled(false);
-		sld_brightness.setBounds(128, 30, 256, 26);
+		sld_brightness.setBounds(128, 30, 247, 26);
 		pnl_render.add(sld_brightness);
 		sld_brightness.setMinorTickSpacing(1);
 		
@@ -169,7 +187,7 @@ public class SettingsFrame extends JDialog
 		lbl_brightness.setToolTipText("Adjusts the base brightness at night. 0% is pitch black, 100% is normal daylight");
 		
 		JLabel lbl_brightnessPct = new JLabel("50%");
-		lbl_brightnessPct.setBounds(394, 35, 35, 14);
+		lbl_brightnessPct.setBounds(385, 35, 35, 14);
 		pnl_render.add(lbl_brightnessPct);
 		
 		JLabel lbl_biome = new JLabel("Biome Intensity");
@@ -179,12 +197,12 @@ public class SettingsFrame extends JDialog
 		
 		sld_biome = new JSlider();
 		sld_biome.setEnabled(false);
-		sld_biome.setBounds(128, 77, 256, 26);
+		sld_biome.setBounds(128, 77, 247, 26);
 		pnl_render.add(sld_biome);
 		sld_biome.setMinorTickSpacing(1);
 		
 		JLabel lbl_biomePct = new JLabel("50%");
-		lbl_biomePct.setBounds(394, 82, 35, 14);
+		lbl_biomePct.setBounds(385, 82, 35, 14);
 		pnl_render.add(lbl_biomePct);
 		
 		JLabel lbl_water = new JLabel("Water Transparency");
@@ -194,12 +212,12 @@ public class SettingsFrame extends JDialog
 		
 		sld_water = new JSlider();
 		sld_water.setEnabled(false);
-		sld_water.setBounds(128, 126, 256, 26);
+		sld_water.setBounds(128, 126, 247, 26);
 		pnl_render.add(sld_water);
 		sld_water.setMinorTickSpacing(1);
 		
 		JLabel lbl_waterPct = new JLabel("50%");
-		lbl_waterPct.setBounds(394, 131, 35, 14);
+		lbl_waterPct.setBounds(385, 131, 35, 14);
 		pnl_render.add(lbl_waterPct);
 		
 		JLabel lbl_shadow = new JLabel("Shadow Intensity");
@@ -209,12 +227,12 @@ public class SettingsFrame extends JDialog
 		
 		sld_shadow = new JSlider();
 		sld_shadow.setEnabled(false);
-		sld_shadow.setBounds(128, 175, 256, 26);
+		sld_shadow.setBounds(128, 175, 247, 26);
 		pnl_render.add(sld_shadow);
 		sld_shadow.setMinorTickSpacing(1);
 		
 		JLabel lbl_shadowPct = new JLabel("50%");
-		lbl_shadowPct.setBounds(394, 180, 35, 14);
+		lbl_shadowPct.setBounds(385, 180, 35, 14);
 		pnl_render.add(lbl_shadowPct);
 		
 		chk_night = new JCheckBox("Render at night");
@@ -235,7 +253,7 @@ public class SettingsFrame extends JDialog
 		
 		sld_highlight = new JSlider();
 		sld_highlight.setEnabled(false);
-		sld_highlight.setBounds(128, 205, 256, 26);
+		sld_highlight.setBounds(128, 205, 247, 26);
 		pnl_render.add(sld_highlight);
 		
 		JLabel lbl_highlight = new JLabel("Highlight Intensity");
@@ -243,7 +261,7 @@ public class SettingsFrame extends JDialog
 		pnl_render.add(lbl_highlight);
 		
 		JLabel lbl_highlightPct = new JLabel("50%");
-		lbl_highlightPct.setBounds(394, 210, 35, 14);
+		lbl_highlightPct.setBounds(385, 210, 35, 14);
 		pnl_render.add(lbl_highlightPct);
 		
 		chk_highlightLock = new JCheckBox("Lock shadow/highlight sliders");
@@ -251,12 +269,32 @@ public class SettingsFrame extends JDialog
 		chk_highlightLock.setBounds(16, 231, 217, 23);
 		
 		chk_missingBlock = new JCheckBox("Show missing block ID warning");
-		chk_missingBlock.setBounds(6, 7, 224, 23);
+		chk_missingBlock.setBounds(6, 59, 427, 23);
 		pnl_popup.add(chk_missingBlock);
 		
 		chk_unknownBiome = new JCheckBox("Show unknown biome ID warning");
-		chk_unknownBiome.setBounds(6, 33, 224, 23);
+		chk_unknownBiome.setBounds(6, 137, 427, 23);
 		pnl_popup.add(chk_unknownBiome);
+		
+		chk_saveBlock = new JCheckBox("Show save block file confirmation");
+		chk_saveBlock.setSelected(true);
+		chk_saveBlock.setBounds(6, 7, 427, 23);
+		pnl_popup.add(chk_saveBlock);
+		
+		chk_removeBlock = new JCheckBox("Show remove block ID confirmation");
+		chk_removeBlock.setSelected(true);
+		chk_removeBlock.setBounds(6, 33, 427, 23);
+		pnl_popup.add(chk_removeBlock);
+		
+		chk_saveBiome = new JCheckBox("Show save biome file confirmation");
+		chk_saveBiome.setSelected(true);
+		chk_saveBiome.setBounds(6, 85, 427, 23);
+		pnl_popup.add(chk_saveBiome);
+		
+		chk_removeBiome = new JCheckBox("Show remove biome ID confirmation");
+		chk_removeBiome.setSelected(true);
+		chk_removeBiome.setBounds(6, 111, 427, 23);
+		pnl_popup.add(chk_removeBiome);
 		
 		JButton btn_save = new JButton("Save");
 		btn_save.setBounds(367, 327, 67, 23);
@@ -286,6 +324,28 @@ public class SettingsFrame extends JDialog
 		imageGroup.add(rad_imageFolderAlways);
 		
 		pnl_render.add(chk_highlightLock);
+		
+		lbl_defaultBiome = new JLabel("Default Biome");
+		lbl_defaultBiome.setToolTipText("The default biome colors for any unknwon biome.");
+		lbl_defaultBiome.setBounds(10, 261, 90, 14);
+		pnl_render.add(lbl_defaultBiome);
+		
+		com_biomeNames = new JComboBox<>();
+		com_biomeNames.setBounds(128, 258, 282, 20);
+		pnl_render.add(com_biomeNames);
+		
+		rad_blockColor = new JRadioButton("Render blocks with missing IDs as the default color (Magenta)");
+		rad_blockColor.setBounds(6, 284, 404, 23);
+		pnl_render.add(rad_blockColor);
+		
+		rad_blockIgnore = new JRadioButton("Ignore blocks with missing IDs");
+		rad_blockIgnore.setBounds(6, 310, 404, 23);
+		pnl_render.add(rad_blockIgnore);
+		
+		ButtonGroup blockGroup = new ButtonGroup();
+		blockGroup.add(rad_blockColor);
+		blockGroup.add(rad_blockIgnore);
+		
 		sld_water.addChangeListener((e) -> 
 			lbl_waterPct.setText(sld_water.getValue() + "%"));
 		sld_biome.addChangeListener((e) -> 
@@ -335,7 +395,23 @@ public class SettingsFrame extends JDialog
 		btn_apply.addActionListener((e) -> applyPress());
 		btn_save.addActionListener((e) -> savePress());
 		
+		loadBiomes();
 		applyProperties();
+	}
+
+	private void loadBiomes()
+	{
+		HashMap<Integer, String> biomes = Block.getBiomes();
+		
+		List<ListBiome> listBiomes = new ArrayList<>();
+		
+		for (Integer i : biomes.keySet())
+			listBiomes.add(new ListBiome(i, biomes.get(i)));
+		
+		listBiomes.sort(null);
+		
+		for (ListBiome lb : listBiomes)
+			com_biomeNames.addItem(lb);
 	}
 
 	private void highlightLockChecked()
@@ -453,10 +529,40 @@ public class SettingsFrame extends JDialog
 		sld_highlight.setValue(Integer.parseInt(
 				props.getProperty(Property.HIGHLIGHT_INTENSITY.key)));
 		
+		setDefaultBiome(props.getProperty(Property.DEFAULT_BIOME.key));
+		
+		if (props.getProperty(Property.MISSING_BLOCK_SETTING.key).equals("color"))
+			rad_blockColor.setSelected(true);
+		else
+			rad_blockIgnore.setSelected(true);
+		
 		/////Pop-ups tab
 		
-		chk_missingBlock.setSelected(true);
-		chk_unknownBiome.setSelected(true);
+		chk_missingBlock.setSelected(
+				Boolean.parseBoolean(props.getProperty(Property.SHOW_MISSING_BLOCK.key)));
+		chk_unknownBiome.setSelected(
+				Boolean.parseBoolean(props.getProperty(Property.SHOW_UNKNOWN_BIOME.key)));
+		chk_saveBlock.setSelected(
+				Boolean.parseBoolean(props.getProperty(Property.SHOW_BLOCK_SAVE.key)));
+		chk_saveBiome.setSelected(
+				Boolean.parseBoolean(props.getProperty(Property.SHOW_BIOME_SAVE.key)));
+		chk_removeBlock.setSelected(
+				Boolean.parseBoolean(props.getProperty(Property.SHOW_BLOCK_REMOVE.key)));
+		chk_removeBiome.setSelected(
+				Boolean.parseBoolean(props.getProperty(Property.SHOW_BIOME_REMOVE.key)));
+	}
+	
+	private void setDefaultBiome(String biomeName)
+	{
+		for (int i = 0, length = com_biomeNames.getItemCount(); i < length; i++)
+		{
+			ListBiome biome = (ListBiome)com_biomeNames.getItemAt(i); 
+			if (biome.toString().equals(biomeName))
+			{
+				com_biomeNames.setSelectedIndex(i);
+				break;
+			}
+		}
 	}
 
 	private void savePress()
@@ -516,16 +622,27 @@ public class SettingsFrame extends JDialog
 		props.setProperty(Property.RENDER_UNDER_WATER.key, chk_water.isSelected() + "");
 		props.setProperty(Property.RENDER_SHADOWS.key, chk_shadow.isSelected() + "");
 		props.setProperty(Property.LOCK_HIGHLIGHT.key, chk_highlightLock.isSelected() + "");
+		
 		props.setProperty(Property.NIGHT_BRIGHTNESS.key, sld_brightness.getValue() + "");
 		props.setProperty(Property.BIOME_INTENSITY.key, sld_biome.getValue() + "");
 		props.setProperty(Property.WATER_TRANSPARENCY.key, sld_water.getValue() + "");
 		props.setProperty(Property.SHADOW_INTENSITY.key, sld_shadow.getValue() + "");
 		props.setProperty(Property.HIGHLIGHT_INTENSITY.key, sld_highlight.getValue() + "");
 		
+		props.setProperty(Property.DEFAULT_BIOME.key, com_biomeNames.getSelectedItem().toString());
+		if (rad_blockColor.isSelected())
+			props.setProperty(Property.MISSING_BLOCK_SETTING.key, "color");
+		else
+			props.setProperty(Property.MISSING_BLOCK_SETTING.key, "ignore");
+		
 		/////Pop-ups tab
 		
 		props.setProperty(Property.SHOW_MISSING_BLOCK.key, chk_missingBlock.isSelected() + "");
 		props.setProperty(Property.SHOW_UNKNOWN_BIOME.key, chk_unknownBiome.isSelected() + "");
+		props.setProperty(Property.SHOW_BLOCK_SAVE.key, chk_saveBlock.isSelected() + "");
+		props.setProperty(Property.SHOW_BIOME_SAVE.key, chk_saveBiome.isSelected() + "");
+		props.setProperty(Property.SHOW_BLOCK_REMOVE.key, chk_removeBlock.isSelected() + "");
+		props.setProperty(Property.SHOW_BIOME_REMOVE.key, chk_removeBiome.isSelected() + "");
 	}
 	
 	private void defaultPress(int tabIndex)
@@ -544,11 +661,17 @@ public class SettingsFrame extends JDialog
 				sld_water.setValue(Integer.parseInt(Property.WATER_TRANSPARENCY.defaultValue));
 				sld_shadow.setValue(Integer.parseInt(Property.SHADOW_INTENSITY.defaultValue));
 				sld_highlight.setValue(Integer.parseInt(Property.HIGHLIGHT_INTENSITY.defaultValue));
+				rad_blockColor.setSelected(true);
+				setDefaultBiome(Property.DEFAULT_BIOME.defaultValue);
 				break;
 				
 			case 2:
 				chk_missingBlock.setSelected(true);
 				chk_unknownBiome.setSelected(true);
+				chk_saveBlock.setSelected(true);
+				chk_saveBiome.setSelected(true);
+				chk_removeBlock.setSelected(true);
+				chk_removeBiome.setSelected(true);
 				break;
 		}
 	}
