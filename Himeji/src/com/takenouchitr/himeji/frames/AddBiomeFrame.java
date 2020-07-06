@@ -25,7 +25,7 @@ public class AddBiomeFrame extends JDialog
 		setResizable(false);
 		setTitle("New Biome");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setSize(360, 110);
+		setSize(350, 100);
 		setModal(true);
 		getContentPane().setLayout(null);
 		
