@@ -10,11 +10,12 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JSpinner;
 
-public class AddBiomeFrame extends JFrame
+public class AddBiomeFrame extends JDialog
 {
 	private JTextField txt_name;
 	private JSpinner spn_id;
@@ -25,6 +26,7 @@ public class AddBiomeFrame extends JFrame
 		setTitle("New Biome");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setSize(360, 110);
+		setModal(true);
 		getContentPane().setLayout(null);
 		
 		txt_name = new JTextField();

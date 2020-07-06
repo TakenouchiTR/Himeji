@@ -19,6 +19,7 @@ public class MissingBiomesFrame extends JDialog
 	{
 		setTitle("Missing Biomes List");
 		setResizable(false);
+		setModal(true);
 		setSize(350, 350);
 		
 		this.setModal(true);

@@ -15,18 +15,20 @@ import java.awt.event.WindowListener;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 
-public class AddBlockFrame extends JFrame
+public class AddBlockFrame extends JDialog
 {
 	private JTextField txt_id;
 	private ColorPickerFrame colorFrame;
 	
 	public AddBlockFrame() 
 	{
+		setResizable(false);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
 		setSize(275, 110);
 		setTitle("New Block ID");
 		getContentPane().setLayout(null);
+		setModal(true);
 		
 		txt_id = new JTextField();
 		txt_id.setBounds(30, 11, 219, 20);
@@ -47,55 +49,6 @@ public class AddBlockFrame extends JFrame
 		
 		btn_add.addActionListener((e) -> addPress());
 		btn_cancel.addActionListener((e) -> cancelPress());
-		addWindowListener(new WindowListener()
-		{
-
-			@Override
-			public void windowActivated(WindowEvent arg0)
-			{
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void windowClosed(WindowEvent arg0)
-			{
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void windowClosing(WindowEvent arg0)
-			{
-				Himeji.setComponentsEnabled(true);
-			}
-
-			@Override
-			public void windowDeactivated(WindowEvent arg0)
-			{
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void windowDeiconified(WindowEvent arg0)
-			{
-				
-			}
-
-			@Override
-			public void windowIconified(WindowEvent arg0)
-			{
-				
-			}
-
-			@Override
-			public void windowOpened(WindowEvent arg0)
-			{
-				
-			}
-			
-		});
 	}
 	
 	private void addPress()

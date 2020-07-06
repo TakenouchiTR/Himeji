@@ -1,6 +1,5 @@
 package com.takenouchitr.himeji.frames;
 
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.JSpinner;
@@ -13,22 +12,21 @@ import java.util.HashMap;
 import java.util.List;
 
 import javax.swing.border.LineBorder;
-import javax.swing.event.ChangeEvent;
 
 import com.takenouchitr.himeji.Himeji;
 import com.takenouchitr.himeji.ListBiome;
 import com.takenouchitr.himeji.ListChangeListener;
-import com.takenouchitr.himeji.MCCompat.Biome;
 import com.takenouchitr.himeji.MCCompat.Block;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JRadioButton;
 import javax.swing.JComboBox;
-import java.awt.Window.Type;
+import javax.swing.JDialog;
+
 import javax.swing.SpinnerNumberModel;
 
-public class BiomeFrame extends JFrame
+public class BiomeFrame extends JDialog
 {
 	private int grassColor, foliageColor, waterColor;
 	private JTextField txt_hex;
@@ -42,6 +40,7 @@ public class BiomeFrame extends JFrame
 		setTitle("Biome Color Picker");
 		setResizable(false);
 		setSize(320, 269);
+		setModal(true);
 		getContentPane().setLayout(null);
 		
 		JLabel lbl_hex = new JLabel("Hex");
@@ -127,45 +126,6 @@ public class BiomeFrame extends JFrame
 		txt_hex.addActionListener((e) -> convertHex());
 		btn_update.addActionListener((e) -> saveChanges());
 		btn_save.addActionListener((e) -> saveToFile());
-		addWindowListener(new WindowListener() 
-		{
-
-			@Override
-			public void windowActivated(WindowEvent e)
-			{
-			}
-
-			@Override
-			public void windowClosed(WindowEvent e)
-			{
-			}
-
-			@Override
-			public void windowClosing(WindowEvent e)
-			{
-				himeji.setEnabled(true);
-			}
-
-			@Override
-			public void windowDeactivated(WindowEvent e)
-			{
-			}
-
-			@Override
-			public void windowDeiconified(WindowEvent e)
-			{
-			}
-
-			@Override
-			public void windowIconified(WindowEvent e)
-			{
-			}
-
-			@Override
-			public void windowOpened(WindowEvent e)
-			{
-			}
-		});
 		Block.addListChangeListener(new ListChangeListener() 
 		{
 

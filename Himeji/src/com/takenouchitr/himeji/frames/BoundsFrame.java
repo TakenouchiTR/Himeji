@@ -29,7 +29,6 @@ import java.io.FileWriter;
 import java.nio.file.Files;
 import java.util.Properties;
 
-import javax.swing.JFrame;
 import java.awt.Font;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
@@ -50,13 +49,14 @@ import java.awt.GridLayout;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.JCheckBox;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 
 import java.awt.FlowLayout;
 import javax.swing.JButton;
 
 @SuppressWarnings("serial")
-public class BoundsFrame extends JFrame implements ItemListener, ChangeListener
+public class BoundsFrame extends JDialog implements ChangeListener
 {
 	private static final String BOUNDS_FOLDER = "bounds\\";
 	
@@ -74,6 +74,7 @@ public class BoundsFrame extends JFrame implements ItemListener, ChangeListener
 		setFont(new Font("Tahoma", Font.PLAIN, 11));
 		setSize(440, 195);
 		setResizable(false);
+		setModal(true);
 		getContentPane().setLayout(null);
 		
 		JPanel pnl_dimension = new JPanel();
@@ -167,7 +168,22 @@ public class BoundsFrame extends JFrame implements ItemListener, ChangeListener
 		
 		chk_chunks = new JCheckBox("Limit render to area selection");
 		chk_chunks.setToolTipText("Render one the area within the specified chunk bounds.");
-		chk_chunks.addItemListener(this);
+		chk_chunks.addItemListener(new ItemListener() 
+		{
+
+			@Override
+			public void itemStateChanged(ItemEvent e)
+			{
+				boolean isChecked = e.getStateChange() == ItemEvent.SELECTED;
+				
+				spn_maxX.setEnabled(isChecked);
+				spn_minX.setEnabled(isChecked);
+				spn_maxZ.setEnabled(isChecked);
+				spn_minZ.setEnabled(isChecked);
+			}
+			
+		});
+
 		pnl_chunksBottom.add(chk_chunks);
 		
 		JPanel pnl_chunksCenter = new JPanel();
@@ -223,11 +239,11 @@ public class BoundsFrame extends JFrame implements ItemListener, ChangeListener
 		dimensionGroup.add(rad_end);
 		
 		JButton btn_save = new JButton("Save Area");
-		btn_save.setBounds(10, 132, 89, 23);
+		btn_save.setBounds(10, 132, 99, 23);
 		getContentPane().add(btn_save);
 		
 		JButton btn_load = new JButton("Load Area");
-		btn_load.setBounds(109, 132, 89, 23);
+		btn_load.setBounds(119, 132, 99, 23);
 		getContentPane().add(btn_load);
 		
 		btn_save.addActionListener((e) -> savePress());
@@ -268,8 +284,6 @@ public class BoundsFrame extends JFrame implements ItemListener, ChangeListener
 				props.setProperty(Property.END_Z.key, "" + ((int)spn_minZ.getValue()));
 				
 				props.setProperty(Property.USE_AREA.key, "" + chk_chunks.isSelected());
-				
-				Himeji.frame.setEnabled(true);
 			}
 
 			@Override
@@ -433,17 +447,6 @@ public class BoundsFrame extends JFrame implements ItemListener, ChangeListener
 			spinnerPairTopChange(spn_maxZ, spn_minZ);
 		else if (source == spn_minZ)
 			spinnerPairBottomChange(spn_maxZ, spn_minZ);
-	}
-
-	@Override
-	public void itemStateChanged(ItemEvent e) 
-	{
-		boolean isChecked = e.getStateChange() == ItemEvent.SELECTED;
-		
-		spn_maxX.setEnabled(isChecked);
-		spn_minX.setEnabled(isChecked);
-		spn_maxZ.setEnabled(isChecked);
-		spn_minZ.setEnabled(isChecked);
 	}
 
 	private void spinnerPairTopChange(JSpinner top, JSpinner bottom)

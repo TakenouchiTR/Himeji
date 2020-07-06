@@ -1,12 +1,8 @@
 package com.takenouchitr.himeji.frames;
 
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-
 import com.takenouchitr.himeji.Himeji;
 import com.takenouchitr.himeji.ListChangeListener;
 import com.takenouchitr.himeji.MCCompat.Block;
-import java.awt.Window.Type;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.ArrayList;
@@ -20,14 +16,9 @@ import javax.swing.JButton;
 import javax.swing.JList;
 import java.awt.Color;
 import javax.swing.border.LineBorder;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
-import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 
 public class FlagsFrame extends JDialog implements ListChangeListener
 {
@@ -41,6 +32,7 @@ public class FlagsFrame extends JDialog implements ListChangeListener
 		currentList = Block.INVISIBLE_LIST;
 		
 		setTitle("Block Flags");
+		setModal(true);
 		setResizable(false);
 		setSize(325, 345);
 		
@@ -114,58 +106,6 @@ public class FlagsFrame extends JDialog implements ListChangeListener
 		btn_save.addActionListener((e) -> Block.saveFlagFile(currentList));
 		lst_blockNames.addListSelectionListener((e) ->
 			btn_remove.setEnabled((lst_blockNames.getSelectedIndex()) >= 0));
-		this.addWindowListener(new WindowListener()
-		{
-
-			@Override
-			public void windowActivated(WindowEvent e)
-			{
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void windowClosed(WindowEvent e)
-			{
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void windowClosing(WindowEvent e)
-			{
-				Himeji.frame.setEnabled(true);
-			}
-
-			@Override
-			public void windowDeactivated(WindowEvent e)
-			{
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void windowDeiconified(WindowEvent e)
-			{
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void windowIconified(WindowEvent e)
-			{
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void windowOpened(WindowEvent e)
-			{
-				// TODO Auto-generated method stub
-				
-			}
-			
-		});
 		
 		loadList(currentList);
 		loadIDs();
