@@ -1,11 +1,10 @@
 package com.takenouchitr.himeji.frames;
 
-import javax.swing.JFrame;
 import javax.swing.JComboBox;
+import javax.swing.JDialog;
 import javax.swing.JSpinner;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
-import javax.swing.event.ChangeEvent;
 
 import com.takenouchitr.himeji.Himeji;
 import com.takenouchitr.himeji.ListChangeListener;
@@ -13,18 +12,16 @@ import com.takenouchitr.himeji.MCCompat.Block;
 
 import java.awt.Color;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.JButton;
-import java.awt.Window.Type;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import javax.swing.SpinnerNumberModel;
 
 @SuppressWarnings("serial")
-public class ColorPickerFrame extends JFrame implements ListChangeListener
+public class ColorPickerFrame extends JDialog implements ListChangeListener
 {
 	private JComboBox<String> com_namespaceIds;
 	private JSpinner spn_r, spn_g, spn_b;
@@ -33,11 +30,12 @@ public class ColorPickerFrame extends JFrame implements ListChangeListener
 	private JButton btn_update;
 	private JButton btn_save;
 	
-	public ColorPickerFrame(Himeji himeji) 
+	public ColorPickerFrame() 
 	{
 		setTitle("Color Editor");
 		setSize(287,230);
 		setResizable(false);
+		setModal(true);
 		getContentPane().setLayout(null);
 		
 		com_namespaceIds = new JComboBox<String>();
@@ -100,57 +98,6 @@ public class ColorPickerFrame extends JFrame implements ListChangeListener
 		txt_hex.addActionListener((e) -> convertHex());
 		btn_update.addActionListener((e) -> saveChanges());
 		btn_save.addActionListener((e) -> saveToFile());
-		addWindowListener(new WindowListener() 
-		{
-
-			@Override
-			public void windowActivated(WindowEvent e)
-			{
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void windowClosed(WindowEvent e)
-			{
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void windowClosing(WindowEvent e)
-			{
-				himeji.setEnabled(true);
-			}
-
-			@Override
-			public void windowDeactivated(WindowEvent e)
-			{
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void windowDeiconified(WindowEvent e)
-			{
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void windowIconified(WindowEvent e)
-			{
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void windowOpened(WindowEvent e)
-			{
-				// TODO Auto-generated method stub
-				
-			}});
-		
 		Block.addListChangeListener(this);
 		
 		loadBlockIds();
