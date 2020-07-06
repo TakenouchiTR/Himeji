@@ -38,9 +38,12 @@ public class MapWorker extends SwingWorker<Void, String>
 {
 	public static final int GIGABYTE = 1_073_741_824;
 	
+	private boolean failed;
+	
 	@Override
 	protected Void doInBackground() throws Exception 
 	{
+		failed = false;
 		Himeji.log("Starting worker");
 		
 		File file = new File(Himeji.getProperty(Property.WORLD_PATH));
@@ -80,6 +83,7 @@ public class MapWorker extends SwingWorker<Void, String>
 					"Please change the selected dimension.", "Dimension not found", 
 					JOptionPane.WARNING_MESSAGE);
 				
+				failed = true;
 				return null;
 			}
 			
@@ -102,6 +106,8 @@ public class MapWorker extends SwingWorker<Void, String>
 					JOptionPane.showMessageDialog(Himeji.frame, "Image file expected to exceed 1GB (" + 
 						(size / GIGABYTE) + "GB).\nPlease restict the render area to reduce the size.",
 						"Image size warning", JOptionPane.WARNING_MESSAGE); 
+					
+					failed = true;
 					return null;
 				}
 				
@@ -128,6 +134,8 @@ public class MapWorker extends SwingWorker<Void, String>
 					JOptionPane.showMessageDialog(Himeji.frame, "Image file expected to exceed 1GB (" + 
 						(size / GIGABYTE) + "GB).\nPlease restict the render area to reduce the size.",
 						"Image size warning", JOptionPane.WARNING_MESSAGE); 
+					
+					failed = true;
 					return null;
 				}
 				
@@ -213,48 +221,51 @@ public class MapWorker extends SwingWorker<Void, String>
 		String fileString = null;
 		int result;
 		
-		switch (Himeji.getProperty(Property.OPEN_IMAGE_SETTING.key))
+		if (!failed)
 		{
-			case "ask_image":
-				result = JOptionPane.showConfirmDialog(Himeji.frame,
-						"Would you like to open the image?", 
-						"Open image?", JOptionPane.YES_NO_OPTION,
-						JOptionPane.QUESTION_MESSAGE);
-				
-				if (result == JOptionPane.YES_OPTION)
+			switch (Himeji.getProperty(Property.OPEN_IMAGE_SETTING.key))
+			{
+				case "ask_image":
+					result = JOptionPane.showConfirmDialog(Himeji.frame,
+							"Would you like to open the image?", 
+							"Open image?", JOptionPane.YES_NO_OPTION,
+							JOptionPane.QUESTION_MESSAGE);
+					
+					if (result == JOptionPane.YES_OPTION)
+						fileString = Himeji.getProperty(Property.OUTPUT_PATH.key);
+					break;
+					
+				case "ask_folder":
+					result = JOptionPane.showConfirmDialog(Himeji.frame,
+							"Would you like to open the image's folder?", 
+							"Open folder?", JOptionPane.YES_NO_OPTION,
+							JOptionPane.QUESTION_MESSAGE);
+					
+					if (result == JOptionPane.YES_OPTION)
+						fileString = new File(Himeji.getProperty(Property.OUTPUT_PATH.key)).getParent();
+					break;
+					
+				case "always_image":
 					fileString = Himeji.getProperty(Property.OUTPUT_PATH.key);
-				break;
-				
-			case "ask_folder":
-				result = JOptionPane.showConfirmDialog(Himeji.frame,
-						"Would you like to open the image's folder?", 
-						"Open folder?", JOptionPane.YES_NO_OPTION,
-						JOptionPane.QUESTION_MESSAGE);
-				
-				if (result == JOptionPane.YES_OPTION)
+					break;
+					
+				case "always_folder":
 					fileString = new File(Himeji.getProperty(Property.OUTPUT_PATH.key)).getParent();
-				break;
-				
-			case "always_image":
-				fileString = Himeji.getProperty(Property.OUTPUT_PATH.key);
-				break;
-				
-			case "always_folder":
-				fileString = new File(Himeji.getProperty(Property.OUTPUT_PATH.key)).getParent();
-				break;
-		}
-		
-		if (fileString != null)
-		{
-			try
+					break;
+			}
+			
+			if (fileString != null)
 			{
-				File outputFile = new File(fileString);
-				
-				Desktop.getDesktop().open(outputFile);
-			} 
-			catch (IOException e)
-			{
-				e.printStackTrace();
+				try
+				{
+					File outputFile = new File(fileString);
+					
+					Desktop.getDesktop().open(outputFile);
+				} 
+				catch (IOException e)
+				{
+					e.printStackTrace();
+				}
 			}
 		}
 		
