@@ -43,6 +43,7 @@ public class AddBiomeFrame extends JDialog
 		getContentPane().add(btn_add);
 		
 		JLabel lbl_id = new JLabel("ID");
+		lbl_id.setToolTipText("The numeric ID for the biome.");
 		lbl_id.setBounds(10, 14, 46, 14);
 		getContentPane().add(lbl_id);
 		
@@ -51,6 +52,7 @@ public class AddBiomeFrame extends JDialog
 		getContentPane().add(spn_id);
 		
 		JLabel lbl_name = new JLabel("Name");
+		lbl_name.setToolTipText("The name associaed with the biome, used purely for easier identification.");
 		lbl_name.setBounds(81, 14, 46, 14);
 		getContentPane().add(lbl_name);
 		
