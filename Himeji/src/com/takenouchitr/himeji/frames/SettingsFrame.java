@@ -360,7 +360,7 @@ public class SettingsFrame extends JDialog
 		if (lockShadows)
 		{
 			lockShadows = false;
-			sld_highlight.setValue(100 - sld_shadow.getValue());
+			sld_highlight.setValue(sld_shadow.getValue());
 			lockShadows = true;
 		}
 	}
@@ -425,6 +425,9 @@ public class SettingsFrame extends JDialog
 				rad_imageIgnore.setSelected(true);
 				break;
 		}
+		
+		txt_world.setText(props.getProperty(Property.SPECIFIED_WORLD.key));
+		txt_output.setText(props.getProperty(Property.SPECIFIED_OUTPUT.key));
 		
 		/////Render tab
 		
@@ -532,6 +535,7 @@ public class SettingsFrame extends JDialog
 			case 0:
 				rad_worldLast.setSelected(true);
 				rad_outputLast.setSelected(true);
+				rad_imageIgnore.setSelected(true);
 				break;
 				
 			case 1:
