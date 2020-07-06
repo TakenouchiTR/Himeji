@@ -365,6 +365,9 @@ public class Himeji extends JFrame implements ActionListener
         JMenuItem itm_biomeColors = new JMenuItem("Biome Colors");
         menu_config.add(itm_biomeColors);
         
+        JMenuItem itm_setBounds = new JMenuItem("Set Bounds");
+        menu_config.add(itm_setBounds);
+        
         JMenu mnAdd = new JMenu("Add");
         bar_menu.add(mnAdd);
         
@@ -409,6 +412,7 @@ public class Himeji extends JFrame implements ActionListener
         itm_settings.addActionListener((e) -> openSettingsFrame());
         itm_biome.addActionListener((e) -> openAddBiomeFrame());
         btn_setBounds.addActionListener((e) -> openBoundsFrame());
+        itm_setBounds.addActionListener((e) -> openBoundsFrame());
         btn_folder.addActionListener((e) -> folderPress());
         btn_output.addActionListener((e) -> outputPress());
         
