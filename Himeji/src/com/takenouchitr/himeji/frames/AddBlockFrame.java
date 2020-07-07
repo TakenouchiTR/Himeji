@@ -10,6 +10,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 
+@SuppressWarnings("serial")
 public class AddBlockFrame extends JDialog
 {
 	private JTextField txt_id;

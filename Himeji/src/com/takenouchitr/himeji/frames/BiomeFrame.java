@@ -6,8 +6,6 @@ import javax.swing.JTextField;
 import javax.swing.JSpinner;
 import javax.swing.JPanel;
 import java.awt.Color;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,8 +25,8 @@ import javax.swing.JComboBox;
 import javax.swing.JDialog;
 
 import javax.swing.SpinnerNumberModel;
-import java.awt.Window.Type;
 
+@SuppressWarnings("serial")
 public class BiomeFrame extends JDialog
 {
 	private int grassColor, foliageColor, waterColor;
@@ -41,6 +39,7 @@ public class BiomeFrame extends JDialog
 	
 	public BiomeFrame(Himeji himeji) 
 	{
+		//I have given up on keeping this code organized. Window builder is helpful, but it's so messy
 		setTitle("Biome Color Picker");
 		setResizable(false);
 		setSize(320, 269);
@@ -187,6 +186,9 @@ public class BiomeFrame extends JDialog
 		loadBiomes();
 	}
 
+	/**
+	 * Saves the changes for the session, not to file.
+	 */
 	public void saveChanges()
 	{
 		ListBiome lb = (ListBiome) com_biomeNames.getSelectedItem();
@@ -197,6 +199,9 @@ public class BiomeFrame extends JDialog
 		Block.setWaterColor(biome, waterColor);
 	}
 	
+	/**
+	 * Saves changes for both the session and to the file.
+	 */
 	public void saveToFile()
 	{
 		if (Himeji.getProperty(Property.SHOW_BIOME_SAVE.key).equals("true"))
@@ -214,6 +219,9 @@ public class BiomeFrame extends JDialog
 		Block.saveBiomeColorFiles();
 	}
 	
+	/**
+	 * When the remove button is pressed.
+	 */
 	private void removePress()
 	{
 		if (Himeji.getProperty(Property.SHOW_BIOME_REMOVE.key).equals("true"))
@@ -232,6 +240,9 @@ public class BiomeFrame extends JDialog
 		Block.removeBiome(lb.getBiome());
 	}
 	
+	/**
+	 * Converts the hexadecimal input to RGB
+	 */
  	private void convertHex()
 	{
 		StringBuilder sb = new StringBuilder(6);
@@ -266,6 +277,9 @@ public class BiomeFrame extends JDialog
 		updatePreview();
 	}
 	
+ 	/**
+ 	 * Populates the biome combo box with all of the loaded biome names 
+ 	 */
 	private void loadBiomes()
 	{
 		HashMap<Integer, String> biomes = Block.getBiomes();
@@ -283,6 +297,10 @@ public class BiomeFrame extends JDialog
 		loadColors();
 	}
 	
+	/**
+	 * Creates an integer from the spinners that represents a color's ARGB value
+	 * @return ARGB integer
+	 */
 	private int getColorInt()
 	{
 		int color = 0xFF000000;
@@ -297,6 +315,9 @@ public class BiomeFrame extends JDialog
 		return color;
 	}
 	
+	/**
+	 * Loads all three colors associated with a biome
+	 */
 	private void loadColors()
 	{
 		ListBiome lb = (ListBiome)com_biomeNames.getSelectedItem(); 
@@ -309,6 +330,9 @@ public class BiomeFrame extends JDialog
 		changeType();
 	}
 	
+	/**
+	 * Changes which portion of the biome color is editable
+	 */
 	private void changeType()
 	{
 		if (rad_grass.isSelected())
@@ -319,6 +343,10 @@ public class BiomeFrame extends JDialog
 			setColor(waterColor);
 	}
 	
+	/**
+	 * Sets the color of the spinners from an integer that represents an ARGB value
+	 * @param color ARGB integer
+	 */
 	private void setColor(int color)
 	{
 		int r = (color & 0x00FF0000) >>> 16;
@@ -332,6 +360,9 @@ public class BiomeFrame extends JDialog
 		updatePreview();
 	}
 	
+	/**
+	 * Sets the color of the preview panel to the value of the RGB spinners
+	 */
 	private void updatePreview()
 	{
 		int r = (Integer)spn_r.getValue();

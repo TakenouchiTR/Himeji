@@ -1,10 +1,8 @@
 package com.takenouchitr.himeji.frames;
 
-import com.takenouchitr.himeji.Himeji;
 import com.takenouchitr.himeji.ListChangeListener;
 import com.takenouchitr.himeji.MCCompat.Block;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +18,8 @@ import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 
-public class FlagsFrame extends JDialog implements ListChangeListener
+@SuppressWarnings("serial")
+public class FlagsFrame extends JDialog
 {
 	private int currentList;
 	private DefaultListModel<String> model;
@@ -36,7 +35,6 @@ public class FlagsFrame extends JDialog implements ListChangeListener
 		setResizable(false);
 		setSize(325, 345);
 		
-		Block.addListChangeListener(this);
 		getContentPane().setLayout(null);
 		
 		com_namespaceIDs = new JComboBox<String>();
@@ -110,11 +108,54 @@ public class FlagsFrame extends JDialog implements ListChangeListener
 		btn_save.addActionListener((e) -> Block.saveFlagFile(currentList));
 		lst_blockNames.addListSelectionListener((e) ->
 			btn_remove.setEnabled((lst_blockNames.getSelectedIndex()) >= 0));
+		Block.addListChangeListener(new ListChangeListener() 
+		{
+			@Override
+			public void OnItemAddition(String name, int listID)
+			{
+				if (listID == currentList)
+					model.addElement(name);
+				if (listID == Block.COLORS_LIST)
+					com_namespaceIDs.addItem(name);
+			}
+
+			@Override
+			public void OnItemUpdate(String oldName, String newName, int listID)
+			{
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void OnItemRemoval(String name, int listID)
+			{
+				if (listID == currentList)
+				{
+					int size = model.getSize();
+					for (int i = 0; i < size; i++)
+					{
+						if (model.elementAt(i).equals(name))
+						{
+							model.remove(i);
+							break;
+						}
+					}
+				}
+				else if (listID == Block.COLORS_LIST)
+				{
+					com_namespaceIDs.addItem(name);
+				}
+			}
+		});
 		
 		loadList(currentList);
 		loadIDs();
 	}
 	
+	/**
+	 * Populates the list with the block IDs associated with a Block list constant
+	 * @param listID Block list constant
+	 */
 	private void loadList(int listID)
 	{
 		currentList = listID;
@@ -126,6 +167,9 @@ public class FlagsFrame extends JDialog implements ListChangeListener
 			model.addElement(s);
 	}
 	
+	/**
+	 * Populates the combo box with each block ID
+	 */
 	private void loadIDs()
 	{
 		List<String> ids = new ArrayList<>();
@@ -139,12 +183,18 @@ public class FlagsFrame extends JDialog implements ListChangeListener
 			com_namespaceIDs.addItem(s);
 	}
 	
+	/**
+	 * Adds an ID to the list when the add button is pressed
+	 */
 	private void addPress()
 	{
 		Block.addIdToList(com_namespaceIDs.getSelectedItem().toString(), 
 			currentList);
 	}
 	
+	/**
+	 * Removes the selected ID from the list
+	 */
 	private void removePress()
 	{
 		if (lst_blockNames.getSelectedIndex() == -1)
@@ -153,45 +203,11 @@ public class FlagsFrame extends JDialog implements ListChangeListener
 		Block.removeIdFromList(lst_blockNames.getSelectedValue(), currentList);
 	}
 	
+	/**
+	 * Closes out of the window
+	 */
 	private void donePress()
 	{
 		dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
-	}
-	
-	@Override
-	public void OnItemAddition(String name, int listID)
-	{
-		if (listID == currentList)
-			model.addElement(name);
-		if (listID == Block.COLORS_LIST)
-			com_namespaceIDs.addItem(name);
-	}
-
-	@Override
-	public void OnItemUpdate(String oldName, String newName, int listID)
-	{
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void OnItemRemoval(String name, int listID)
-	{
-		if (listID == currentList)
-		{
-			int size = model.getSize();
-			for (int i = 0; i < size; i++)
-			{
-				if (model.elementAt(i).equals(name))
-				{
-					model.remove(i);
-					break;
-				}
-			}
-		}
-		else if (listID == Block.COLORS_LIST)
-		{
-			com_namespaceIDs.addItem(name);
-		}
 	}
 }

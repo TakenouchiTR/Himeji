@@ -45,7 +45,7 @@ import com.takenouchitr.himeji.frames.*;
 
 
 @SuppressWarnings("serial")
-public class Himeji extends JFrame implements ActionListener
+public class Himeji extends JFrame
 {
 	public static final boolean SHOW_ALL_EVENTS = true;
 	public static final boolean CREATE_LOG = false;
@@ -105,7 +105,6 @@ public class Himeji extends JFrame implements ActionListener
 				window.setVisible(true);
 			}
 		});
-		
 	}
 	
 	/**
@@ -173,6 +172,11 @@ public class Himeji extends JFrame implements ActionListener
 		}
 	}
 
+	/**
+	 * Sets whether or not all of the components are enabled. Used to allow the window to be 
+	 * repositioned while a map is rendering.
+	 * @param enabled
+	 */
 	public static void setComponentsEnabled(boolean enabled)
 	{
 		for (Component c : bar_menu.getComponents())
@@ -240,6 +244,10 @@ public class Himeji extends JFrame implements ActionListener
 		log(message);
 	}
 	
+	/**
+	 * Writes a line to the log, if it's enabled
+	 * @param line line to write
+	 */
 	@SuppressWarnings("unused")
 	public static void log(String line)
 	{
@@ -330,7 +338,6 @@ public class Himeji extends JFrame implements ActionListener
         bar_menu.add(fileMenu);
         
         itm_exit = new JMenuItem("Exit");
-        itm_exit.addActionListener(this);
         
         JMenuItem itm_settings = new JMenuItem("Settings");
         fileMenu.add(itm_settings);
@@ -402,15 +409,14 @@ public class Himeji extends JFrame implements ActionListener
         pnl_log.add(lbl_log);
         
         //set listeners
-        btn_folder.addActionListener(this);
-        btn_output.addActionListener(this);
-        btn_start.addActionListener(this);
+        btn_start.addActionListener((e) -> startRender());
         itm_colors.addActionListener((e) -> openColorPicker());
         itm_blockID.addActionListener((e) -> openAddBlockFrame());
         itm_biomeColors.addActionListener((e) -> openBiomeFrame());
         itm_blockFlags.addActionListener((e) -> openFlagsFrame());
         itm_settings.addActionListener((e) -> openSettingsFrame());
         itm_biome.addActionListener((e) -> openAddBiomeFrame());
+        itm_exit.addActionListener((e) -> dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING)));
         btn_setBounds.addActionListener((e) -> openBoundsFrame());
         itm_setBounds.addActionListener((e) -> openBoundsFrame());
         btn_folder.addActionListener((e) -> folderPress());
@@ -470,7 +476,6 @@ public class Himeji extends JFrame implements ActionListener
         setLocation(getX() - getWidth() / 2, getY() - getHeight() / 2);
 	}
 	
-
 	/**
 	 * Applies the values of the program's properties to the form components.
 	 */
@@ -586,68 +591,62 @@ public class Himeji extends JFrame implements ActionListener
 		}
 	}
 	
-	@Override
-	public void actionPerformed(ActionEvent e) 
+	private void startRender()
 	{
-		Object source = e.getSource();
-		
-		if (source == btn_start)
+		if (!World.validateDir(new File(txt_worldPath.getText())))
 		{
-			if (!World.validateDir(new File(txt_worldPath.getText())))
-			{
-				JOptionPane.showMessageDialog(null,
-					    "World folder was not detected. Please check that you have selected the root\n" +
-					    "folder for the world (.../.minecraft/saves/<world name>) and try again.",
-					    "World Load Warning",
-					    JOptionPane.WARNING_MESSAGE);
-				return;
-			}
-			if (txt_output.getText().isEmpty())
-			{
-				JOptionPane.showMessageDialog(null,
-					    "File output is blank. Please fill in the field before creating an image.",
-					    "Output Warning",
-					    JOptionPane.WARNING_MESSAGE);
-				return;
-			}
-			
-			MapWorker worker = new MapWorker();
-			try
-			{
-				setProperty(Property.WORLD_PATH, txt_worldPath.getText());
-				setProperty(Property.OUTPUT_PATH, txt_output.getText());
-				
-				SessionProperties.nightBrightness = 
-					Integer.parseInt(props.getProperty(Property.NIGHT_BRIGHTNESS.key)) / 100f;
-				SessionProperties.biomeIntensity = 
-					Integer.parseInt(props.getProperty(Property.BIOME_INTENSITY.key)) / 100f;
-				SessionProperties.waterTransparency = 
-					Integer.parseInt(props.getProperty(Property.WATER_TRANSPARENCY.key)) / 100f;
-				SessionProperties.shadowIntensity = 
-					Integer.parseInt(props.getProperty(Property.SHADOW_INTENSITY.key)) / 100f;
-				SessionProperties.highlightIntensity = 
-					Integer.parseInt(props.getProperty(Property.HIGHLIGHT_INTENSITY.key)) / 100f;
-				
-				SessionProperties.renderLight = 
-					Boolean.parseBoolean(props.getProperty(Property.RENDER_LIGHT.key));
-				SessionProperties.renderBiomes = 
-					Boolean.parseBoolean(props.getProperty(Property.RENDER_BIOME_COLORS.key));
-				SessionProperties.renderUnderWater = 
-					Boolean.parseBoolean(props.getProperty(Property.RENDER_UNDER_WATER.key));
-				SessionProperties.renderShadows = 
-					Boolean.parseBoolean(props.getProperty(Property.RENDER_SHADOWS.key));
-				
-				setComponentsEnabled(false);
-				worker.execute();
-			}
-			catch(Exception ex)
-			{
-				ex.printStackTrace();
-			}
+			JOptionPane.showMessageDialog(null,
+				    "World folder was not detected. Please check that you have selected the root\n" +
+				    "folder for the world (.../.minecraft/saves/<world name>) and try again.",
+				    "World Load Warning",
+				    JOptionPane.WARNING_MESSAGE);
+			return;
 		}
-		else if (source == itm_exit)
+		if (txt_output.getText().isEmpty())
 		{
-			dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
+			JOptionPane.showMessageDialog(null,
+				    "File output is blank. Please fill in the field before creating an image.",
+				    "Output Warning",
+				    JOptionPane.WARNING_MESSAGE);
+			return;
+		}
+		
+		MapWorker worker = new MapWorker();
+		try
+		{
+			setProperty(Property.WORLD_PATH, txt_worldPath.getText());
+			setProperty(Property.OUTPUT_PATH, txt_output.getText());
+			
+			SessionProperties.nightBrightness = 
+				Integer.parseInt(props.getProperty(Property.NIGHT_BRIGHTNESS.key)) / 100f;
+			SessionProperties.biomeIntensity = 
+				Integer.parseInt(props.getProperty(Property.BIOME_INTENSITY.key)) / 100f;
+			SessionProperties.waterTransparency = 
+				Integer.parseInt(props.getProperty(Property.WATER_TRANSPARENCY.key)) / 100f;
+			SessionProperties.shadowIntensity = 
+				Integer.parseInt(props.getProperty(Property.SHADOW_INTENSITY.key)) / 100f;
+			SessionProperties.highlightIntensity = 
+				Integer.parseInt(props.getProperty(Property.HIGHLIGHT_INTENSITY.key)) / 100f;
+			
+			SessionProperties.renderLight = 
+				Boolean.parseBoolean(props.getProperty(Property.RENDER_LIGHT.key));
+			SessionProperties.renderBiomes = 
+				Boolean.parseBoolean(props.getProperty(Property.RENDER_BIOME_COLORS.key));
+			SessionProperties.renderUnderWater = 
+				Boolean.parseBoolean(props.getProperty(Property.RENDER_UNDER_WATER.key));
+			SessionProperties.renderShadows = 
+				Boolean.parseBoolean(props.getProperty(Property.RENDER_SHADOWS.key));
+			SessionProperties.useDefaultColor = 
+					props.getProperty(Property.MISSING_BLOCK_SETTING.key).equals("color");
+			
+			SessionProperties.defaultBiome = Block.getBiomeID(props.getProperty(Property.DEFAULT_BIOME.key));
+			
+			setComponentsEnabled(false);
+			worker.execute();
+		}
+		catch(Exception ex)
+		{
+			ex.printStackTrace();
 		}
 	}
 }

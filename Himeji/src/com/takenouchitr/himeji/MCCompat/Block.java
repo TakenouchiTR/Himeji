@@ -56,9 +56,9 @@ public class Block
 	private static HashMap<Integer, int[]> unknownBiomes;
 	private static List<ListChangeListener> listeners = new ArrayList<>();
 	
-	private int blockID;
-	private int metadata;
-	
+	/**
+	 * Loads the data files
+	 */
 	public static void loadFiles()
 	{
 		final String DATA_FOLDER = Himeji.DATA_FOLDER;
@@ -133,6 +133,9 @@ public class Block
 		}
 	}
 	
+	/**
+	 * Saves the color information to file
+	 */
 	public static void saveColorFile()
 	{
 		File file = new File(Himeji.DATA_FOLDER + Himeji.BLOCK_COLORS_FILE);
@@ -151,6 +154,9 @@ public class Block
 		}
 	}
 	
+	/**
+	 * Save the biome color information to file
+	 */
 	public static void saveBiomeColorFiles()
 	{
 		File biomeFile = new File(Himeji.DATA_FOLDER + Himeji.BIOMES_FILE);
@@ -172,6 +178,10 @@ public class Block
 		}
 	}
 	
+	/**
+	 * Saves the specified flags list to file
+	 * @param listID List constant
+	 */
 	public static void saveFlagFile(int listID)
 	{
 		File file;
@@ -212,6 +222,11 @@ public class Block
 		}
 	}
 	
+	/**
+	 * Loads a list of Strings from a file
+	 * @param file File to load
+	 * @return HashSet of Strings
+	 */
 	private static HashSet<String> loadStringList(File file)
 	{
 		HashSet<String> result = new HashSet<>();
@@ -231,105 +246,67 @@ public class Block
 		return result;
 	}
 	
-	private static int[][] load2DIntArray(File file)
+	/**
+	 * Adds a biome ID with a specified name to the list
+	 * @param id Biome ID
+	 * @param name Biome name
+	 */
+ 	public static void addBiome(int id, String name)
+ 	{
+ 		biomes.put(id, name);
+ 		grassColors.put(id, 0xFF000000);
+ 		foliageColors.put(id, 0xFF000000);
+ 		waterColors.put(id, 0xFF000000);
+ 		
+ 		for (ListChangeListener lcl : listeners)
+ 		{
+ 			lcl.OnItemAddition(id + "", BIOME_LIST);
+ 		}
+ 	}
+ 	
+ 	/**
+ 	 * Adds a block ID to a specified flags list
+ 	 * @param id Block ID
+ 	 * @param listID List constant
+ 	 */
+ 	public static void addIdToList(String id, int listID)
 	{
-		try
+		HashSet<String> list = null;
+		
+		switch(listID)
 		{
-			List<String> items = Files.readAllLines(file.toPath());
-			
-			int size = items.size();
-			int[][] array = new int[size][];
-			
-			for (int i = 0; i < size; i++)
-			{
-				String line = items.get(i);
-				if (line.isEmpty())
-					continue;
-				
-				String[] split = line.split(",");
-				array[i] = new int[split.length];
-				
-				for (int j = 0; j < split.length; j++)
-					array[i][j] = Integer.parseInt(split[j]);
-			}
-			return array;
+			case INVISIBLE_LIST:
+				list = invisible;
+				break;
+			case GRASS_LIST:
+				list = grass;
+				break;
+			case FOLIAGE_LIST:
+				list = foliage;
+				break;
+			case WATER_LIST:
+				list = water;
+				break;
+			default:
+				return;
 		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-		return null;
+		
+		if (list.contains(id))
+			return;
+		
+		list.add(id);
+		for (ListChangeListener lcl : listeners)
+			lcl.OnItemAddition(id, listID);
 	}
 	
-	private static int[] loadIntArray(File file)
+	/**
+	 * Checks if a biome ID exists
+	 * @param id Biome ID
+	 * @return Whether the ID exists
+	 */
+	public static boolean biomeExists(int id)
 	{
-		try
-		{
-			List<String> items = Files.readAllLines(file.toPath());
-			
-			int size = items.size();
-			int[] array = new int[size];
-			
-			for (int i = 0; i < size; i++)
-				array[i] = Integer.parseInt(items.get(i));
-			
-			return array;
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-		return null;
-	}
-	
-	private static boolean[] loadBooleanArray(File file)
-	{
-		try
-		{
-			List<String> items = Files.readAllLines(file.toPath());
-			
-			int size = items.size();
-			boolean[] array = new boolean[size];
-			
-			for (int i = 0; i < array.length; i++)
-				array[i] = Boolean.parseBoolean(items.get(i));
-			
-			return array;
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-		return null;
-	}
-	
-	private static HashMap<String, int[]> loadDictionary(File file)
-	{
-		try
-		{
-			List<String> items = Files.readAllLines(file.toPath());
-			
-			int size = items.size();
-			
-			HashMap<String, int[]> dict = new HashMap<String, int[]>();
-			
-			for (int i = 0; i < size; i++)
-			{
-				String line = items.get(i);
-				String[] split = line.split(",");
-				int[] values = {Integer.parseInt(split[1]), 
-						Integer.parseInt(split[2])};
-				
-				dict.put(split[0], values);
-			}
-			
-			return dict;
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-		return null;
+		return biomes.containsKey(id);
 	}
 	
 	/**
@@ -410,24 +387,6 @@ public class Block
 		return grass.contains(id);
 	}
 	
-	public static String getNamespacedId(int id, int meta)
-	{
-		String namespaceID = null;
-		try
-		{
-			if (legacyIds[id] != null && legacyIds[id].length > meta)
-				namespaceID = legacyIds[id][meta];
-			else
-				namespaceID = legacyIds[id][0];
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-		
-		return namespaceID;
-	}
-	
 	/**
 	 * Checks if a block with a certain pre-flattening ID is false on the blockVisibility array.
 	 * Invisible blocks will be skipped when determining the top block of a map.
@@ -447,87 +406,190 @@ public class Block
 	 */
 	public static boolean isBlockVisible(String id)
 	{
-		return !invisible.contains(id);
+		return (SessionProperties.useDefaultColor) ? 
+				!invisible.contains(id) : !invisible.contains(id) && colors.containsKey(id);
 	}
 
 	/**
-	 * Gets the biome-specific color for foliage.
-	 * @param biome biome the foliage is located in
-	 * @return      int ARGB value for a color
+	 * Checks if a namespaced ID exists
+	 * @param id Namespaced ID
+	 * @return Whether the ID exists
 	 */
-	public static int getFoliageColor(int biome)
-	{
-		return getBiomeColor(foliageColors, biome);
-	}
-	
-	/**
-	 * Gets the biome-specific color for grasses.
-	 * @param biome biome the grass is located in
-	 * @return      int ARGB value for a color
-	 */
-	public static int getGrassColor(int biome)
-	{
-		return getBiomeColor(grassColors, biome);
-	}
-	
-	/**
-	 * Gets the biome-specific color for water.
-	 * @param biome biome the water is located in
-	 * @return      int ARGB value for a color
-	 */
-	public static int getWaterColor(int biome)
-	{
-		return getBiomeColor(waterColors, biome);
-	}
-	
-	/**
-	 * Gets the color of a block to be rendered using the pre-flattening block ID and metadata.
-	 * @param id   Pre-flattening block ID
-	 * @param meta Pre-flattening block metadata
-	 * @return     int representation of an ARGB value
-	 */
-	public static int getBlockColor(int id, int meta, int biome)
-	{
-		if (id >= legacyIds.length || legacyIds[id] == null ||
-				legacyIds[id].length == 0)
-			return 0xFF000000;
-		
-		String namespaceId = getNamespacedId(id, meta);
-		
-		return getBlockColor(namespaceId, biome);
-	}
-	
 	public static boolean idExists(String id)
 	{
 		return colors.containsKey(id);
 	}
-	
-	public static boolean biomeExists(int id)
+
+	/**
+	 * Removes a block from a specified flags list
+	 * @param id Block ID
+	 * @param listID List constant
+	 */
+	public static void removeIdFromList(String id, int listID)
 	{
-		return biomes.containsKey(id);
+		HashSet<String> list = null;
+		
+		switch(listID)
+		{
+			case INVISIBLE_LIST:
+				list = invisible;
+				break;
+			case GRASS_LIST:
+				list = grass;
+				break;
+			case FOLIAGE_LIST:
+				list = foliage;
+				break;
+			case WATER_LIST:
+				list = water;
+				break;
+			default:
+				return;
+		}
+		
+		if (!list.contains(id))
+			return;
+		
+		list.remove(id);
+		for (ListChangeListener lcl : listeners)
+			lcl.OnItemRemoval(id, listID);
 	}
 	
+	/**
+	 * Gets the program's internal ID and metadata for a block's namespace ID. 
+	 * @param namespaceID a block's Minecraft namespace ID
+	 * @return            int array containing the ID and metadata for a block
+	 *
+	public static int[] getIdMeta(String namespaceID)
+	{
+		return blockDict.get(namespaceID);
+	}
+	*/
+	public static void setBlockColor(String id, int color)
+	{
+		if (!colors.containsKey(id))
+		{
+			for (ListChangeListener lcl : listeners)
+				lcl.OnItemAddition(id, COLORS_LIST);
+		}
+		
+		colors.put(id, color);
+		if (missingIds.contains(id))
+			missingIds.remove(id);
+	}
+	
+	/**
+	 * Adds a missing block ID to the list of missing IDs
+	 * @param id Missing block ID
+	 */
+	public static void addMissingId(String id)
+	{
+		missingIds.add(id);
+	}
+	
+	/**
+	 * Adds an unknown biome ID and coordinate to the list of unknown IDs
+	 * @param id Unknown biome ID
+	 * @param pos int array containing the x, y, z coords of the biome
+	 */
+	public static void addUnknownBiome(int id, int[] pos)
+	{
+		unknownBiomes.put(id, pos);
+	}
+	
+	/**
+	 * Removes a block from the list of IDs
+	 * @param id block ID
+	 */
+	public static void removeBlock(String id)
+	{
+		if (colors.remove(id) != null) 
+		{
+			for (ListChangeListener lcl : listeners)
+				lcl.OnItemRemoval(id, COLORS_LIST);
+		}
+	}
+	
+	/**
+	 * Removes a biome ID from the list of biomes
+	 * @param id Biome ID
+	 */
+	public static void removeBiome(int id)
+	{
+		if (biomes.remove(id) != null)
+		{
+			for (ListChangeListener lcl : listeners)
+				lcl.OnItemRemoval(id + "", BIOME_LIST);
+		}
+	}
+	
+	/**
+	 * Gets the MissingIDs HashSet
+	 * @return
+	 */
+	public static HashSet<String> getMissingIds()
+	{
+		return missingIds;
+	}
+	
+	/**
+	 * Gets the UnknownBiomes HashSet
+	 * @return
+	 */
+	public static HashMap<Integer, int[]> getUnknownBiomes()
+	{
+		return unknownBiomes;
+	}
+	
+	/**
+	 * Gets the Colors HashMap
+	 * @return
+	 */
+	public static HashMap<String, Integer> getColors()
+	{
+		return colors;
+	}
+	
+	/**
+	 * Adds a ListChangeListener to the list of listeners
+	 * @param lcl
+	 */
+	public static void addListChangeListener(ListChangeListener lcl)
+	{
+		listeners.add(lcl);
+	}
+
+	/**
+	 * Gets the color associated with a biome color from a HashMap of colors
+	 * @param biomeColors HashMap to pull from
+	 * @param biomeID Biome ID
+	 * @return ARGB color integer
+	 */
 	public static int getBiomeColor(HashMap<Integer, Integer> biomeColors, int biomeID)
 	{
 		return (biomeColors.containsKey(biomeID)) ? 
-				biomeColors.get(biomeID) : biomeColors.get(Biome.FOREST.id);
+				biomeColors.get(biomeID) : biomeColors.get(SessionProperties.defaultBiome);
 	}
-	
-	public static void setGrassColor(int biome, int color)
+
+	/**
+	 * Gets a biome ID from its name
+	 * @param name Biome name
+	 * @return Biome ID
+	 */
+	public static int getBiomeID(String name)
 	{
-		grassColors.put(biome, color);
+		for (int i : biomes.keySet())
+			if (biomes.get(i).equals(name))
+				return i;
+		
+		return -1;
 	}
 	
-	public static void setFoliageColor(int biome, int color)
-	{
-		foliageColors.put(biome, color);
-	}
-	
-	public static void setWaterColor(int biome, int color)
-	{
-		waterColors.put(biome, color);
-	}
-	
+	/**
+	 * Gets the block color of a block ID. Returns the default color if the block ID isn't added
+	 * @param namespaceID Block ID
+	 * @return ARG color integer
+	 */
 	public static int getBlockColor(String namespaceID)
 	{
 		if (colors.containsKey(namespaceID))
@@ -605,7 +667,83 @@ public class Block
 		
 		return color;
 	}
+
+	/**
+	 * Gets the color of a block to be rendered using the pre-flattening block ID and metadata.
+	 * @param id   Pre-flattening block ID
+	 * @param meta Pre-flattening block metadata
+	 * @return     int representation of an ARGB value
+	 */
+	public static int getBlockColor(int id, int meta, int biome)
+	{
+		if (id >= legacyIds.length || legacyIds[id] == null ||
+				legacyIds[id].length == 0)
+			return 0xFF000000;
+		
+		String namespaceId = getNamespacedId(id, meta);
+		
+		return getBlockColor(namespaceId, biome);
+	}
+		
+	/**
+	 * Gets the biome-specific color for foliage.
+	 * @param biome biome the foliage is located in
+	 * @return      int ARGB value for a color
+	 */
+	public static int getFoliageColor(int biome)
+	{
+		return getBiomeColor(foliageColors, biome);
+	}
+
+	/**
+	 * Gets the namespaced ID from a legacy block's ID and metadata values
+	 * @param id Legacy block ID
+	 * @param meta Legacy block metadata
+	 * @return Namespaced ID
+	 */
+	public static String getNamespacedId(int id, int meta)
+	{
+		String namespaceID = null;
+		try
+		{
+			if (legacyIds[id] != null && legacyIds[id].length > meta)
+				namespaceID = legacyIds[id][meta];
+			else
+				namespaceID = legacyIds[id][0];
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		
+		return namespaceID;
+	}
 	
+	/**
+	 * Gets the biome-specific color for grasses.
+	 * @param biome biome the grass is located in
+	 * @return      int ARGB value for a color
+	 */
+	public static int getGrassColor(int biome)
+	{
+		return getBiomeColor(grassColors, biome);
+	}
+	
+	/**
+	 * Gets the biome-specific color for water.
+	 * @param biome biome the water is located in
+	 * @return      int ARGB value for a color
+	 */
+	public static int getWaterColor(int biome)
+	{
+		return getBiomeColor(waterColors, biome);
+	}
+	
+	/**
+	 * Gets all block IDs from a HashSet and returns it as a List
+	 * @param listID List Constant
+	 * @return List of Strings
+	 */
 	public static List<String> getList(int listID)
 	{
 		HashSet<String> list = null;
@@ -634,196 +772,70 @@ public class Block
 		return result;
 	}
 	
+	/**
+	 * Gets the Biome HashMap
+	 * @return
+	 */
 	public static HashMap<Integer, String> getBiomes()
 	{
 		return biomes;
 	}
 	
+	/**
+	 * Gets the GrassColors HashMap
+	 * @return
+	 */
 	public static HashMap<Integer, Integer> getGrassColors()
 	{
 		return grassColors;
 	}
 	
+	/**
+	 * Gets the FoliageColors HashMap
+	 * @return
+	 */
 	public static HashMap<Integer, Integer> getFoliageColors()
 	{
 		return foliageColors;
 	}
 	
+	/**
+	 * Gets the WaterColors HashMap
+	 * @return
+	 */
 	public static HashMap<Integer, Integer> getWaterColors()
 	{
 		return waterColors;
 	}
 	
- 	public static void addIdToList(String id, int listID)
-	{
-		HashSet<String> list = null;
-		
-		switch(listID)
-		{
-			case INVISIBLE_LIST:
-				list = invisible;
-				break;
-			case GRASS_LIST:
-				list = grass;
-				break;
-			case FOLIAGE_LIST:
-				list = foliage;
-				break;
-			case WATER_LIST:
-				list = water;
-				break;
-			default:
-				return;
-		}
-		
-		if (list.contains(id))
-			return;
-		
-		list.add(id);
-		for (ListChangeListener lcl : listeners)
-			lcl.OnItemAddition(id, listID);
-	}
-	
- 	public static void addBiome(int id, String name)
- 	{
- 		biomes.put(id, name);
- 		grassColors.put(id, 0xFF000000);
- 		foliageColors.put(id, 0xFF000000);
- 		waterColors.put(id, 0xFF000000);
- 		
- 		for (ListChangeListener lcl : listeners)
- 		{
- 			lcl.OnItemAddition(id + "", BIOME_LIST);
- 		}
- 	}
- 	
-	public static void removeIdFromList(String id, int listID)
-	{
-		HashSet<String> list = null;
-		
-		switch(listID)
-		{
-			case INVISIBLE_LIST:
-				list = invisible;
-				break;
-			case GRASS_LIST:
-				list = grass;
-				break;
-			case FOLIAGE_LIST:
-				list = foliage;
-				break;
-			case WATER_LIST:
-				list = water;
-				break;
-			default:
-				return;
-		}
-		
-		if (!list.contains(id))
-			return;
-		
-		list.remove(id);
-		for (ListChangeListener lcl : listeners)
-			lcl.OnItemRemoval(id, listID);
-	}
-	
 	/**
-	 * Gets the program's internal ID and metadata for a block's namespace ID. 
-	 * @param namespaceID a block's Minecraft namespace ID
-	 * @return            int array containing the ID and metadata for a block
-	 *
-	public static int[] getIdMeta(String namespaceID)
-	{
-		return blockDict.get(namespaceID);
-	}
-	*/
-	public static void setBlockColor(String id, int color)
-	{
-		if (!colors.containsKey(id))
-		{
-			for (ListChangeListener lcl : listeners)
-				lcl.OnItemAddition(id, COLORS_LIST);
-		}
-		
-		colors.put(id, color);
-		if (missingIds.contains(id))
-			missingIds.remove(id);
-	}
-	
-	public static void addMissingId(String id)
-	{
-		missingIds.add(id);
-	}
-	
-	public static void addUnknownBiome(int id, int[] pos)
-	{
-		unknownBiomes.put(id, pos);
-	}
-	
-	public static void removeBlock(String id)
-	{
-		if (colors.remove(id) != null) 
-		{
-			for (ListChangeListener lcl : listeners)
-				lcl.OnItemRemoval(id, COLORS_LIST);
-		}
-	}
-	
-	public static void removeBiome(int id)
-	{
-		if (biomes.remove(id) != null)
-		{
-			for (ListChangeListener lcl : listeners)
-				lcl.OnItemRemoval(id + "", BIOME_LIST);
-		}
-	}
-	
-	public static HashSet<String> getMissingIds()
-	{
-		return missingIds;
-	}
-	
-	public static HashMap<Integer, int[]> getUnknownBiomes()
-	{
-		return unknownBiomes;
-	}
-	
-	public static HashMap<String, Integer> getColors()
-	{
-		return colors;
-	}
-	
-	public static void addListChangeListener(ListChangeListener lcl)
-	{
-		listeners.add(lcl);
-	}
-	
-	/**
-	 * Creates a block with a specified blockID and metadata
-	 * @param blockID  the program's internal block id
-	 * @param metadata the metadata for the block
+	 * Sets the foliage color for a biome
+	 * @param biome Biome ID
+	 * @param color ARGB color integer
 	 */
-	public Block(int blockID, int metadata) 
+	public static void setFoliageColor(int biome, int color)
 	{
-		this.blockID = blockID;
-		this.metadata = metadata;
+		foliageColors.put(biome, color);
 	}
 	
 	/**
-	 * Gets the block's blockID
-	 * @return the block's blockID
+	 * Sets the grass color for a biome
+	 * @param biome Biome ID
+	 * @param color ARGB color integer
 	 */
- 	public int getBlockID() 
+	public static void setGrassColor(int biome, int color)
 	{
-		return blockID;
+		grassColors.put(biome, color);
 	}
 	
- 	/**
- 	 * Gets the block's metadata
- 	 * @return the block's metadata
- 	 */
-	public int getMetaData() 
+	/**
+	 * Sets the water color for a biome
+	 * @param biome Biome ID
+	 * @param color ARGB color integer
+	 */
+	public static void setWaterColor(int biome, int color)
 	{
-		return metadata;
+		waterColors.put(biome, color);
 	}
+	
 }

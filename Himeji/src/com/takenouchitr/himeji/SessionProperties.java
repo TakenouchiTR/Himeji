@@ -11,6 +11,8 @@ public class SessionProperties
 	public static boolean renderBiomes;
 	public static boolean renderUnderWater;
 	public static boolean renderShadows;
+	public static boolean useDefaultColor;
+	public static int defaultBiome;
 	
 	private SessionProperties() {}
 }

@@ -171,53 +171,20 @@ public class MapWorker extends SwingWorker<Void, String>
 	@Override
 	protected void done()
 	{
-		int size = Block.getMissingIds().size();
+		checkMissingBlocks();
 		
-		if (size > 0 && Himeji.getProperty(Property.SHOW_MISSING_BLOCK).equals("true"))
-		{
-			int result = JOptionPane.showConfirmDialog(Himeji.frame,size + " missing block ID(s) found.\n" + 
-				"Would you like to add them now?", "Missing IDs found", JOptionPane.YES_NO_OPTION,
-				JOptionPane.QUESTION_MESSAGE);
-			
-			if (result == JOptionPane.YES_OPTION)
-			{
-				List<String> ids = new ArrayList<String>();
-				for (String s : Block.getMissingIds())
-					ids.add(s);
-				
-				for (String s : ids)
-				{
-					Block.setBlockColor(s, 0xFF000000);
-				}
-				
-				JOptionPane.showMessageDialog(Himeji.frame, "Please see bottom of the list in " + 
-					"\"Config>Block Colors\" for the new ids.\nThe addition(s) are black by default and " + 
-					"are not saved automatically.\nPlease update the color and save them there.", 
-					"Missing IDs added", JOptionPane.INFORMATION_MESSAGE);
-			}
-			
-			Block.getMissingIds().clear();
-		}
-		
-		size = Block.getUnknownBiomes().size();
-		if (size > 0 && Himeji.getProperty(Property.SHOW_UNKNOWN_BIOME).equals("true"))
-		{
-			int result = JOptionPane.showConfirmDialog(Himeji.frame,
-					"Unknown biomes detected.\n"
-					+ "All colors have been rendered using Forest colors by default.\n"
-					+ "Would you like to see a list of IDs and the first coordinate they were found at?", 
-					"Unknown biomes found", JOptionPane.YES_NO_OPTION,
-					JOptionPane.QUESTION_MESSAGE);
-			
-			if (result == JOptionPane.YES_OPTION)
-			{
-				MissingBiomesFrame mbf = new MissingBiomesFrame();
-				mbf.setLocationRelativeTo(Himeji.frame);
-				mbf.setVisible(true);
-			}
-			Block.getUnknownBiomes().clear();
-		}
+		checkUnknownBiomes();
 
+		openResult();
+		
+		Himeji.setComponentsEnabled(true);
+	}
+	
+	/**
+	 * Opens the rendered image or folder, if the user chooses to
+	 */
+	private void openResult()
+	{
 		String fileString = null;
 		int result;
 		
@@ -268,7 +235,64 @@ public class MapWorker extends SwingWorker<Void, String>
 				}
 			}
 		}
+	}
+
+	/**
+	 * Checks if there were any missing block IDs found during the render.
+	 */
+	private void checkMissingBlocks()
+	{
+		int size = Block.getMissingIds().size();
 		
-		Himeji.setComponentsEnabled(true);
+		if (size > 0 && Himeji.getProperty(Property.SHOW_MISSING_BLOCK).equals("true"))
+		{
+			int result = JOptionPane.showConfirmDialog(Himeji.frame,size + " missing block ID(s) found.\n" + 
+				"Would you like to add them now?", "Missing IDs found", JOptionPane.YES_NO_OPTION,
+				JOptionPane.QUESTION_MESSAGE);
+			
+			if (result == JOptionPane.YES_OPTION)
+			{
+				List<String> ids = new ArrayList<String>();
+				for (String s : Block.getMissingIds())
+					ids.add(s);
+				
+				for (String s : ids)
+				{
+					Block.setBlockColor(s, 0xFF000000);
+				}
+				
+				JOptionPane.showMessageDialog(Himeji.frame, "Please see bottom of the list in " + 
+					"\"Config>Block Colors\" for the new ids.\nThe addition(s) are black by default and " + 
+					"are not saved automatically.\nPlease update the color and save them there.", 
+					"Missing IDs added", JOptionPane.INFORMATION_MESSAGE);
+			}
+			
+			Block.getMissingIds().clear();
+		}
+	}
+	
+	/**
+	 * Checks if there were any unknown biome IDs found during the render.
+	 */
+	private void checkUnknownBiomes()
+	{
+		int size = Block.getUnknownBiomes().size();
+		if (size > 0 && Himeji.getProperty(Property.SHOW_UNKNOWN_BIOME).equals("true"))
+		{
+			int result = JOptionPane.showConfirmDialog(Himeji.frame,
+					"Unknown biomes detected.\n"
+					+ "All colors have been rendered using Forest colors by default.\n"
+					+ "Would you like to see a list of IDs and the first coordinate they were found at?", 
+					"Unknown biomes found", JOptionPane.YES_NO_OPTION,
+					JOptionPane.QUESTION_MESSAGE);
+			
+			if (result == JOptionPane.YES_OPTION)
+			{
+				MissingBiomesFrame mbf = new MissingBiomesFrame();
+				mbf.setLocationRelativeTo(Himeji.frame);
+				mbf.setVisible(true);
+			}
+			Block.getUnknownBiomes().clear();
+		}
 	}
 }

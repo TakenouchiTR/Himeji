@@ -28,6 +28,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JComboBox;
 import javax.swing.ScrollPaneConstants;
 
+@SuppressWarnings("serial")
 public class SettingsFrame extends JDialog
 {
 	private boolean lockShadows;
@@ -399,6 +400,9 @@ public class SettingsFrame extends JDialog
 		applyProperties();
 	}
 
+	/**
+	 * Populates the list of biomes
+	 */
 	private void loadBiomes()
 	{
 		HashMap<Integer, String> biomes = Block.getBiomes();
@@ -414,6 +418,9 @@ public class SettingsFrame extends JDialog
 			com_biomeNames.addItem(lb);
 	}
 
+	/**
+	 * Toggles settings when the lock highlight/shadows check box is toggled
+	 */
 	private void highlightLockChecked()
 	{
 		lockShadows = chk_highlightLock.isSelected();
@@ -454,6 +461,9 @@ public class SettingsFrame extends JDialog
 		}
 	}
 	
+	/**
+	 * Applies the properties to each of the components.
+	 */
 	public void applyProperties()
 	{
 		/////Preferences tab
@@ -552,6 +562,10 @@ public class SettingsFrame extends JDialog
 				Boolean.parseBoolean(props.getProperty(Property.SHOW_BIOME_REMOVE.key)));
 	}
 	
+	/**
+	 * Sets the default biome from the biome name
+	 * @param biomeName Name of the biome
+	 */
 	private void setDefaultBiome(String biomeName)
 	{
 		for (int i = 0, length = com_biomeNames.getItemCount(); i < length; i++)
@@ -645,6 +659,10 @@ public class SettingsFrame extends JDialog
 		props.setProperty(Property.SHOW_BIOME_REMOVE.key, chk_removeBiome.isSelected() + "");
 	}
 	
+	/**
+	 * Applies the default values to the selected tab
+	 * @param tabIndex
+	 */
 	private void defaultPress(int tabIndex)
 	{
 		switch (tabIndex)

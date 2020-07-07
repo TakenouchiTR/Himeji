@@ -47,7 +47,6 @@ public class World
 				});
 			
 			boolean hasRegion = false;
-			boolean hasPlayerdata = false;
 			
 			for (File f : worldFolders)
 			{

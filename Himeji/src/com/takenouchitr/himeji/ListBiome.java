@@ -1,6 +1,6 @@
 package com.takenouchitr.himeji;
 
-public class ListBiome implements Comparable
+public class ListBiome implements Comparable<ListBiome>
 {
 	private int biome;
 	private String name;
@@ -17,7 +17,7 @@ public class ListBiome implements Comparable
 	}
 	
 	@Override
-	public int compareTo(Object arg0)
+	public int compareTo(ListBiome arg0)
 	{
 		if (!(arg0 instanceof ListBiome))
 			return 0;

@@ -110,7 +110,6 @@ public class Section
 		return result;
 	}
 	
-
 	/**
 	 * Creates a three-dimensional String array of each of the block IDs within the section.
 	 * Ignores the "extra" unused portion of long's if a block's palette number doesn't
@@ -185,6 +184,10 @@ public class Section
 		return result;
 	}
 	
+	/**
+	 * Gets the block light data, if it exists
+	 * @return byte array containing the data, null if the data is not stored
+	 */
 	public byte[] getBlockLight()
 	{
 		if (sectionTag.contains("BlockLight"))
@@ -192,6 +195,10 @@ public class Section
 		return null;
 	}
 	
+	/**
+	 * Gets the sky light data, if it exists
+	 * @return byte array containing the data, null if the data is not stored
+	 */
 	public byte[] getSkyLight()
 	{
 		if (sectionTag.contains("SkyLight"))

@@ -13,6 +13,7 @@ import javax.swing.ListSelectionModel;
 import com.takenouchitr.himeji.MCCompat.Block;
 import com.takenouchitr.himeji.MCCompat.Chunk;
 
+@SuppressWarnings("serial")
 public class MissingBiomesFrame extends JDialog
 {
 	public MissingBiomesFrame()

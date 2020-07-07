@@ -201,12 +201,26 @@ public class Dimension
 		return result;
 	}
 	
+	/**
+	 * Creates an image of the entire map between two set Y coord bounds
+	 * @param startY Highest Y value
+	 * @param endY Lowest Y Value
+	 */
 	public void drawBlocksToBuffer(int startY, int endY)
 	{
 		drawBlocksToBuffer(startY, endY, Integer.MAX_VALUE - 32, Integer.MIN_VALUE + 32,
 				Integer.MAX_VALUE - 32, Integer.MIN_VALUE + 32);
 	}
 	
+	/**
+	 * Creates an image of the entire map between two set Y coord bounds
+	 * @param startY Highest Y value
+	 * @param endY Lowest Y Value
+	 * @param maxX Farthest right X value
+	 * @param minX Farthest left X value
+	 * @param maxZ Farthest down Z value
+	 * @param minZ Farthest up Z value
+	 */
 	public void drawBlocksToBuffer(int startY, int endY, int maxX, int minX, int maxZ, int minZ)
 	{
 		File[] regions;
@@ -448,6 +462,10 @@ public class Dimension
 		}
 	}
 	
+	/**
+	 * Used as a test, please ignore.
+	 * @param startY
+	 */
 	public void drawEntitiesToBuffer(int startY)
 	{
 		File[] regions = directory.listFiles();
@@ -542,6 +560,9 @@ public class Dimension
 		}
 	}
 	
+	/**
+	 * Creates the MapImage to write pixels to.
+	 */
 	public void createRenderGrid()
 	{
 		// TODO Check if file is valid, if it exists, change method name
@@ -549,6 +570,15 @@ public class Dimension
 				new File(Himeji.getProperty(Property.OUTPUT_PATH)));
 	}
 	
+	/**
+	 * Applies shading to a block color.
+	 * @param color Color of the block
+	 * @param light The light level to render the block at
+	 * @param yVal The height of the block
+	 * @param upYVal The height of the block above the target
+	 * @param rightYVal The height of the block to the right of the target
+	 * @return shaded color
+	 */
 	public int applyShading(int color, int light, int yVal, int upYVal, int rightYVal)
 	{
 		int a, r, g, b;
@@ -645,11 +675,19 @@ public class Dimension
 		return blockHeight;
 	}
 	
+	/**
+	 * Gets the Y coordinate stored in the first byte of a color integer
+	 * @param color
+	 * @return
+	 */
 	public int getYCoord(int color)
 	{
 		return color>>>24;
 	}
 
+	/**
+	 * Saves the image as a file
+	 */
 	public void render()
 	{
 		image.renderImage();

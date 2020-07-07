@@ -21,6 +21,7 @@
 package com.takenouchitr.himeji.MCCompat;
 
 import java.util.Arrays;
+import java.util.HashMap;
 
 import com.mojang.nbt.ByteArrayTag;
 import com.mojang.nbt.CompoundTag;
@@ -357,6 +358,14 @@ public class Chunk
 		return result;
 	}
 	
+	/**
+	 * Gets the half of the value stored at the index of a byte array. The index 
+	 * is half of what the index is for a given block, rounded down. Even number
+	 * indices will give the last four bits, while odd will give the first four. 
+	 * @param data byte array containing data for all blocks in a section
+	 * @param index Index of the array to return.
+	 * @return     half the value stored at the index
+	 */
 	private int getHalfIndexValue(byte[] data, int index) 
 	{
 		int result = 0;
@@ -445,6 +454,7 @@ public class Chunk
 			return null;
 		
 		startY = (startY < highestBlock) ? startY : highestBlock;
+		HashMap<Integer, int[]> unknownBiomes = Block.getUnknownBiomes();
 		
 		for (int x = 0; x < CHUNK_SIZE; x++)
 		{
@@ -460,11 +470,11 @@ public class Chunk
 				
 				int color = Block.getBlockColor(blocks[x][dy][z], biomeID);
 				
-				/*
-				if (!Block.biomeExists(biomeID) && !Block.getUnknownBiomes().containsKey(biomeID))
+				
+				if (!Block.biomeExists(biomeID) && !unknownBiomes.containsKey(biomeID))
 				{
-					Block.addUnknownBiome(biomeID,new int[] {x, y, z});
-				}*/
+					Block.addUnknownBiome(biomeID, new int[] {x, y, z});
+				}
 				
 				int light = 15;
 				

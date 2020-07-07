@@ -15,6 +15,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JSpinner;
 
+@SuppressWarnings("serial")
 public class AddBiomeFrame extends JDialog
 {
 	private JTextField txt_name;

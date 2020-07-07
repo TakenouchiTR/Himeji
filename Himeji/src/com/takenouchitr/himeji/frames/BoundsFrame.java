@@ -32,8 +32,6 @@ import java.util.Properties;
 import java.awt.Font;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import com.takenouchitr.himeji.Himeji;
@@ -56,7 +54,7 @@ import java.awt.FlowLayout;
 import javax.swing.JButton;
 
 @SuppressWarnings("serial")
-public class BoundsFrame extends JDialog implements ChangeListener
+public class BoundsFrame extends JDialog
 {
 	private static final String BOUNDS_FOLDER = "bounds\\";
 	
@@ -132,7 +130,7 @@ public class BoundsFrame extends JDialog implements ChangeListener
 		
 		spn_maxY = new JSpinner();
 		spn_maxY.setModel(new SpinnerNumberModel(255, 0, 255, 1));
-		spn_maxY.addChangeListener(this);
+		spn_maxY.addChangeListener((e) -> spinnerPairTopChange(spn_maxY, spn_minY));
 		pnl_yBoundsCenter.add(spn_maxY);
 		
 		JLabel lbl_yMin = new JLabel("  Min Y");
@@ -141,7 +139,7 @@ public class BoundsFrame extends JDialog implements ChangeListener
 		
 		spn_minY = new JSpinner();
 		spn_minY.setModel(new SpinnerNumberModel(0, 0, 255, 1));
-		spn_minY.addChangeListener(this);
+		spn_minY.addChangeListener((e) -> spinnerPairBottomChange(spn_maxY, spn_minY));
 		pnl_yBoundsCenter.add(spn_minY);
 		
 		JPanel pnl_chunks = new JPanel();
@@ -197,7 +195,7 @@ public class BoundsFrame extends JDialog implements ChangeListener
 		
 		spn_maxX = new JSpinner();
 		spn_maxX.setEnabled(false);
-		spn_maxX.addChangeListener(this);
+		spn_maxX.addChangeListener((e) -> spinnerPairTopChange(spn_maxX, spn_minX));
 		pnl_chunksCenter.add(spn_maxX);
 		
 		JLabel lbl_minX = new JLabel(" Min Chunk X");
@@ -206,7 +204,7 @@ public class BoundsFrame extends JDialog implements ChangeListener
 		
 		spn_minX = new JSpinner();
 		spn_minX.setEnabled(false);
-		spn_minX.addChangeListener(this);
+		spn_minX.addChangeListener((e) -> spinnerPairBottomChange(spn_maxX, spn_minX));
 		pnl_chunksCenter.add(spn_minX);
 		
 		JLabel lbl_maxZ = new JLabel(" Max Chunk Z");
@@ -215,7 +213,7 @@ public class BoundsFrame extends JDialog implements ChangeListener
 		
 		spn_maxZ = new JSpinner();
 		spn_maxZ.setEnabled(false);
-		spn_maxZ.addChangeListener(this);
+		spn_maxZ.addChangeListener((e) -> spinnerPairTopChange(spn_maxZ, spn_minZ));
 		pnl_chunksCenter.add(spn_maxZ);
 		
 		JLabel lbl_minZ = new JLabel(" Min Chunk Z");
@@ -223,7 +221,7 @@ public class BoundsFrame extends JDialog implements ChangeListener
 		pnl_chunksCenter.add(lbl_minZ);
 		
 		spn_minZ = new JSpinner();
-		spn_minZ.addChangeListener(this);
+		spn_minZ.addChangeListener((e) -> spinnerPairBottomChange(spn_maxZ, spn_minZ));
 		spn_minZ.setEnabled(false);
 		pnl_chunksCenter.add(spn_minZ);
 		
@@ -430,25 +428,6 @@ public class BoundsFrame extends JDialog implements ChangeListener
 		chk_chunks.setSelected(Boolean.parseBoolean(props.getProperty(Property.USE_AREA.key)));
 	}
 	
-	@Override
-	public void stateChanged(ChangeEvent e) 
-	{
-		Object source = e.getSource();
-		
-		if (source == spn_maxY)
-			spinnerPairTopChange(spn_maxY, spn_minY);
-		else if (source == spn_minY)
-			spinnerPairBottomChange(spn_maxY, spn_minY);
-		else if (source == spn_maxX)
-			spinnerPairTopChange(spn_maxX, spn_minX);
-		else if (source == spn_minX)
-			spinnerPairBottomChange(spn_maxX, spn_minX);
-		else if (source == spn_maxZ)
-			spinnerPairTopChange(spn_maxZ, spn_minZ);
-		else if (source == spn_minZ)
-			spinnerPairBottomChange(spn_maxZ, spn_minZ);
-	}
-
 	private void spinnerPairTopChange(JSpinner top, JSpinner bottom)
 	{
 		int max = (int) top.getValue();
