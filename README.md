@@ -7,7 +7,8 @@ Himeji Map Viewer (HMV) is an application used to create top-down renders of Min
 Himeji Map Viewer is licensed under [General Public License version 3](https://www.gnu.org/licenses/).
 
 ## Installation
-- Download the precompiled, runnable .jar on [GitHub](https://github.com/TakenouchiTR/Himeji/blob/master/HMV.jar), or you can click [here](https://github.com/TakenouchiTR/Himeji/blob/master/HMV.jar?raw=true) for a direct download.
+- Make sure that you have Java 8 installed before running. Java 8 can be installed from the [Oracle website](https://www.oracle.com/java/technologies/javase/javase-jdk8-downloads.html).
+- Download the precompiled, executable .jar on [GitHub](https://github.com/TakenouchiTR/Himeji/blob/master/HMV.jar), or you can click [here](https://github.com/TakenouchiTR/Himeji/blob/master/HMV.jar?raw=true) for a direct download.
 - Clone the repo with `git clone https://github.com/TakenouchiTR/Himeji.git`
 
 ## Usage
