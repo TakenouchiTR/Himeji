@@ -1,5 +1,5 @@
 # Himeji
-Himeji Map Viewer is a Java application used top create top-down renders of Minecraft maps. Himeji has options to allow for rendering certain areas of maps, rendering within a certain elevation range, and has for adding or removing details to renders. Himeji is currently under development with more planned features coming in the future.
+Himeji Map Viewer (HMV) is an application used to create top-down renders of Minecraft maps. HMV was created with the goal of being as accessible as possible, while still giving the user as many choices for map customization as possible. Java was specifically chosen as users must already have it installed to play minecraft, greatly reducing the barrier to entry. HMV has many options for customizing map renders, including personalizing block colors, adjusting biome colors, and selecting specific regions of the map to render by themselves. Himeji Map Viewer is currently under development with more planned features coming in the future.
 
 ![picture alt](https://tknouchi.files.wordpress.com/2020/03/sample.png)
 
@@ -19,7 +19,36 @@ Himeji Map Viewer is licensed under [General Public License version 3](https://w
     1. The dialog will automatically open at the default Minecraft saves folder
     2. The file path may also be typed/pasted in the text field
 4. Optionally, select the render area and dimension by pressing the "Set Bounds" button
-5. Press the "Start" button to begin rendering; large worlds may take a long time
+5. Press the "Start" button to begin rendering; large worlds may take a long time (17 minutes for 1.75GB world)
+
+## Features
+All features can be done within the program, using the program's UI:
+- Customize each block's output colors
+- Marking blocks as invisible, having them be ignored when rendering
+- Biomes can be customized in multiple ways:
+  - Grass, foliage, and water tints can be changed individually
+  - To what degree the blocks are tinted
+  - Which blocks are considered grass, foliage, or water
+- Whether to render the map at night, and how bright the ambient light is during night renders
+- Change the transparency of water, adjusting how much blocks below it are tinted
+- Adjust how intense the shadows and highlights are, or remove them entirely
+- Speed up the render by choosing to render only a certain area of the map.
+  - Save preset areas to quickly render them again in the future
+- Limited Mod compatibility: Add blocks and biomes from mods from version 1.13+
+
+
+## Previews
+**Biome Colors:**\
+![picture alt](https://i.imgur.com/SYd99pF.gif)
+
+**Night Brightness:**\
+![picture alt](https://i.imgur.com/JBekjB1.gif)
+
+**Shadow Intensity:**\
+![picture alt](https://i.imgur.com/tkDDjjN.gif)
+
+**Water Transparency:**\
+![picture alt](https://i.imgur.com/0lmmjIx.gif)
 
 ## References
 - Himji Map Viewer uses [JNBT](http://jnbt.sourceforge.net/) to read NBT files.
