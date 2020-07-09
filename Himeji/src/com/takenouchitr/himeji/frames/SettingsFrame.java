@@ -178,7 +178,7 @@ public class SettingsFrame extends JDialog
 		
 		sld_brightness = new JSlider();
 		sld_brightness.setEnabled(false);
-		sld_brightness.setBounds(128, 30, 247, 26);
+		sld_brightness.setBounds(146, 30, 229, 26);
 		pnl_render.add(sld_brightness);
 		sld_brightness.setMinorTickSpacing(1);
 		
@@ -198,7 +198,7 @@ public class SettingsFrame extends JDialog
 		
 		sld_biome = new JSlider();
 		sld_biome.setEnabled(false);
-		sld_biome.setBounds(128, 77, 247, 26);
+		sld_biome.setBounds(146, 77, 229, 26);
 		pnl_render.add(sld_biome);
 		sld_biome.setMinorTickSpacing(1);
 		
@@ -207,13 +207,13 @@ public class SettingsFrame extends JDialog
 		pnl_render.add(lbl_biomePct);
 		
 		JLabel lbl_water = new JLabel("Water Transparency");
-		lbl_water.setBounds(20, 131, 110, 14);
+		lbl_water.setBounds(20, 131, 140, 14);
 		pnl_render.add(lbl_water);
 		lbl_water.setToolTipText("Affects how much water tints blocks below it. 0% is no effect, 100% is completely water colored. Shadows are still rendered at 100%.");
 		
 		sld_water = new JSlider();
 		sld_water.setEnabled(false);
-		sld_water.setBounds(128, 126, 247, 26);
+		sld_water.setBounds(146, 126, 229, 26);
 		pnl_render.add(sld_water);
 		sld_water.setMinorTickSpacing(1);
 		
@@ -228,7 +228,7 @@ public class SettingsFrame extends JDialog
 		
 		sld_shadow = new JSlider();
 		sld_shadow.setEnabled(false);
-		sld_shadow.setBounds(128, 175, 247, 26);
+		sld_shadow.setBounds(146, 175, 229, 26);
 		pnl_render.add(sld_shadow);
 		sld_shadow.setMinorTickSpacing(1);
 		
@@ -254,7 +254,7 @@ public class SettingsFrame extends JDialog
 		
 		sld_highlight = new JSlider();
 		sld_highlight.setEnabled(false);
-		sld_highlight.setBounds(128, 205, 247, 26);
+		sld_highlight.setBounds(146, 205, 229, 26);
 		pnl_render.add(sld_highlight);
 		
 		JLabel lbl_highlight = new JLabel("Highlight Intensity");
