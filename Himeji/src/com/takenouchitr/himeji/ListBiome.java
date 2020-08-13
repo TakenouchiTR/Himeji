@@ -31,16 +31,27 @@ public class ListBiome implements Comparable<ListBiome>
 		this.name = name;
 	}
 	
+	/**
+	 * Gets the numerical ID for the biome
+	 * @return
+	 */
 	public int getBiome()
 	{
 		return biome;
 	}
 	
+	/**
+	 * Gets the name of a biome
+	 * @return
+	 */
 	public String getName()
 	{
 		return name;
 	}
 	
+	/**
+	 * Compares the biome name to another biome, sorting alphabetically
+	 */
 	@Override
 	public int compareTo(ListBiome arg0)
 	{
