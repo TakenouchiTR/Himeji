@@ -25,7 +25,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
 
@@ -79,7 +78,7 @@ public class MapWorker extends SwingWorker<Void, String>
 			{
 				Himeji.log("Dimension does not exist");
 				
-				JOptionPane.showMessageDialog(Himeji.frame, "Dimension does not exist.\n" + 
+				JOptionPane.showMessageDialog(Himeji.getFrame(), "Dimension does not exist.\n" + 
 					"Please change the selected dimension.", "Dimension not found", 
 					JOptionPane.WARNING_MESSAGE);
 				
@@ -103,7 +102,7 @@ public class MapWorker extends SwingWorker<Void, String>
 				{
 					publish("Expected filesize too large: " + size + " bytes");
 					
-					JOptionPane.showMessageDialog(Himeji.frame, "Image file expected to exceed 1GB (" + 
+					JOptionPane.showMessageDialog(Himeji.getFrame(), "Image file expected to exceed 1GB (" + 
 						(size / GIGABYTE) + "GB).\nPlease restict the render area to reduce the size.",
 						"Image size warning", JOptionPane.WARNING_MESSAGE); 
 					
@@ -131,7 +130,7 @@ public class MapWorker extends SwingWorker<Void, String>
 				{
 					publish("Expected filesize too large: " + size + " bytes");
 					
-					JOptionPane.showMessageDialog(Himeji.frame, "Image file expected to exceed 1GB (" + 
+					JOptionPane.showMessageDialog(Himeji.getFrame(), "Image file expected to exceed 1GB (" + 
 						(size / GIGABYTE) + "GB).\nPlease restict the render area to reduce the size.",
 						"Image size warning", JOptionPane.WARNING_MESSAGE); 
 					
@@ -193,7 +192,7 @@ public class MapWorker extends SwingWorker<Void, String>
 			switch (Himeji.getProperty(Property.OPEN_IMAGE_SETTING.key))
 			{
 				case "ask_image":
-					result = JOptionPane.showConfirmDialog(Himeji.frame,
+					result = JOptionPane.showConfirmDialog(Himeji.getFrame(),
 							"Would you like to open the image?", 
 							"Open image?", JOptionPane.YES_NO_OPTION,
 							JOptionPane.QUESTION_MESSAGE);
@@ -203,7 +202,7 @@ public class MapWorker extends SwingWorker<Void, String>
 					break;
 					
 				case "ask_folder":
-					result = JOptionPane.showConfirmDialog(Himeji.frame,
+					result = JOptionPane.showConfirmDialog(Himeji.getFrame(),
 							"Would you like to open the image's folder?", 
 							"Open folder?", JOptionPane.YES_NO_OPTION,
 							JOptionPane.QUESTION_MESSAGE);
@@ -246,7 +245,7 @@ public class MapWorker extends SwingWorker<Void, String>
 		
 		if (size > 0 && Himeji.getProperty(Property.SHOW_MISSING_BLOCK).equals("true"))
 		{
-			int result = JOptionPane.showConfirmDialog(Himeji.frame,size + " missing block ID(s) found.\n" + 
+			int result = JOptionPane.showConfirmDialog(Himeji.getFrame(),size + " missing block ID(s) found.\n" + 
 				"Would you like to add them now?", "Missing IDs found", JOptionPane.YES_NO_OPTION,
 				JOptionPane.QUESTION_MESSAGE);
 			
@@ -261,7 +260,7 @@ public class MapWorker extends SwingWorker<Void, String>
 					Block.setBlockColor(s, 0xFF000000);
 				}
 				
-				JOptionPane.showMessageDialog(Himeji.frame, "Please see bottom of the list in " + 
+				JOptionPane.showMessageDialog(Himeji.getFrame(), "Please see bottom of the list in " + 
 					"\"Config>Block Colors\" for the new ids.\nThe addition(s) are black by default and " + 
 					"are not saved automatically.\nPlease update the color and save them there.", 
 					"Missing IDs added", JOptionPane.INFORMATION_MESSAGE);
@@ -279,7 +278,7 @@ public class MapWorker extends SwingWorker<Void, String>
 		int size = Block.getUnknownBiomes().size();
 		if (size > 0 && Himeji.getProperty(Property.SHOW_UNKNOWN_BIOME).equals("true"))
 		{
-			int result = JOptionPane.showConfirmDialog(Himeji.frame,
+			int result = JOptionPane.showConfirmDialog(Himeji.getFrame(),
 					"Unknown biomes detected.\n"
 					+ "All colors have been rendered using Forest colors by default.\n"
 					+ "Would you like to see a list of IDs and the first coordinate they were found at?", 
@@ -289,7 +288,7 @@ public class MapWorker extends SwingWorker<Void, String>
 			if (result == JOptionPane.YES_OPTION)
 			{
 				MissingBiomesFrame mbf = new MissingBiomesFrame();
-				mbf.setLocationRelativeTo(Himeji.frame);
+				mbf.setLocationRelativeTo(Himeji.getFrame());
 				mbf.setVisible(true);
 			}
 			Block.getUnknownBiomes().clear();

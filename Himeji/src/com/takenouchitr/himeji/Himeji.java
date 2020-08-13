@@ -65,7 +65,7 @@ public class Himeji extends JFrame
 	public static final String INVISIBLE_FILE = "invis.csv";
 	public static final String LEGACY_ID_FILE = "legacyIds.csv";
 	
-	public static Himeji frame;
+	private static Himeji frame;
 	
 	private static JButton btn_folder, btn_start, btn_setBounds, btn_output;
 	private static JTextField txt_worldPath, txt_output;
@@ -87,6 +87,7 @@ public class Himeji extends JFrame
 	
 	public static void main(String[] args) 
 	{
+	
 		checkFiles();
 		
 		Block.loadFiles();
@@ -97,7 +98,10 @@ public class Himeji extends JFrame
 		props = loadProperties(configFile);
 		fillUnloadedProperties();
 		
-		SwingUtilities.invokeLater(new Runnable()
+		Himeji window = new Himeji();
+		window.setVisible(true);
+		
+		/*SwingUtilities.invokeLater(new Runnable()
 		{
 			@Override
 			public void run() 
@@ -105,7 +109,7 @@ public class Himeji extends JFrame
 				Himeji window = new Himeji();
 				window.setVisible(true);
 			}
-		});
+		});*/
 	}
 	
 	/**
@@ -205,6 +209,15 @@ public class Himeji extends JFrame
 	public static String getProperty(Property prop)
 	{
 		return getProperty(prop.key);
+	}
+	
+	/**
+	 * Gets the main program frame
+	 * @return Main program frame
+	 */
+	public static Himeji getFrame()
+	{
+		return frame;
 	}
 	
 	/**
