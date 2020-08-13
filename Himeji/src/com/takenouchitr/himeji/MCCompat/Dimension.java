@@ -255,6 +255,7 @@ public class Dimension
 			int regionZ;
 			int curYVal;
 			int light;
+			int skyLight;
 			int upYVal;
 			int rightYVal;
 			
@@ -394,6 +395,7 @@ public class Dimension
 								curColor = chunkMap[blockX][blockZ][0];
 								curYVal = chunkMap[blockX][blockZ][1];
 								light = chunkMap[blockX][blockZ][2];
+								skyLight = chunkMap[blockX][blockZ][3];
 								
 								if (SessionProperties.renderShadows)
 								{
@@ -433,11 +435,13 @@ public class Dimension
 										rightYVal = chunkMap[blockX + 1][blockZ][1];
 									}
 									
-									curColor = applyShading(curColor, light, curYVal, upYVal, rightYVal);
+									curColor = applyShading(curColor, light, skyLight, 
+											curYVal, upYVal, rightYVal);
 								}
 								else
 								{
-									curColor = applyShading(curColor, light, curYVal, curYVal, curYVal);
+									curColor = applyShading(curColor, light, skyLight, 
+											curYVal, curYVal, curYVal);
 								}
 								
 								try
@@ -579,7 +583,7 @@ public class Dimension
 	 * @param rightYVal The height of the block to the right of the target
 	 * @return shaded color
 	 */
-	public int applyShading(int color, int light, int yVal, int upYVal, int rightYVal)
+	public int applyShading(int color, int light, int skyLight, int yVal, int upYVal, int rightYVal)
 	{
 		int a, r, g, b;
 		boolean applyMult = false;
@@ -613,6 +617,24 @@ public class Dimension
 			r = (int) (((color & 0x00FF0000) >>> 16) * heightMult * lightMult);
 			g = (int) (((color & 0x0000FF00) >>> 8) * heightMult * lightMult);
 			b = (int) ((color & 0x000000FF) * heightMult * lightMult);
+			
+			//Testing an overlay for showing mob spawn areas
+			/*
+			if (light < 8)
+			{
+				if (skyLight < 8)
+				{
+					r = (int)(r * 1.5f);
+					g = (int)(g * .5f);
+					b = (int)(b * .5f);
+				}
+				else
+				{
+					r = (int)(r * 1.5f);
+					g = (int)(g * 1.5f);
+					b = (int)(b * .5f);
+				}
+			}*/
 			
 			if (r > 255)
 				r = 255;
