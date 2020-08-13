@@ -448,10 +448,10 @@ public class Chunk
 	 */
 	public int[][][] getTopColors(int startY, int endY)
 	{
-		int[][][] result = new int[CHUNK_SIZE][CHUNK_SIZE][3];
-		
 		if (blocks == null || biome == null)
 			return null;
+		
+		int[][][] result = new int[CHUNK_SIZE][CHUNK_SIZE][4];
 		
 		startY = (startY < highestBlock) ? startY : highestBlock;
 		HashMap<Integer, int[]> unknownBiomes = Block.getUnknownBiomes();
@@ -477,9 +477,13 @@ public class Chunk
 				}
 				
 				int light = 15;
+				int sLight = 15;
 				
 				if (y < CHUNK_HEIGHT - 1 && SessionProperties.renderLight)
+				{
 					light = blockLight[x][y + 1][z];
+					sLight = skyLight[x][y + 1][z];
+				}
 				
 				//Adds a blue effect to blocks under water
 				if (y != dy)
@@ -514,6 +518,7 @@ public class Chunk
 				result[x][z][0] = color;
 				result[x][z][1] = dy;
 				result[x][z][2] = light;
+				result[x][z][3] = sLight;
 			}
 		}
 		
