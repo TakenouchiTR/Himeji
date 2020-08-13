@@ -22,12 +22,12 @@ package com.takenouchitr.himeji;
 
 public class ListBiome implements Comparable<ListBiome>
 {
-	private int biome;
+	private int biomeID;
 	private String name;
 	
-	public ListBiome(int biome, String name)
+	public ListBiome(int biomeID, String name)
 	{
-		this.biome = biome;
+		this.biomeID = biomeID;
 		this.name = name;
 	}
 	
@@ -35,9 +35,9 @@ public class ListBiome implements Comparable<ListBiome>
 	 * Gets the numerical ID for the biome
 	 * @return
 	 */
-	public int getBiome()
+	public int getBiomeID()
 	{
-		return biome;
+		return biomeID;
 	}
 	
 	/**

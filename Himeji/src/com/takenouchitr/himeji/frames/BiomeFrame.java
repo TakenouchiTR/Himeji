@@ -172,7 +172,7 @@ public class BiomeFrame extends JDialog
 					for (int i = 0, size = com_biomeNames.getItemCount(); i < size; i++)
 					{
 						ListBiome lb = (ListBiome)com_biomeNames.getItemAt(i);
-						if (lb.getBiome() == id)
+						if (lb.getBiomeID() == id)
 						{
 							com_biomeNames.removeItemAt(i);
 							break;
@@ -192,7 +192,7 @@ public class BiomeFrame extends JDialog
 	public void saveChanges()
 	{
 		ListBiome lb = (ListBiome) com_biomeNames.getSelectedItem();
-		int biome = lb.getBiome();
+		int biome = lb.getBiomeID();
 		
 		Block.setGrassColor(biome, grassColor);
 		Block.setFoliageColor(biome, foliageColor);
@@ -237,7 +237,7 @@ public class BiomeFrame extends JDialog
 		}
 		
 		ListBiome lb = (ListBiome) com_biomeNames.getSelectedItem();
-		Block.removeBiome(lb.getBiome());
+		Block.removeBiome(lb.getBiomeID());
 	}
 	
 	/**
@@ -321,7 +321,7 @@ public class BiomeFrame extends JDialog
 	private void loadColors()
 	{
 		ListBiome lb = (ListBiome)com_biomeNames.getSelectedItem(); 
-		int biome = lb.getBiome();
+		int biome = lb.getBiomeID();
 		
 		grassColor = Block.getGrassColor(biome);
 		foliageColor = Block.getFoliageColor(biome);
