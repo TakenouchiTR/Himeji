@@ -224,6 +224,9 @@ public class Dimension
 	public void drawBlocksToBuffer(int startY, int endY, int maxX, int minX, int maxZ, int minZ)
 	{
 		File[] regions;
+		//Filter ONLY for .mcr and .mca files.
+		//TODO: Figure out how to handle folders with both files.
+		//      Prompt the user? Add default in settings? Always use .mca? 
 		FileFilter mcaFilter = new FileFilter()
 		{
 			@Override
@@ -235,11 +238,20 @@ public class Dimension
 		};
 		
 		regions = directory.listFiles(mcaFilter);
-		int finishedRegions = 0;
+		int currentRegion = 0;
+		
+		//Adds one region's worth of chunks to the bounds to include the edge regions into the render
+		int minBoundsX = minX - 32;
+		int maxBoundsX = maxX + 32;
+		int minBoundsZ = minZ - 32;
+		int maxBoundsZ = maxZ + 32;
+		
+		
+			
 		
 		for (File regionFile : regions)
 		{
-			finishedRegions++;
+			currentRegion++;
 			
 			Region region;
 			Region upRegion = null;
@@ -264,19 +276,21 @@ public class Dimension
 			regionX = Integer.parseInt(nameSplit[1]);
 			regionZ = Integer.parseInt(nameSplit[2]);
 			
-			if (regionX * 32 < minX - 32 || regionX * 32 >= maxX + 32)
+			//Skips region files that are out of bounds
+			if (regionX * 32 < minBoundsX || regionX * 32 >= maxBoundsX)
 				continue;
-			if (regionZ * 32 < minZ - 32 || regionZ * 32 >= maxZ + 32)
+			if (regionZ * 32 < minBoundsZ || regionZ * 32 >= maxBoundsZ)
 				continue;
 			
 			if (Himeji.SHOW_ALL_EVENTS)
 				System.out.println("Reading " + regionName);
 			
 			Himeji.displayMessage(String.format("Reading %1$s (%2$d/%3$d)",
-					regionName, finishedRegions, regions.length));
+					regionName, currentRegion, regions.length));
 			
 			region = new Region(regionFile);
 			
+			//Checks if the region file above the current file exists
 			for (String s : EXTENSIONS)
 			{
 				upFile = new File(String.format(regionFile.getParent() + 
@@ -289,6 +303,7 @@ public class Dimension
 				}
 			}
 			
+			//Checks if the region file to the right of the current file exists
 			for (String s : EXTENSIONS)
 			{
 				rightFile = new File(String.format(regionFile.getParent() + 
@@ -301,9 +316,12 @@ public class Dimension
 				}
 			}
 			
+			//Loops through each chunk in the region
 			for (int chunkX = 0; chunkX < REGION_SIZE; chunkX++)
 			{
 				int absChunkX = chunkX + regionX * 32; 
+				
+				//Skips the chunk if it is out of the X render bounds
 				if (absChunkX < minX || absChunkX > maxX)
 					continue;
 				
@@ -313,6 +331,8 @@ public class Dimension
 				{
 					int absChunkZ = chunkZ + regionZ * 32; 
 					
+					//Checks if the chunk is out of the Z render bounds, 
+					//  or if the chunk doesn't exist
 					if (absChunkZ < minZ || absChunkZ > maxZ || 
 							!region.hasChunk(chunkX, chunkZ))
 					{
@@ -323,57 +343,30 @@ public class Dimension
 					try
 					{
 						CompoundTag chunkTag = region.getChunk(chunkX, chunkZ);
+						//Catches a corner case where the chunk "exists," but doesn't 
+						//  return a tag when using .getChunk()
 						if (chunkTag == null)
 						{
 							upChunk = null;
 							continue;
 						}
-						if (chunkZ == 0)
-						{
-							if (upRegion != null && upRegion.hasChunk(chunkX, 31))
-							{
-								CompoundTag upTag = upRegion.getChunk(chunkX, REGION_SIZE - 1);
-								
-								if (upTag != null)
-									upChunk = new Chunk(upTag);
-							}
-						}
-						else
-						{
-							if (upChunk == null && region.hasChunk(chunkX, chunkZ - 1))
-							{
-								CompoundTag upTag = region.getChunk(chunkX, chunkZ - 1);
-								
-								if (upTag != null)
-									upChunk = new Chunk(upTag);
-							}
-						}
 						
-						if (chunkX == REGION_SIZE - 1)
-						{
-							if (rightRegion != null && rightRegion.hasChunk(0, chunkZ))
-							{
-								CompoundTag rightTag = rightRegion.getChunk(0, chunkZ);
-								
-								if (rightTag != null)
-									rightChunk = new Chunk(rightTag);
-							}
-						}
-						else
-						{
-							if (region.hasChunk(chunkX + 1, chunkZ))
-							{
-								CompoundTag rightTag = region.getChunk(chunkX + 1, chunkZ);
-								
-								if (rightTag != null)
-									rightChunk = new Chunk(rightTag);
-							}
-						}
+						//Loads the chunk above the current one (for shading)
+						upChunk = getUpChunk(chunkX, chunkZ, region, upRegion, upChunk);
+						
+						//Loads the chunk to the right of the current one (for shading)
+						rightChunk = getRightChunk(chunkX, chunkZ, region, rightRegion);
+						
 						chunk = new Chunk(chunkTag);
 							
 						int gridX = (chunk.getX() + chunkXOffset) * Chunk.CHUNK_SIZE;
 						int gridZ = (chunk.getZ() + chunkZOffset) * Chunk.CHUNK_SIZE;
 						
+						//Gets the grid of colors, light data, and the y value for the chunk.
+						//[x][z][0] = color
+						//[x][z][1] = y coord
+						//[x][z][2] = block light
+						//[x][z][3] = sky light
 						int[][][] chunkMap = chunk.getTopColors(startY, endY);
 						
 						if (chunkMap == null)
@@ -387,9 +380,11 @@ public class Dimension
 						
 						for (int blockX = 0; blockX < Chunk.CHUNK_SIZE; blockX++)
 						{
+							//X pixel on the image
 							xPos = gridX + blockX;
 							for (int blockZ = 0; blockZ < Chunk.CHUNK_SIZE; blockZ++)
 							{
+								//Y pixel on the image
 								zPos = gridZ + blockZ;
 								
 								curColor = chunkMap[blockX][blockZ][0];
@@ -397,52 +392,22 @@ public class Dimension
 								light = chunkMap[blockX][blockZ][2];
 								skyLight = chunkMap[blockX][blockZ][3];
 								
+								upYVal = curYVal;
+								rightYVal = curYVal;
+								
 								if (SessionProperties.isRenderShadows())
 								{
-									if (blockZ == 0)
-									{
-										if (upChunk == null)
-											upYVal = curYVal;
-										else
-										{
-											if (SessionProperties.isRenderUnderWater())
-												upYVal = upChunk.getTopBlockYIgnoreWater(blockX, 
-													Chunk.CHUNK_SIZE - 1, startY, endY);
-											else
-												upYVal = upChunk.getTopBlockY(blockX, 
-														Chunk.CHUNK_SIZE - 1, startY, endY);
-										}
-									}
-									else
-									{
-										upYVal = chunkMap[blockX][blockZ - 1][1];
-									}
+									upYVal = getUpYVal(curYVal, blockX, blockZ, startY, endY, upChunk, chunkMap);
 									
-									if (blockX == Chunk.CHUNK_SIZE - 1)
-									{
-										if (rightChunk == null)
-											rightYVal = curYVal;
-										else
-										{	
-											if (SessionProperties.isRenderUnderWater())
-												rightYVal = rightChunk.getTopBlockYIgnoreWater(0, blockZ, startY, endY);
-											else
-												rightYVal = rightChunk.getTopBlockY(0,  blockZ, startY, endY);
-										}
-									}
-									else
-									{
-										rightYVal = chunkMap[blockX + 1][blockZ][1];
-									}
+									rightYVal = getRightYVal(curYVal, blockX, blockZ, startY, endY, 
+											rightChunk, chunkMap);
 									
 									curColor = applyShading(curColor, light, skyLight, 
 											curYVal, upYVal, rightYVal);
 								}
-								else
-								{
-									curColor = applyShading(curColor, light, skyLight, 
-											curYVal, curYVal, curYVal);
-								}
+								
+								curColor = applyShading(curColor, light, skyLight, 
+										curYVal, upYVal, rightYVal);
 								
 								try
 								{
@@ -454,6 +419,9 @@ public class Dimension
 								}
 							}
 						}
+						
+						//Sets the next up chunk to the current chunk, so that it doesn't
+						//  have to be loaded again
 						upChunk = chunk;
 					}
 					catch (Exception e) 
@@ -464,6 +432,114 @@ public class Dimension
 				}
 			}
 		}
+	}
+	
+	private int getUpYVal(int curYVal, int blockX, int blockZ, int startY, int endY, Chunk upChunk, int[][][] chunkMap)
+	{
+		//Checks if the current block is at the top of the chunk
+		if (blockZ == 0)
+		{
+			//Sets the elevation of the above block to the current block if the above
+			//  chunk doesn't exist
+			if (upChunk == null)
+				return curYVal;
+			else
+			{
+				if (SessionProperties.isRenderUnderWater())
+					return upChunk.getTopBlockYIgnoreWater(blockX, 
+						Chunk.CHUNK_SIZE - 1, startY, endY);
+				else
+					return upChunk.getTopBlockY(blockX, 
+							Chunk.CHUNK_SIZE - 1, startY, endY);
+			}
+		}
+		
+		return chunkMap[blockX][blockZ - 1][1];
+	}
+	
+	private int getRightYVal(int curYVal, int blockX, int blockZ, int startY, int endY, Chunk rightChunk, 
+			int[][][] chunkMap)
+	{
+		if (blockX == Chunk.CHUNK_SIZE - 1)
+		{
+			if (rightChunk == null)
+				return curYVal;
+			else
+			{	
+				if (SessionProperties.isRenderUnderWater())
+					return rightChunk.getTopBlockYIgnoreWater(0, blockZ, startY, endY);
+				else
+					return rightChunk.getTopBlockY(0,  blockZ, startY, endY);
+			}
+		}
+		
+		return chunkMap[blockX + 1][blockZ][1];
+	}
+	
+	private Chunk getRightChunk(int chunkX, int chunkZ, Region region, 
+			Region rightRegion) throws IOException
+	{
+		//Checks if the current chunk is at the far right of the region.
+		if (chunkX == REGION_SIZE - 1)
+		{
+			//Checks if the region to the right the current region exists, then whether
+			//  it contains the needed chunk
+			if (rightRegion != null && rightRegion.hasChunk(0, chunkZ))
+			{
+				CompoundTag rightTag = rightRegion.getChunk(0, chunkZ);
+				
+				//returns the chunk, if it exists
+				if (rightTag != null)
+					return new Chunk(rightTag);
+			}
+		}
+		else
+		{
+			if (region.hasChunk(chunkX + 1, chunkZ))
+			{
+				CompoundTag rightTag = region.getChunk(chunkX + 1, chunkZ);
+				
+				//Returns the chunk to the right, if it exists
+				if (rightTag != null)
+					return new Chunk(rightTag);
+			}
+		}
+		
+		return null;
+	}
+	
+	private Chunk getUpChunk(int chunkX, int chunkZ, Region region, 
+			Region upRegion, Chunk upChunk) throws IOException
+	{
+		//Checks if the current chunk is at the very top of the region.
+		if (chunkZ == 0)
+		{
+			//Checks if the region above the current region exists, then whether
+			//  it contains the needed chunk
+			if (upRegion != null && upRegion.hasChunk(chunkX, 31))
+			{
+				CompoundTag upTag = upRegion.getChunk(chunkX, REGION_SIZE - 1);
+				
+				//Returns the chunk, if it exists
+				if (upTag != null)
+					upChunk = new Chunk(upTag);
+			}
+		}
+		else
+		{
+			//Checks if the above chunk is set to a chunk already (from previous
+			//  chunk). Loads it if is null and the chunk exists in the region
+			if (upChunk == null && region.hasChunk(chunkX, chunkZ - 1))
+			{
+				CompoundTag upTag = region.getChunk(chunkX, chunkZ - 1);
+				
+				//Returns the chunk above, if it exists
+				if (upTag != null)
+					upChunk = new Chunk(upTag);
+			}
+		}
+		
+		return upChunk;
 	}
 	
 	/**
