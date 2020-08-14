@@ -85,7 +85,7 @@ public class Chunk
 		byte[] blockLightData = null;
 		byte[] skyLightData = null;
 		
-		if (SessionProperties.renderLight)
+		if (SessionProperties.isRenderLight())
 		{
 			skyLightData = levelTag.getByteArray("SkyLight");
 			blockLightData = levelTag.getByteArray("BlockLight");
@@ -102,7 +102,7 @@ public class Chunk
 					int meta = getHalfIndexValue(metadataData, index);
 					blocks[x][y][z] = Block.getNamespacedId(block, meta);
 					
-					if (SessionProperties.renderLight)
+					if (SessionProperties.isRenderLight())
 					{
 						skyLight[x][y][z] = getHalfIndexValue(skyLightData, index);
 						blockLight[x][y][z] = getHalfIndexValue(blockLightData, index);
@@ -141,7 +141,7 @@ public class Chunk
 			byte[] blockLightData = null;
 			byte[] skyLightData = null;
 			
-			if (SessionProperties.renderLight)
+			if (SessionProperties.isRenderLight())
 			{
 				blockLightData = section.getByteArray("BlockLight");
 				skyLightData = section.getByteArray("SkyLight");
@@ -161,7 +161,7 @@ public class Chunk
 						int meta = getHalfIndexValue(metadataData, x, y, z);
 						blocks[x][y + sectionY][z] = Block.getNamespacedId(block, meta);
 						
-						if (SessionProperties.renderLight)
+						if (SessionProperties.isRenderLight())
 						{
 							blockLight[x][y + sectionY][z] = getHalfIndexValue(blockLightData, x, y, z);
 							skyLight[x][y + sectionY][z] = getHalfIndexValue(skyLightData, x, y, z);
@@ -248,7 +248,7 @@ public class Chunk
 			byte[] blockLightData = null;
 			byte[] skyLightData = null;
 			
-			if (SessionProperties.renderLight)
+			if (SessionProperties.isRenderLight())
 			{
 				blockLightData = sections[i].getBlockLight();
 				skyLightData = sections[i].getSkyLight();
@@ -462,7 +462,7 @@ public class Chunk
 			{
 				int y = getTopBlockY(x, z, startY, endY);
 				int dy = y;
-				if (SessionProperties.renderUnderWater)
+				if (SessionProperties.isRenderUnderWater())
 					dy = getTopBlockYIgnoreWater(x, z, y, endY);
 				
 				int biomeWidth = CHUNK_SIZE / biome.length;
@@ -479,7 +479,7 @@ public class Chunk
 				int light = 15;
 				int sLight = 15;
 				
-				if (y < CHUNK_HEIGHT - 1 && SessionProperties.renderLight)
+				if (y < CHUNK_HEIGHT - 1 && SessionProperties.isRenderLight())
 				{
 					light = blockLight[x][y + 1][z];
 					sLight = skyLight[x][y + 1][z];
@@ -495,7 +495,7 @@ public class Chunk
 					int g = 0;
 					int b = 0;
 					
-					float intensity = 1 - SessionProperties.waterTransparency;
+					float intensity = 1 - SessionProperties.getWaterTransparency();
 					float inverseIntensity = 1 - intensity;
 					
 					a = 0xFF000000;

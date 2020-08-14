@@ -631,29 +631,29 @@ public class Himeji extends JFrame
 			setProperty(Property.WORLD_PATH, txt_worldPath.getText());
 			setProperty(Property.OUTPUT_PATH, txt_output.getText());
 			
-			SessionProperties.nightBrightness = 
-				Integer.parseInt(props.getProperty(Property.NIGHT_BRIGHTNESS.key)) / 100f;
-			SessionProperties.biomeIntensity = 
-				Integer.parseInt(props.getProperty(Property.BIOME_INTENSITY.key)) / 100f;
-			SessionProperties.waterTransparency = 
-				Integer.parseInt(props.getProperty(Property.WATER_TRANSPARENCY.key)) / 100f;
-			SessionProperties.shadowIntensity = 
-				Integer.parseInt(props.getProperty(Property.SHADOW_INTENSITY.key)) / 100f;
-			SessionProperties.highlightIntensity = 
-				Integer.parseInt(props.getProperty(Property.HIGHLIGHT_INTENSITY.key)) / 100f;
+			SessionProperties.setNightBrightness(
+				Integer.parseInt(props.getProperty(Property.NIGHT_BRIGHTNESS.key)) / 100f);
+			SessionProperties.setBiomeIntensity( 
+				Integer.parseInt(props.getProperty(Property.BIOME_INTENSITY.key)) / 100f);
+			SessionProperties.setWaterTransparency(
+				Integer.parseInt(props.getProperty(Property.WATER_TRANSPARENCY.key)) / 100f);
+			SessionProperties.setShadowIntensity( 
+				Integer.parseInt(props.getProperty(Property.SHADOW_INTENSITY.key)) / 100f);
+			SessionProperties.setHighlightIntensity( 
+				Integer.parseInt(props.getProperty(Property.HIGHLIGHT_INTENSITY.key)) / 100f);
 			
-			SessionProperties.renderLight = 
-				Boolean.parseBoolean(props.getProperty(Property.RENDER_LIGHT.key));
-			SessionProperties.renderBiomes = 
-				Boolean.parseBoolean(props.getProperty(Property.RENDER_BIOME_COLORS.key));
-			SessionProperties.renderUnderWater = 
-				Boolean.parseBoolean(props.getProperty(Property.RENDER_UNDER_WATER.key));
-			SessionProperties.renderShadows = 
-				Boolean.parseBoolean(props.getProperty(Property.RENDER_SHADOWS.key));
-			SessionProperties.useDefaultColor = 
-					props.getProperty(Property.MISSING_BLOCK_SETTING.key).equals("color");
+			SessionProperties.setRenderLight( 
+				Boolean.parseBoolean(props.getProperty(Property.RENDER_LIGHT.key)));
+			SessionProperties.setRenderBiomes( 
+				Boolean.parseBoolean(props.getProperty(Property.RENDER_BIOME_COLORS.key)));
+			SessionProperties.setRenderUnderWater( 
+				Boolean.parseBoolean(props.getProperty(Property.RENDER_UNDER_WATER.key)));
+			SessionProperties.setRenderShadows( 
+				Boolean.parseBoolean(props.getProperty(Property.RENDER_SHADOWS.key)));
+			SessionProperties.setUseDefaultColor(
+					props.getProperty(Property.MISSING_BLOCK_SETTING.key).equals("color"));
 			
-			SessionProperties.defaultBiome = Block.getBiomeID(props.getProperty(Property.DEFAULT_BIOME.key));
+			SessionProperties.setDefaultBiome(Block.getBiomeID(props.getProperty(Property.DEFAULT_BIOME.key)));
 			
 			setComponentsEnabled(false);
 			worker.execute();

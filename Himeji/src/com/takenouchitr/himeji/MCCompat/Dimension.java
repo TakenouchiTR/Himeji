@@ -397,7 +397,7 @@ public class Dimension
 								light = chunkMap[blockX][blockZ][2];
 								skyLight = chunkMap[blockX][blockZ][3];
 								
-								if (SessionProperties.renderShadows)
+								if (SessionProperties.isRenderShadows())
 								{
 									if (blockZ == 0)
 									{
@@ -405,7 +405,7 @@ public class Dimension
 											upYVal = curYVal;
 										else
 										{
-											if (SessionProperties.renderUnderWater)
+											if (SessionProperties.isRenderUnderWater())
 												upYVal = upChunk.getTopBlockYIgnoreWater(blockX, 
 													Chunk.CHUNK_SIZE - 1, startY, endY);
 											else
@@ -424,7 +424,7 @@ public class Dimension
 											rightYVal = curYVal;
 										else
 										{	
-											if (SessionProperties.renderUnderWater)
+											if (SessionProperties.isRenderUnderWater())
 												rightYVal = rightChunk.getTopBlockYIgnoreWater(0, blockZ, startY, endY);
 											else
 												rightYVal = rightChunk.getTopBlockY(0,  blockZ, startY, endY);
@@ -590,9 +590,9 @@ public class Dimension
 		float lightMult = 1;
 		float heightMult = 1f;
 		
-		float brightness = SessionProperties.nightBrightness;
-		float shadowIntensity = SessionProperties.shadowIntensity;
-		float highlightIntensity = SessionProperties.highlightIntensity;
+		float brightness = SessionProperties.getNightBrightness();
+		float shadowIntensity = SessionProperties.getShadowIntensity();
+		float highlightIntensity = SessionProperties.getHighlightIntensity();
 		
 		if (light < 15)
 		{

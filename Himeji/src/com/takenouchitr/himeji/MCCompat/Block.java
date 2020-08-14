@@ -406,7 +406,7 @@ public class Block
 	 */
 	public static boolean isBlockVisible(String id)
 	{
-		return (SessionProperties.useDefaultColor) ? 
+		return (SessionProperties.isUseDefaultColor()) ? 
 				!invisible.contains(id) : !invisible.contains(id) && colors.containsKey(id);
 	}
 
@@ -568,7 +568,7 @@ public class Block
 	public static int getBiomeColor(HashMap<Integer, Integer> biomeColors, int biomeID)
 	{
 		return (biomeColors.containsKey(biomeID)) ? 
-				biomeColors.get(biomeID) : biomeColors.get(SessionProperties.defaultBiome);
+				biomeColors.get(biomeID) : biomeColors.get(SessionProperties.getDefaultBiome());
 	}
 
 	/**
@@ -618,7 +618,7 @@ public class Block
 		
 		color = getBlockColor(id);
 		
-		if (!SessionProperties.renderBiomes)
+		if (!SessionProperties.isRenderBiomes())
 			return color;
 		
 		if (hasFoliageColor(id))
@@ -645,7 +645,7 @@ public class Block
 			int g = 0;
 			int b = 0;
 			
-			float intensity = SessionProperties.biomeIntensity;
+			float intensity = SessionProperties.getBiomeIntensity();
 			float inverseIntensity = 1 - intensity;
 			
 			a = 0xFF000000;
