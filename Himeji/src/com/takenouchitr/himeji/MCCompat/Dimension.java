@@ -35,15 +35,15 @@ public class Dimension
 	public static final int REGION_SIZE = 32;
 	public static final String[] EXTENSIONS = {".mca", ".mcr"};
 	
-	protected int blockHeight;
-	protected int blockWidth;
-	protected int chunkHeight;
-	protected int chunkWidth;
-	protected int chunkXOffset;
-	protected int chunkZOffset;
-	protected int totalChunks;
-	protected File directory;
-	protected MapWorker worker;
+	private int blockHeight;
+	private int blockWidth;
+	private int chunkHeight;
+	private int chunkWidth;
+	private int chunkXOffset;
+	private int chunkZOffset;
+	private int totalChunks;
+	private File directory;
+	private MapWorker worker;
 	private MapImage image;
 	
 	/**
