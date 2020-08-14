@@ -42,125 +42,100 @@ public class MapWorker extends SwingWorker<Void, String>
 	@Override
 	protected Void doInBackground() throws Exception 
 	{
+		long start = System.currentTimeMillis();
+		
 		failed = false;
 		Himeji.log("Starting worker");
 		
-		File file = new File(Himeji.getProperty(Property.WORLD_PATH));
-		if (World.validateDir(file)) 
+		File worldPath = new File(Himeji.getProperty(Property.WORLD_PATH));
+		if (!World.validateDir(worldPath))
+			return null;
+		
+		Dimension dim;
+		File dimFile;
+		
+		// TODO Check for whether the dimension exists
+		Himeji.log("Getting dimension");
+		dimFile = getDimensionFile(worldPath);
+		
+		//Gets the Y bounds for the render
+		int startY = Integer.parseInt(Himeji.getProperty(Property.START_Y));
+		int endY = Integer.parseInt(Himeji.getProperty(Property.END_Y));
+		
+		if (!dimFile.exists())
 		{
-			long start = System.currentTimeMillis();
+			Himeji.log("Dimension does not exist");
 			
-			Dimension dim;
-			File dimFile;
+			JOptionPane.showMessageDialog(Himeji.getFrame(), "Dimension does not exist.\n" + 
+				"Please change the selected dimension.", "Dimension not found", 
+				JOptionPane.WARNING_MESSAGE);
 			
-			// TODO Check for whether the dimension exists
-			Himeji.log("Getting dimension");
-			String dimensionName = Himeji.getProperty(Property.DIMENSION);
-			switch(dimensionName)
+			failed = true;
+			return null;
+		}
+		
+		publish("Getting image dimensions...");
+		if (Himeji.getProperty(Property.USE_AREA).equals("true"))
+		{
+			int startX = Integer.parseInt(Himeji.getProperty(Property.START_X));
+			int startZ = Integer.parseInt(Himeji.getProperty(Property.START_Z));
+			int endX = Integer.parseInt(Himeji.getProperty(Property.END_X));
+			int endZ = Integer.parseInt(Himeji.getProperty(Property.END_Z));
+			
+			long width = startX - endX;
+			long height = startZ - endZ;
+			
+			if (!checkValidFileSize(width, height))
 			{
-				case "Overworld":
-					dimFile = new File(file.getPath() + "\\region");
-					break;
-				case "Nether":
-					dimFile = new File(file.getPath() + "\\DIM-1\\region");
-					break;
-				case "End":
-					dimFile = new File(file.getPath() + "\\DIM1\\region");
-					break;
-				default:
-					dimFile = new File("");
-			}
-			
-			int startY = Integer.parseInt(Himeji.getProperty(Property.START_Y));
-			int endY = Integer.parseInt(Himeji.getProperty(Property.END_Y));
-			
-			if (!dimFile.exists())
-			{
-				Himeji.log("Dimension does not exist");
-				
-				JOptionPane.showMessageDialog(Himeji.getFrame(), "Dimension does not exist.\n" + 
-					"Please change the selected dimension.", "Dimension not found", 
-					JOptionPane.WARNING_MESSAGE);
-				
 				failed = true;
 				return null;
 			}
 			
-			publish("Getting area size...");
-			if (Himeji.getProperty(Property.USE_AREA).equals("true"))
-			{
-				int startX = Integer.parseInt(Himeji.getProperty(Property.START_X));
-				int startZ = Integer.parseInt(Himeji.getProperty(Property.START_Z));
-				int endX = Integer.parseInt(Himeji.getProperty(Property.END_X));
-				int endZ = Integer.parseInt(Himeji.getProperty(Property.END_Z));
-				
-				long width = startX - endX;
-				long height = startZ - endZ;
-				long size = width * height * 4;
-				
-				if (size > 1_073_741_824)
-				{
-					publish("Expected filesize too large: " + size + " bytes");
-					
-					JOptionPane.showMessageDialog(Himeji.getFrame(), "Image file expected to exceed 1GB (" + 
-						(size / GIGABYTE) + "GB).\nPlease restict the render area to reduce the size.",
-						"Image size warning", JOptionPane.WARNING_MESSAGE); 
-					
-					failed = true;
-					return null;
-				}
-				
-				dim = new Dimension(dimFile, startX, endX, startZ, endZ);
-				
-				dim.createMapImage();
-				
-				publish("Getting blocks...");
-				dim.drawBlocksToBuffer(startY, endY, startX, endX, startZ, endZ);
-			}
-			else
-			{
-				Himeji.log("Creating dimension " + dimensionName + "...");
-				int[] dimBounds = Dimension.calcDimSize(dimFile);
-				
-				long width = dimBounds[0] * 16;
-				long height = dimBounds[1] * 16;
-				long size = width * height * 4;
-				
-				if (size > 1_073_741_824)
-				{
-					publish("Expected filesize too large: " + size + " bytes");
-					
-					JOptionPane.showMessageDialog(Himeji.getFrame(), "Image file expected to exceed 1GB (" + 
-						(size / GIGABYTE) + "GB).\nPlease restict the render area to reduce the size.",
-						"Image size warning", JOptionPane.WARNING_MESSAGE); 
-					
-					failed = true;
-					return null;
-				}
-				
-				dim = new Dimension(dimFile, dimBounds);
-				
-				Himeji.log("Creating render grid");
-				dim.createMapImage();
-				Himeji.log("Render grid created");
-				
-				publish("Getting blocks...");
-				dim.drawBlocksToBuffer(startY, endY);
-			}
+			dim = new Dimension(dimFile, startX, endX, startZ, endZ);
 			
-			publish("Rendering image...");
-			dim.render();
+			Himeji.log("Creating MapImage");
+			dim.createMapImage();
+			Himeji.log("MapImage created");
 			
-			long end = System.currentTimeMillis();
-			int seconds = (int)(end - start) / 1000;
-			String elapsed = String.format("Time elapsed:  %1$02d:%2$02d;%3$03d", 
-				seconds / 60, seconds % 60, (end - start) % 1000);
-			
-			publish(elapsed);
+			publish("Getting blocks...");
+			dim.drawBlocksToBuffer(startY, endY, startX, endX, startZ, endZ);
 		}
+		else
+		{
+			int[] dimBounds = Dimension.calcDimSize(dimFile);
+			
+			long width = dimBounds[0] * 16;
+			long height = dimBounds[1] * 16;
+			
+			if (!checkValidFileSize(width, height))
+			{
+				failed = true;
+				return null;
+			}
+			
+			dim = new Dimension(dimFile, dimBounds);
+			
+			Himeji.log("Creating MapImage");
+			dim.createMapImage();
+			Himeji.log("MapImage created");
+			
+			publish("Getting blocks...");
+			dim.drawBlocksToBuffer(startY, endY);
+		}
+		
+		publish("Rendering image...");
+		dim.render();
+		
+		long end = System.currentTimeMillis();
+		int seconds = (int)(end - start) / 1000;
+		String elapsedTime = String.format("Time elapsed:  %1$02d:%2$02d;%3$03d", 
+			seconds / 60, seconds % 60, (end - start) % 1000);
+		
+		publish(elapsedTime);
+		
 		return null;
 	}
-	
+
 	@Override
 	protected void process(List<String> chunks)
 	{
@@ -177,6 +152,54 @@ public class MapWorker extends SwingWorker<Void, String>
 		openResult();
 		
 		Himeji.setComponentsEnabled(true);
+	}
+	
+	/**
+	 * Gets the dimension folder for a given world path.
+	 * @param worldPath base directory for a world
+	 * @return File object for the dimension folder
+	 */
+	private File getDimensionFile(File worldPath) 
+	{
+		String dimensionName = Himeji.getProperty(Property.DIMENSION);
+		
+		switch(dimensionName)
+		{
+			case "Overworld":
+				return new File(worldPath.getPath() + "\\region");
+			case "Nether":
+				return new File(worldPath.getPath() + "\\DIM-1\\region");
+			case "End":
+				return new File(worldPath.getPath() + "\\DIM1\\region");
+			default:
+				return new File("");
+		}
+	}
+	
+	/**
+	 * Checks if a file size of a given width and height will result in an image that is too large
+	 * to render.
+	 * @param width  width of the image in pixels
+	 * @param height height of the image in pixels
+	 * @return true iff the expected file size is under one gigabyte 
+	 */
+	private boolean checkValidFileSize(long width, long height)
+	{
+		long estimatedSize = width * height * 4;
+		
+		if (estimatedSize > GIGABYTE)
+		{
+			float gigs = Math.round(estimatedSize / (float)GIGABYTE);
+			publish("Expected filesize too large: " + gigs + " bytes");
+			
+			JOptionPane.showMessageDialog(Himeji.getFrame(), "Image file expected to exceed 1GB (" + 
+				gigs + "GB).\nPlease restict the render area to reduce the size.",
+				"Image size warning", JOptionPane.WARNING_MESSAGE); 
+			
+			return false;
+		}
+		
+		return true;
 	}
 	
 	/**
