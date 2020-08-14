@@ -56,7 +56,10 @@ public class MapImage
 		{
 			ImageIO.write(output, "png", file);
 		}
-		catch (Exception e) {}
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
 	}
 	
 }
