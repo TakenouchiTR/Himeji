@@ -112,7 +112,7 @@ public class MapWorker extends SwingWorker<Void, String>
 				
 				dim = new Dimension(dimFile, startX, endX, startZ, endZ);
 				
-				dim.createRenderGrid();
+				dim.createMapImage();
 				
 				publish("Getting blocks...");
 				dim.drawBlocksToBuffer(startY, endY, startX, endX, startZ, endZ);
@@ -141,7 +141,7 @@ public class MapWorker extends SwingWorker<Void, String>
 				dim = new Dimension(dimFile, dimBounds);
 				
 				Himeji.log("Creating render grid");
-				dim.createRenderGrid();
+				dim.createMapImage();
 				Himeji.log("Render grid created");
 				
 				publish("Getting blocks...");

@@ -567,9 +567,9 @@ public class Dimension
 	/**
 	 * Creates the MapImage to write pixels to.
 	 */
-	public void createRenderGrid()
+	public void createMapImage()
 	{
-		// TODO Check if file is valid, if it exists, change method name
+		// TODO Check if file is valid, if it exists
 		image = new MapImage(blockWidth, blockHeight, 
 				new File(Himeji.getProperty(Property.OUTPUT_PATH)));
 	}
