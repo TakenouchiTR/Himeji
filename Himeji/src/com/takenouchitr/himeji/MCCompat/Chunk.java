@@ -451,6 +451,10 @@ public class Chunk
 		if (blocks == null || biome == null)
 			return null;
 		
+		//[x][z][0] = color
+		//[x][z][1] = y coord
+		//[x][z][2] = block light
+		//[x][z][3] = sky light
 		int[][][] result = new int[CHUNK_SIZE][CHUNK_SIZE][4];
 		
 		startY = (startY < highestBlock) ? startY : highestBlock;
