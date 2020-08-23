@@ -522,7 +522,7 @@ public class Dimension
 		else
 		{
 			//If the chunk has already been loaded, returns that chunk.
-			if (loadAttempts[chunkX][chunkZ - 1])
+			if (!loadAttempts[chunkX][chunkZ - 1])
 				return loadedChunks[chunkX][chunkZ - 1];
 			
 			//Checks if the above chunk is set to a chunk already (from previous
