@@ -19,18 +19,23 @@
  */
 
 package com.takenouchitr.himeji.MCCompat;
+import java.util.Arrays;
+
 import com.mojang.nbt.*;
 
 public class Section 
 {
 	public static final int SECTION_HEIGHT = 16;
+	private static final String EMPTY_BLOCK = "minecraft:air";
 	private CompoundTag sectionTag;
 	private String[] paletteNames;
+	private boolean isEmpty;
 	
 	public Section(CompoundTag sectionTag)
 	{
 		this.sectionTag = sectionTag;
 		int paletteSize;
+		isEmpty = false;
 		
 		ListTag<? extends Tag> palette = sectionTag.getList("Palette");
 		
@@ -56,6 +61,8 @@ public class Section
 		byte bitIndex = 0;        //The current bit in the long
 		byte blockBitLength = 4;  //How many bits are needed for each block
 		long[] blockStates = sectionTag.getLongArray("BlockStates");
+		
+		isEmpty = false;
 		
 		if (blockStates.length == 0)
 			return null;
@@ -114,10 +121,24 @@ public class Section
 	 * Creates a three-dimensional String array of each of the block IDs within the section.
 	 * Ignores the "extra" unused portion of long's if a block's palette number doesn't
 	 * perfectly fit in the long's bits
+	 * 
+	 * Ie: if 5 bits are used to represent a palette, then there will be 4 bits at the end
+	 * of every long that will be unused. 
+	 * (64 bits in long; 5 * 12 = 60 bits to represent blocks; 64 - 60 = 4 bits unused)
 	 * @return String array of block IDs
 	 */
 	public String[][][] getTruncatedBlocks()
 	{
+		//Checks if a palette only contains one block.
+		//  If true, then returns a 3D array of only that ID.
+		if (paletteNames.length == 1)
+		{
+			//Mark section as empty if the only block is air
+			if (paletteNames[0] == EMPTY_BLOCK)
+				isEmpty = true;
+			return makeFullSection(paletteNames[0]);
+		}
+		
 		final int CHUNK_SIZE = Chunk.CHUNK_SIZE;
 		final int LONG_BIT_SIZE = 64;
 		int longIndex = 0;        //Which long in the array to read
@@ -185,6 +206,23 @@ public class Section
 	}
 	
 	/**
+	 * Returns a 3D array of strings, all of a single namespace ID
+	 * @param namespaceID Namespace ID to use
+	 * @return 3D array of block IDs
+	 */
+	private static String[][][] makeFullSection(String namespaceID)
+	{
+		final int CHUNK_SIZE = Chunk.CHUNK_SIZE;
+		String[][][] result = new String[CHUNK_SIZE][SECTION_HEIGHT][CHUNK_SIZE];
+		
+		for (String[][] arr1 : result)
+			for (String[] arr2 : arr1)
+				Arrays.fill(arr2, namespaceID);
+		
+		return result;
+	}
+	
+	/**
 	 * Gets the block light data, if it exists
 	 * @return byte array containing the data, null if the data is not stored
 	 */
@@ -213,5 +251,14 @@ public class Section
 	public CompoundTag getSectionTag()
 	{
 		return sectionTag;
+	}
+
+	/**
+	 * Gets whether the section is only air blocks 
+	 * @return True iff the section only contains air blocks
+	 */
+	public boolean isEmpty()
+	{
+		return isEmpty;
 	}
 }

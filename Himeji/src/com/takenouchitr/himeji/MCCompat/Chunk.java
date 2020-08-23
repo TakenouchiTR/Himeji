@@ -254,7 +254,9 @@ public class Chunk
 				skyLightData = sections[i].getSkyLight();
 			}
 			
-			highestBlock = highestBlock > sectionY + 15 ? highestBlock : sectionY + 15;
+			//Updates the highest block of the chunk only if the section isn't only air.
+			if (!sections[i].isEmpty() && highestBlock < sectionY + 15)
+				highestBlock = sectionY + 15;
 			
 			//Loads each of the blocks in the section
 			for(int x = 0; x < CHUNK_SIZE; x++) 
