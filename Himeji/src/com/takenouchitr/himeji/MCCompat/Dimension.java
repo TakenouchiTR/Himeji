@@ -246,9 +246,6 @@ public class Dimension
 		int minBoundsZ = minZ - 32;
 		int maxBoundsZ = maxZ + 32;
 		
-		
-			
-		
 		for (File regionFile : regions)
 		{
 			currentRegion++;
@@ -263,6 +260,8 @@ public class Dimension
 			File rightFile;
 			String regionName;
 			String[] nameSplit;
+			Chunk[][] loadedChunks;
+			boolean[][] loadAttempts;
 			int regionX;
 			int regionZ;
 			int curYVal;
@@ -281,6 +280,9 @@ public class Dimension
 				continue;
 			if (regionZ * 32 < minBoundsZ || regionZ * 32 >= maxBoundsZ)
 				continue;
+			
+			loadedChunks = new Chunk[REGION_SIZE][REGION_SIZE];
+			loadAttempts = new boolean[REGION_SIZE][REGION_SIZE];
 			
 			if (Himeji.SHOW_ALL_EVENTS)
 				System.out.println("Reading " + regionName);
@@ -325,8 +327,6 @@ public class Dimension
 				if (absChunkX < minX || absChunkX > maxX)
 					continue;
 				
-				upChunk = null;
-				
 				for (int chunkZ = 0; chunkZ < REGION_SIZE; chunkZ++)
 				{
 					int absChunkZ = chunkZ + regionZ * 32; 
@@ -335,29 +335,19 @@ public class Dimension
 					//  or if the chunk doesn't exist
 					if (absChunkZ < minZ || absChunkZ > maxZ || 
 							!region.hasChunk(chunkX, chunkZ))
-					{
-						upChunk = null;
 						continue;
-					}
 					
 					try
 					{
-						CompoundTag chunkTag = region.getChunk(chunkX, chunkZ);
-						//Catches a corner case where the chunk "exists," but doesn't 
-						//  return a tag when using .getChunk()
-						if (chunkTag == null)
-						{
-							upChunk = null;
+						chunk = getCurrentChunk(chunkX, chunkZ, region, loadedChunks, loadAttempts);
+						if (chunk == null)
 							continue;
-						}
 						
 						//Loads the chunk above the current one (for shading)
-						upChunk = getUpChunk(chunkX, chunkZ, region, upRegion, upChunk);
+						upChunk = getUpChunk(chunkX, chunkZ, region, upRegion, loadedChunks, loadAttempts);
 						
 						//Loads the chunk to the right of the current one (for shading)
-						rightChunk = getRightChunk(chunkX, chunkZ, region, rightRegion);
-						
-						chunk = new Chunk(chunkTag);
+						rightChunk = getRightChunk(chunkX, chunkZ, region, rightRegion, loadedChunks, loadAttempts);
 							
 						int gridX = (chunk.getX() + chunkXOffset) * Chunk.CHUNK_SIZE;
 						int gridZ = (chunk.getZ() + chunkZOffset) * Chunk.CHUNK_SIZE;
@@ -382,6 +372,7 @@ public class Dimension
 						{
 							//X pixel on the image
 							xPos = gridX + blockX;
+							
 							for (int blockZ = 0; blockZ < Chunk.CHUNK_SIZE; blockZ++)
 							{
 								//Y pixel on the image
@@ -419,15 +410,10 @@ public class Dimension
 								}
 							}
 						}
-						
-						//Sets the next up chunk to the current chunk, so that it doesn't
-						//  have to be loaded again
-						upChunk = chunk;
 					}
 					catch (Exception e) 
 					{
 						e.printStackTrace();
-						upChunk = null;
 					}
 				}
 			}
@@ -476,8 +462,8 @@ public class Dimension
 		return chunkMap[blockX + 1][blockZ][1];
 	}
 	
-	private Chunk getRightChunk(int chunkX, int chunkZ, Region region, 
-			Region rightRegion) throws IOException
+	private Chunk getRightChunk(int chunkX, int chunkZ, Region region, Region rightRegion, 
+			Chunk[][] loadedChunks, boolean[][] loadAttempts) throws IOException
 	{
 		//Checks if the current chunk is at the far right of the region.
 		if (chunkX == REGION_SIZE - 1)
@@ -497,20 +483,28 @@ public class Dimension
 		{
 			if (region.hasChunk(chunkX + 1, chunkZ))
 			{
+				loadAttempts[chunkX][chunkZ] = true;
+				
+				Chunk result = null;
 				CompoundTag rightTag = region.getChunk(chunkX + 1, chunkZ);
 				
 				//Returns the chunk to the right, if it exists
 				if (rightTag != null)
-					return new Chunk(rightTag);
+					result = new Chunk(rightTag);
+				
+				loadedChunks[chunkX][chunkZ] = result;
+				return result;
 			}
 		}
 		
 		return null;
 	}
 	
-	private Chunk getUpChunk(int chunkX, int chunkZ, Region region, 
-			Region upRegion, Chunk upChunk) throws IOException
+	private Chunk getUpChunk(int chunkX, int chunkZ, Region region, Region upRegion, 
+			Chunk[][] loadedChunks, boolean[][] loadAttempts) throws IOException
 	{
+		Chunk result = null;
+		
 		//Checks if the current chunk is at the very top of the region.
 		if (chunkZ == 0)
 		{
@@ -522,24 +516,59 @@ public class Dimension
 				
 				//Returns the chunk, if it exists
 				if (upTag != null)
-					upChunk = new Chunk(upTag);
+					result = new Chunk(upTag);
 			}
 		}
 		else
 		{
+			//If the chunk has already been loaded, returns that chunk.
+			if (loadAttempts[chunkX][chunkZ - 1])
+				return loadedChunks[chunkX][chunkZ - 1];
+			
 			//Checks if the above chunk is set to a chunk already (from previous
 			//  chunk). Loads it if is null and the chunk exists in the region
-			if (upChunk == null && region.hasChunk(chunkX, chunkZ - 1))
+			if (region.hasChunk(chunkX, chunkZ - 1))
 			{
+				loadAttempts[chunkX][chunkZ - 1] = true;
 				CompoundTag upTag = region.getChunk(chunkX, chunkZ - 1);
 				
 				//Returns the chunk above, if it exists
 				if (upTag != null)
-					upChunk = new Chunk(upTag);
+					result = new Chunk(upTag);
+				
+				loadedChunks[chunkX][chunkZ - 1] = result;
 			}
 		}
 		
-		return upChunk;
+		return result;
+	}
+
+	private Chunk getCurrentChunk(int chunkX, int chunkZ, Region region, 
+			Chunk[][] loadedChunks, boolean[][] loadAttempts) 
+	{
+		if (loadAttempts[chunkX][chunkZ])
+			return loadedChunks[chunkX][chunkZ];
+		
+		loadAttempts[chunkX][chunkZ] = true;
+		try
+		{
+			CompoundTag chunkTag = region.getChunk(chunkX, chunkZ);
+			
+			//Catches a corner case where the chunk "exists," but doesn't 
+			//  return a tag when using .getChunk()
+			if (chunkTag == null)
+				return null;
+			
+			Chunk result = new Chunk(chunkTag);
+			loadedChunks[chunkX][chunkZ] = result;
+			return result;
+		} 
+		catch (IOException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
 	}
 	
 	/**
