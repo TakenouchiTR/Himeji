@@ -120,7 +120,7 @@ public class MapWorker extends SwingWorker<Void, String>
 			Himeji.log("MapImage created");
 			
 			publish("Getting blocks...");
-			dim.drawBlocksToBuffer(startY, endY);
+			dim.startRender(startY, endY, 32);
 		}
 		
 		publish("Rendering image...");
