@@ -41,10 +41,13 @@ public class Dimension
 	private int chunkWidth;
 	private int chunkXOffset;
 	private int chunkZOffset;
+	private int completedFiles;
 	private int totalChunks;
 	private File directory;
 	private MapWorker worker;
 	private MapImage image;
+	
+	private static Object outputKey = new Object();
 	
 	/**
 	 * Creates a Dimension with a size determined by the files in the region
@@ -203,6 +206,7 @@ public class Dimension
 	
 	public void startRender(int startY, int endY, int threadCount)
 	{
+		completedFiles = 0;
 		File[] regions;
 		//Filter ONLY for .mcr and .mca files.
 		//TODO: Figure out how to handle folders with both files.
@@ -230,7 +234,7 @@ public class Dimension
 				@Override
 				public void run()
 				{
-					Render(startY, endY, Integer.MAX_VALUE - 32, Integer.MIN_VALUE + 32,
+					render(startY, endY, Integer.MAX_VALUE - 32, Integer.MIN_VALUE + 32,
 							Integer.MAX_VALUE - 32, Integer.MIN_VALUE + 32, startInd, totalThreads, regions);
 				}
 				
@@ -254,7 +258,7 @@ public class Dimension
 		}
 	}
 	
-	private void Render(int startY, int endY, int maxX, int minX, int maxZ, int minZ, int startInd, 
+	private void render(int startY, int endY, int maxX, int minX, int maxZ, int minZ, int startInd, 
 			int threadCount, File[] regions)
 	{
 		int currentRegion = 0;
@@ -306,9 +310,6 @@ public class Dimension
 			
 			if (Himeji.SHOW_ALL_EVENTS)
 				System.out.println("Reading " + regionName);
-			
-			Himeji.displayMessage(String.format("Reading %1$s (%2$d/%3$d)",
-					regionName, currentRegion, regions.length));
 			
 			region = new Region(regionFile);
 			
@@ -445,6 +446,18 @@ public class Dimension
 				loadedChunks[chunkX][REGION_SIZE - 1] = null;
 				loadedChunks[chunkX][REGION_SIZE - 2] = null;
 			}
+			
+			updateOutput(regions.length, regionFile.getName());
+		}
+	}
+	
+	private void updateOutput(int total, String file)
+	{
+		synchronized(outputKey)
+		{
+			completedFiles++;
+			Himeji.displayMessage(String.format("Reading %1$s (%2$d/%3$d)",
+					file, completedFiles, total));
 		}
 	}
 	
