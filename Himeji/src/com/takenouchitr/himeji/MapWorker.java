@@ -75,6 +75,7 @@ public class MapWorker extends SwingWorker<Void, String>
 		}
 		
 		publish("Getting image dimensions...");
+		int threadCount = Integer.parseInt(Himeji.getProperty(Property.THREAD_COUNT));
 		if (Himeji.getProperty(Property.USE_AREA).equals("true"))
 		{
 			int startX = Integer.parseInt(Himeji.getProperty(Property.START_X));
@@ -98,7 +99,7 @@ public class MapWorker extends SwingWorker<Void, String>
 			Himeji.log("MapImage created");
 			
 			publish("Getting blocks...");
-			dim.drawBlocksToBuffer(startY, endY, startX, endX, startZ, endZ);
+			dim.startRender(startY, endY, startX, endX, startZ, endZ, threadCount);
 		}
 		else
 		{
@@ -120,7 +121,7 @@ public class MapWorker extends SwingWorker<Void, String>
 			Himeji.log("MapImage created");
 			
 			publish("Getting blocks...");
-			dim.startRender(startY, endY, 32);
+			dim.startRender(startY, endY, threadCount);
 		}
 		
 		publish("Rendering image...");
