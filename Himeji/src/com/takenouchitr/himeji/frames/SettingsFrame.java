@@ -362,6 +362,7 @@ public class SettingsFrame extends JDialog
 		pnl_memory.add(lbl_threads);
 		
 		sld_threads = new JSlider();
+		sld_threads.setMinimum(1);
 		sld_threads.setBounds(124, 11, 229, 26);
 		pnl_memory.add(sld_threads);
 		
@@ -375,6 +376,7 @@ public class SettingsFrame extends JDialog
 		pnl_memory.add(lbl_imageMax);
 		
 		sld_imageMax = new JSlider();
+		sld_imageMax.setMinimum(1);
 		sld_imageMax.setValue(1000);
 		sld_imageMax.setBounds(124, 48, 229, 26);
 		pnl_memory.add(sld_imageMax);
