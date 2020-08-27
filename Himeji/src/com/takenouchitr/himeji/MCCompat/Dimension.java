@@ -258,6 +258,59 @@ public class Dimension
 		}
 	}
 	
+	public void startRender(int startY, int endY, int maxX, int minX, int maxZ, int minZ, int threadCount)
+	{
+		completedFiles = 0;
+		File[] regions;
+		//Filter ONLY for .mcr and .mca files.
+		//TODO: Figure out how to handle folders with both files.
+		//      Prompt the user? Add default in settings? Always use .mca? 
+		FileFilter mcaFilter = new FileFilter()
+		{
+			@Override
+			public boolean accept(File pathname) 
+			{
+				return pathname.getName().endsWith(".mca") || 
+						pathname.getName().endsWith(".mcr");
+			}
+		};
+		
+		regions = directory.listFiles(mcaFilter);
+		int totalThreads = threadCount > regions.length ? regions.length : threadCount;
+		
+		Thread[] threads = new Thread[threadCount];
+		
+		for (int i = 0; i < threadCount; i++)
+		{
+			int startInd = i;
+			threads[i] = new Thread() 
+			{
+				@Override
+				public void run()
+				{
+					render(startY, endY, maxX, minX, maxZ, minZ, startInd, totalThreads, regions);
+				}
+				
+			};
+			
+			threads[i].start();
+		}
+		
+		for (Thread t : threads)
+		{
+			
+			try
+			{
+				t.join();
+			} 
+			catch (InterruptedException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+	
 	private void render(int startY, int endY, int maxX, int minX, int maxZ, int minZ, int startInd, 
 			int threadCount, File[] regions)
 	{
