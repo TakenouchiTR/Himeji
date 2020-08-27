@@ -67,6 +67,7 @@ public class SettingsFrame extends JDialog
 	private JCheckBox chk_removeBlock;
 	private JCheckBox chk_saveBiome;
 	private JCheckBox chk_removeBiome;
+	private JPanel pnl_memory;
 	
 	public SettingsFrame(Properties props) 
 	{
@@ -85,87 +86,13 @@ public class SettingsFrame extends JDialog
 		
 		getContentPane().add(tab_pane);
 		
-		JScrollPane scr_preferences = new JScrollPane();
-		tab_pane.addTab("Preferences", null, scr_preferences, null);
-		
 		JScrollPane scr_rendering = new JScrollPane();
 		scr_rendering.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		tab_pane.addTab("Rendering", null, scr_rendering, null);
 		
-		JPanel pnl_preferences = new JPanel();
-		pnl_preferences.setLayout(null);
-		pnl_preferences.setPreferredSize(new Dimension(pnl_preferences.getSize().width, 360));
-		scr_preferences.setViewportView(pnl_preferences);
-		
-		rad_worldLast = new JRadioButton("Open the last folder used when selecting a world");
-		rad_worldLast.setBounds(6, 7, 423, 23);
-		pnl_preferences.add(rad_worldLast);
-		
-		rad_worldDefault = new JRadioButton("Open the default Minecraft save folder when selecting a world");
-		rad_worldDefault.setBounds(6, 33, 423, 23);
-		pnl_preferences.add(rad_worldDefault);
-		
-		rad_worldOther = new JRadioButton("Open a specific folder when selecting a world");
-		rad_worldOther.setBounds(6, 59, 423, 23);
-		pnl_preferences.add(rad_worldOther);
-		
-		JButton btn_world = new JButton("World");
-		btn_world.setEnabled(false);
-		btn_world.setBounds(6, 88, 89, 23);
-		pnl_preferences.add(btn_world);
-		
-		txt_world = new JTextField();
-		txt_world.setText((String) null);
-		txt_world.setEnabled(false);
-		txt_world.setColumns(10);
-		txt_world.setBounds(105, 89, 305, 20);
-		pnl_preferences.add(txt_world);
-		
-		rad_outputLast = new JRadioButton("Open the last folder used when selecting an output image");
-		rad_outputLast.setBounds(6, 118, 423, 23);
-		pnl_preferences.add(rad_outputLast);
-		
-		rad_outputDefault = new JRadioButton("Open the default Minecraft directory when selecting an output image");
-		rad_outputDefault.setBounds(6, 144, 423, 23);
-		pnl_preferences.add(rad_outputDefault);
-		
-		rad_outputOther = new JRadioButton("Open a specific folder when selecting an output image");
-		rad_outputOther.setBounds(6, 170, 423, 23);
-		pnl_preferences.add(rad_outputOther);
-		
-		JButton btn_output = new JButton("Output");
-		btn_output.setEnabled(false);
-		btn_output.setBounds(6, 199, 89, 23);
-		pnl_preferences.add(btn_output);
-		
-		txt_output = new JTextField();
-		txt_output.setText((String) null);
-		txt_output.setEnabled(false);
-		txt_output.setColumns(10);
-		txt_output.setBounds(105, 200, 305, 20);
-		pnl_preferences.add(txt_output);
-		
-		rad_imageIgnore = new JRadioButton("Don't open images automatically after rendering");
-		rad_imageIgnore.setBounds(6, 229, 423, 23);
-		pnl_preferences.add(rad_imageIgnore);
-		
-		rad_imageAsk = new JRadioButton("Ask to open images after rendering");
-		rad_imageAsk.setBounds(6, 255, 423, 23);
-		pnl_preferences.add(rad_imageAsk);
-		
-		rad_imageAlways = new JRadioButton("Always open images after rendering");
-		rad_imageAlways.setBounds(6, 281, 423, 23);
-		pnl_preferences.add(rad_imageAlways);
-		
 		ButtonGroup worldGroup = new ButtonGroup();
-		worldGroup.add(rad_worldLast);
-		worldGroup.add(rad_worldDefault);
-		worldGroup.add(rad_worldOther);
 		
 		ButtonGroup outputGroup = new ButtonGroup();
-		outputGroup.add(rad_outputLast);
-		outputGroup.add(rad_outputDefault);
-		outputGroup.add(rad_outputOther);
 		
 		JPanel pnl_render = new JPanel();
 		pnl_render.setLayout(null);
@@ -309,20 +236,7 @@ public class SettingsFrame extends JDialog
 		btn_default.setBounds(10, 327, 81, 23);
 		getContentPane().add(btn_default);
 		
-		rad_imageFolderAsk = new JRadioButton("Ask to open the image's folder after rendering");
-		rad_imageFolderAsk.setBounds(6, 307, 404, 23);
-		pnl_preferences.add(rad_imageFolderAsk);
-		
-		rad_imageFolderAlways = new JRadioButton("Always open the image's folder after rendering");
-		rad_imageFolderAlways.setBounds(6, 333, 404, 23);
-		pnl_preferences.add(rad_imageFolderAlways);
-		
 		ButtonGroup imageGroup = new ButtonGroup();
-		imageGroup.add(rad_imageIgnore);
-		imageGroup.add(rad_imageAsk);
-		imageGroup.add(rad_imageAlways);
-		imageGroup.add(rad_imageFolderAsk);
-		imageGroup.add(rad_imageFolderAlways);
 		
 		pnl_render.add(chk_highlightLock);
 		
@@ -347,19 +261,125 @@ public class SettingsFrame extends JDialog
 		blockGroup.add(rad_blockColor);
 		blockGroup.add(rad_blockIgnore);
 		
-		sld_water.addChangeListener((e) -> 
-			lbl_waterPct.setText(sld_water.getValue() + "%"));
-		sld_biome.addChangeListener((e) -> 
-			lbl_biomePct.setText(sld_biome.getValue() + "%"));
-		sld_brightness.addChangeListener((e) -> 
-			lbl_brightnessPct.setText(sld_brightness.getValue() + "%"));
-		sld_shadow.addChangeListener((e) -> shadowSlide(lbl_shadowPct));
-		sld_highlight.addChangeListener((e) -> highlightSlide(lbl_highlightPct));
-		chk_night.addChangeListener((e) -> sld_brightness.setEnabled(chk_night.isSelected()));
-		chk_biome.addChangeListener((e) -> sld_biome.setEnabled(chk_biome.isSelected()));
-		chk_water.addChangeListener((e) -> sld_water.setEnabled(chk_water.isSelected()));
-		chk_shadow.addChangeListener((e) -> shadowsChecked(chk_shadow.isSelected()));
-		chk_highlightLock.addChangeListener((e) -> highlightLockChecked());
+		JScrollPane scr_preferences = new JScrollPane();
+		tab_pane.addTab("Preferences", null, scr_preferences, null);
+		
+		JPanel pnl_preferences = new JPanel();
+		pnl_preferences.setLayout(null);
+		pnl_preferences.setPreferredSize(new Dimension(pnl_preferences.getSize().width, 360));
+		scr_preferences.setViewportView(pnl_preferences);
+		
+		rad_worldLast = new JRadioButton("Open the last folder used when selecting a world");
+		rad_worldLast.setBounds(6, 7, 423, 23);
+		pnl_preferences.add(rad_worldLast);
+		
+		rad_worldDefault = new JRadioButton("Open the default Minecraft save folder when selecting a world");
+		rad_worldDefault.setBounds(6, 33, 423, 23);
+		pnl_preferences.add(rad_worldDefault);
+		
+		rad_worldOther = new JRadioButton("Open a specific folder when selecting a world");
+		rad_worldOther.setBounds(6, 59, 423, 23);
+		pnl_preferences.add(rad_worldOther);
+		
+		JButton btn_world = new JButton("World");
+		btn_world.setEnabled(false);
+		btn_world.setBounds(6, 88, 89, 23);
+		pnl_preferences.add(btn_world);
+		
+		txt_world = new JTextField();
+		txt_world.setText((String) null);
+		txt_world.setEnabled(false);
+		txt_world.setColumns(10);
+		txt_world.setBounds(105, 89, 305, 20);
+		pnl_preferences.add(txt_world);
+		
+		rad_outputLast = new JRadioButton("Open the last folder used when selecting an output image");
+		rad_outputLast.setBounds(6, 118, 423, 23);
+		pnl_preferences.add(rad_outputLast);
+		
+		rad_outputDefault = new JRadioButton("Open the default Minecraft directory when selecting an output image");
+		rad_outputDefault.setBounds(6, 144, 423, 23);
+		pnl_preferences.add(rad_outputDefault);
+		
+		rad_outputOther = new JRadioButton("Open a specific folder when selecting an output image");
+		rad_outputOther.setBounds(6, 170, 423, 23);
+		pnl_preferences.add(rad_outputOther);
+		
+		JButton btn_output = new JButton("Output");
+		btn_output.setEnabled(false);
+		btn_output.setBounds(6, 199, 89, 23);
+		pnl_preferences.add(btn_output);
+		
+		txt_output = new JTextField();
+		txt_output.setText((String) null);
+		txt_output.setEnabled(false);
+		txt_output.setColumns(10);
+		txt_output.setBounds(105, 200, 305, 20);
+		pnl_preferences.add(txt_output);
+		
+		rad_imageIgnore = new JRadioButton("Don't open images automatically after rendering");
+		rad_imageIgnore.setBounds(6, 229, 423, 23);
+		pnl_preferences.add(rad_imageIgnore);
+		
+		rad_imageAsk = new JRadioButton("Ask to open images after rendering");
+		rad_imageAsk.setBounds(6, 255, 423, 23);
+		pnl_preferences.add(rad_imageAsk);
+		
+		rad_imageAlways = new JRadioButton("Always open images after rendering");
+		rad_imageAlways.setBounds(6, 281, 423, 23);
+		pnl_preferences.add(rad_imageAlways);
+		worldGroup.add(rad_worldLast);
+		worldGroup.add(rad_worldDefault);
+		worldGroup.add(rad_worldOther);
+		outputGroup.add(rad_outputLast);
+		outputGroup.add(rad_outputDefault);
+		outputGroup.add(rad_outputOther);
+		
+		rad_imageFolderAsk = new JRadioButton("Ask to open the image's folder after rendering");
+		rad_imageFolderAsk.setBounds(6, 307, 404, 23);
+		pnl_preferences.add(rad_imageFolderAsk);
+		
+		rad_imageFolderAlways = new JRadioButton("Always open the image's folder after rendering");
+		rad_imageFolderAlways.setBounds(6, 333, 404, 23);
+		pnl_preferences.add(rad_imageFolderAlways);
+		imageGroup.add(rad_imageIgnore);
+		imageGroup.add(rad_imageAsk);
+		imageGroup.add(rad_imageAlways);
+		imageGroup.add(rad_imageFolderAsk);
+		imageGroup.add(rad_imageFolderAlways);
+		
+		JScrollPane scr_memory = new JScrollPane();
+		tab_pane.addTab("Memory", null, scr_memory, null);
+		
+		pnl_memory = new JPanel();
+		scr_memory.setViewportView(pnl_memory);
+		pnl_memory.setLayout(null);
+		
+		JLabel lbl_threads = new JLabel("Max Threads");
+		lbl_threads.setToolTipText("The maximum number of concurrent threads. More threads lead to faster renders, but higher CPU and memory usage. Expect 8 threads to use an additional 1024 MB.");
+		lbl_threads.setBounds(10, 16, 126, 14);
+		pnl_memory.add(lbl_threads);
+		
+		JSlider sld_threads = new JSlider();
+		sld_threads.setBounds(124, 11, 229, 26);
+		pnl_memory.add(sld_threads);
+		
+		JLabel lbl_threadNum = new JLabel("4");
+		lbl_threadNum.setBounds(363, 16, 26, 14);
+		pnl_memory.add(lbl_threadNum);
+		
+		JLabel lbl_imageMax = new JLabel("Max Image Size");
+		lbl_imageMax.setToolTipText("The size cap for the largest, uncompressed image. Every chunk rendered will equate to 1/1024 MB.");
+		lbl_imageMax.setBounds(10, 53, 126, 14);
+		pnl_memory.add(lbl_imageMax);
+		
+		JSlider sld_imageMax = new JSlider();
+		sld_imageMax.setBounds(124, 48, 229, 26);
+		pnl_memory.add(sld_imageMax);
+		
+		JLabel lbl_imageMaxNum = new JLabel("1024 MB");
+		lbl_imageMaxNum.setBounds(363, 53, 64, 14);
+		pnl_memory.add(lbl_imageMaxNum);
 		rad_worldOther.addChangeListener((e) -> 
 		{
 			btn_world.setEnabled(rad_worldOther.isSelected());
@@ -392,6 +412,20 @@ public class SettingsFrame extends JDialog
 				txt_output.setText(fileChooser.getSelectedFile().getPath());
 			}
 		});
+		
+		sld_water.addChangeListener((e) -> 
+			lbl_waterPct.setText(sld_water.getValue() + "%"));
+		sld_biome.addChangeListener((e) -> 
+			lbl_biomePct.setText(sld_biome.getValue() + "%"));
+		sld_brightness.addChangeListener((e) -> 
+			lbl_brightnessPct.setText(sld_brightness.getValue() + "%"));
+		sld_shadow.addChangeListener((e) -> shadowSlide(lbl_shadowPct));
+		sld_highlight.addChangeListener((e) -> highlightSlide(lbl_highlightPct));
+		chk_night.addChangeListener((e) -> sld_brightness.setEnabled(chk_night.isSelected()));
+		chk_biome.addChangeListener((e) -> sld_biome.setEnabled(chk_biome.isSelected()));
+		chk_water.addChangeListener((e) -> sld_water.setEnabled(chk_water.isSelected()));
+		chk_shadow.addChangeListener((e) -> shadowsChecked(chk_shadow.isSelected()));
+		chk_highlightLock.addChangeListener((e) -> highlightLockChecked());
 		btn_default.addActionListener((e) -> defaultPress(tab_pane.getSelectedIndex()));
 		btn_apply.addActionListener((e) -> applyPress());
 		btn_save.addActionListener((e) -> savePress());
