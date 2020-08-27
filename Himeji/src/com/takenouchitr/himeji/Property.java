@@ -36,7 +36,9 @@ public enum Property
 	SPECIFIED_OUTPUT      ("specified_output",      ""),
 	OPEN_IMAGE_SETTING    ("open_image_setting",    "ignore"),
 	DEFAULT_BIOME         ("default_biome",         "Forest"),
-	MISSING_BLOCK_SETTING ("missing_block_setting", "color");
+	MISSING_BLOCK_SETTING ("missing_block_setting", "color"),
+	THREAD_COUNT          ("thread_count",          "4"),
+	MAX_IMAGE_MEMORY      ("max_image_memory",      "1024");
 	
 	
 	public final String key;
