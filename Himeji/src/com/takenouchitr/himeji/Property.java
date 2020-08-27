@@ -38,7 +38,9 @@ public enum Property
 	DEFAULT_BIOME         ("default_biome",         "Forest"),
 	MISSING_BLOCK_SETTING ("missing_block_setting", "color"),
 	THREAD_COUNT          ("thread_count",          "4"),
-	MAX_IMAGE_MEMORY      ("max_image_memory",      "1024");
+	MAX_THREAD_COUNT      ("max_thread_count",      "32"),
+	IMAGE_MEMORY          ("image_memory",          "1024"),
+	MAX_IMAGE_MEMORY      ("max_image_memory",      "4096");
 	
 	
 	public final String key;
