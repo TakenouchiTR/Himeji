@@ -456,7 +456,7 @@ public class Dimension
 		synchronized(outputKey)
 		{
 			completedFiles++;
-			Himeji.displayMessage(String.format("Reading %1$s (%2$d/%3$d)",
+			Himeji.displayMessage(String.format("Finished %1$s (%2$d/%3$d)",
 					file, completedFiles, total));
 		}
 	}
