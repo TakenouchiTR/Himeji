@@ -32,8 +32,6 @@ import javax.swing.ScrollPaneConstants;
 public class SettingsFrame extends JDialog
 {
 	private boolean lockShadows;
-	private int imageMaxCap;
-	private int threadCap;
 	
 	private Properties props;
 	private JSlider sld_brightness;
