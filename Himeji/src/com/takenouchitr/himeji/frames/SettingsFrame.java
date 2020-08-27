@@ -32,6 +32,8 @@ import javax.swing.ScrollPaneConstants;
 public class SettingsFrame extends JDialog
 {
 	private boolean lockShadows;
+	private int imageMaxCap;
+	private int threadCap;
 	
 	private Properties props;
 	private JSlider sld_brightness;
@@ -39,6 +41,8 @@ public class SettingsFrame extends JDialog
 	private JSlider sld_water;
 	private JSlider sld_shadow;
 	private JSlider sld_highlight;
+	private JSlider sld_threads;
+	private JSlider sld_imageMax;
 	private JCheckBox chk_night;
 	private JCheckBox chk_biome;
 	private JCheckBox chk_water;
@@ -67,7 +71,6 @@ public class SettingsFrame extends JDialog
 	private JCheckBox chk_removeBlock;
 	private JCheckBox chk_saveBiome;
 	private JCheckBox chk_removeBiome;
-	private JPanel pnl_memory;
 	
 	public SettingsFrame(Properties props) 
 	{
@@ -351,7 +354,7 @@ public class SettingsFrame extends JDialog
 		JScrollPane scr_memory = new JScrollPane();
 		tab_pane.addTab("Memory", null, scr_memory, null);
 		
-		pnl_memory = new JPanel();
+		JPanel pnl_memory = new JPanel();
 		scr_memory.setViewportView(pnl_memory);
 		pnl_memory.setLayout(null);
 		
@@ -360,12 +363,12 @@ public class SettingsFrame extends JDialog
 		lbl_threads.setBounds(10, 16, 126, 14);
 		pnl_memory.add(lbl_threads);
 		
-		JSlider sld_threads = new JSlider();
+		sld_threads = new JSlider();
 		sld_threads.setBounds(124, 11, 229, 26);
 		pnl_memory.add(sld_threads);
 		
 		JLabel lbl_threadNum = new JLabel("4");
-		lbl_threadNum.setBounds(363, 16, 26, 14);
+		lbl_threadNum.setBounds(363, 16, 64, 14);
 		pnl_memory.add(lbl_threadNum);
 		
 		JLabel lbl_imageMax = new JLabel("Max Image Size");
@@ -373,7 +376,8 @@ public class SettingsFrame extends JDialog
 		lbl_imageMax.setBounds(10, 53, 126, 14);
 		pnl_memory.add(lbl_imageMax);
 		
-		JSlider sld_imageMax = new JSlider();
+		sld_imageMax = new JSlider();
+		sld_imageMax.setValue(1000);
 		sld_imageMax.setBounds(124, 48, 229, 26);
 		pnl_memory.add(sld_imageMax);
 		
@@ -421,6 +425,10 @@ public class SettingsFrame extends JDialog
 			lbl_brightnessPct.setText(sld_brightness.getValue() + "%"));
 		sld_shadow.addChangeListener((e) -> shadowSlide(lbl_shadowPct));
 		sld_highlight.addChangeListener((e) -> highlightSlide(lbl_highlightPct));
+		sld_threads.addChangeListener((e) -> 
+			lbl_threadNum.setText(sld_threads.getValue() + ""));
+		sld_imageMax.addChangeListener((e) -> 
+			lbl_imageMaxNum.setText(sld_imageMax.getValue() + " MB"));
 		chk_night.addChangeListener((e) -> sld_brightness.setEnabled(chk_night.isSelected()));
 		chk_biome.addChangeListener((e) -> sld_biome.setEnabled(chk_biome.isSelected()));
 		chk_water.addChangeListener((e) -> sld_water.setEnabled(chk_water.isSelected()));
@@ -594,6 +602,19 @@ public class SettingsFrame extends JDialog
 				Boolean.parseBoolean(props.getProperty(Property.SHOW_BLOCK_REMOVE.key)));
 		chk_removeBiome.setSelected(
 				Boolean.parseBoolean(props.getProperty(Property.SHOW_BIOME_REMOVE.key)));
+		
+		/////Memory Tab
+		
+		sld_threads.setMaximum(
+				Integer.parseInt(props.getProperty(Property.MAX_THREAD_COUNT.key)));
+		sld_imageMax.setMaximum(
+				Integer.parseInt(props.getProperty(Property.MAX_IMAGE_MEMORY.key)));
+		
+		sld_threads.setValue(Integer.parseInt(
+				props.getProperty(Property.THREAD_COUNT.key)));
+		sld_imageMax.setValue(Integer.parseInt(
+				props.getProperty(Property.IMAGE_MEMORY.key)));
+		
 	}
 	
 	/**
@@ -691,6 +712,11 @@ public class SettingsFrame extends JDialog
 		props.setProperty(Property.SHOW_BIOME_SAVE.key, chk_saveBiome.isSelected() + "");
 		props.setProperty(Property.SHOW_BLOCK_REMOVE.key, chk_removeBlock.isSelected() + "");
 		props.setProperty(Property.SHOW_BIOME_REMOVE.key, chk_removeBiome.isSelected() + "");
+		
+		/////Memory tab
+		
+		props.setProperty(Property.THREAD_COUNT.key, sld_threads.getValue() + "");
+		props.setProperty(Property.IMAGE_MEMORY.key, sld_imageMax.getValue() + "");
 	}
 	
 	/**
