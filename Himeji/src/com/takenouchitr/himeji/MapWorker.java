@@ -35,6 +35,7 @@ import com.takenouchitr.himeji.frames.MissingBiomesFrame;
 
 public class MapWorker extends SwingWorker<Void, String>
 {
+	public static final int MEGABYTE = 1_048_576;
 	public static final int GIGABYTE = 1_073_741_824;
 	
 	private boolean failed;
@@ -75,6 +76,7 @@ public class MapWorker extends SwingWorker<Void, String>
 		}
 		
 		publish("Getting image dimensions...");
+		
 		int threadCount = Integer.parseInt(Himeji.getProperty(Property.THREAD_COUNT));
 		if (Himeji.getProperty(Property.USE_AREA).equals("true"))
 		{
@@ -187,15 +189,18 @@ public class MapWorker extends SwingWorker<Void, String>
 	private boolean checkValidFileSize(long width, long height)
 	{
 		long estimatedSize = width * height * 4;
+		long maxSize = Long.parseLong(Himeji.getProperty(Property.IMAGE_MEMORY));
 		
-		if (estimatedSize > GIGABYTE)
+		if (estimatedSize / MEGABYTE > maxSize)
 		{
-			float gigs = Math.round(estimatedSize / (float)GIGABYTE);
-			publish("Expected filesize too large: " + gigs + " bytes");
+			float megs = Math.round(estimatedSize / (float)MEGABYTE);
+			publish("Expected memory allocation too large: " + estimatedSize + " bytes");
 			
-			JOptionPane.showMessageDialog(Himeji.getFrame(), "Image file expected to exceed 1GB (" + 
-				gigs + "GB).\nPlease restict the render area to reduce the size.",
-				"Image size warning", JOptionPane.WARNING_MESSAGE); 
+			JOptionPane.showMessageDialog(Himeji.getFrame(), 
+				String.format("Memory allocation for image expected to exceed %1$dMB (%2$.2f).\n"
+				+ "Please restict the render area to reduce the size or change the\n"
+				+ "limit in the settings.", maxSize, megs),
+				"Memory warning", JOptionPane.WARNING_MESSAGE); 
 			
 			return false;
 		}
