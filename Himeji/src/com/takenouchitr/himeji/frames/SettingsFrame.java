@@ -751,6 +751,11 @@ public class SettingsFrame extends JDialog
 				chk_removeBlock.setSelected(true);
 				chk_removeBiome.setSelected(true);
 				break;
+				
+			case 3:
+				sld_threads.setValue(Integer.parseInt(Property.THREAD_COUNT.defaultValue));
+				sld_imageMax.setValue(Integer.parseInt(Property.IMAGE_MEMORY.defaultValue));
+				break;
 		}
 	}
 }
