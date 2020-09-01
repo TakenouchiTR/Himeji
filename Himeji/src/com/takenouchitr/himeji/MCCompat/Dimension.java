@@ -22,6 +22,7 @@ package com.takenouchitr.himeji.MCCompat;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 import com.mojang.nbt.*;
@@ -335,6 +336,9 @@ public class Dimension
 		int minBoundsZ = minZ - 32;
 		int maxBoundsZ = maxZ + 32;
 		
+		Chunk[][] loadedChunks;
+		boolean[][] loadAttempts;
+		
 		for (int i = startInd; i < regions.length; i += threadCount)
 		{
 			File regionFile = regions[i];
@@ -350,8 +354,6 @@ public class Dimension
 			File rightFile = null;
 			String regionName;
 			String[] nameSplit;
-			Chunk[][] loadedChunks;
-			boolean[][] loadAttempts;
 			int regionX;
 			int regionZ;
 			int curYVal;
@@ -517,6 +519,9 @@ public class Dimension
 			unloadRegion(regionFile);
 			unloadRegion(upFile);
 			unloadRegion(rightFile);
+			
+			for (boolean[] arr : loadAttempts)
+				Arrays.fill(arr, false);
 		}
 	}
 	
