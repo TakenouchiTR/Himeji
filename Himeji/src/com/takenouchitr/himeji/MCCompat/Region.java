@@ -48,6 +48,18 @@ public class Region
 		}
 	}
 	
+	public void close()
+	{
+		try
+		{
+			file.close();
+		} catch (IOException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	/**
 	 * Gets the chunk data from a chunk in the region. Returns null if the 
 	 * chunk has not been loaded.
@@ -63,8 +75,11 @@ public class Region
 		if(file.hasChunk(x, z)) 
 		{
 			DataInputStream dis = file.getChunkDataInputStream(x, z);
-				if (dis != null)
-					result = NbtIo.read(dis);
+			if (dis != null)
+			{
+				result = NbtIo.read(dis);
+				dis.close();
+			}
 		}
 		
 		return result;

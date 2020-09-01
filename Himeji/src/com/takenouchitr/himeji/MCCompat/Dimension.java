@@ -22,6 +22,7 @@ package com.takenouchitr.himeji.MCCompat;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import com.mojang.nbt.*;
 import com.takenouchitr.himeji.Himeji;
@@ -46,8 +47,11 @@ public class Dimension
 	private File directory;
 	private MapWorker worker;
 	private MapImage image;
+	private HashMap<String, Region> regionCache;
+	private HashMap<String, Integer> cacheCount;
 	
 	private static Object outputKey = new Object();
+	private static Object regionCacheKey = new Object();
 	
 	/**
 	 * Creates a Dimension with a size determined by the files in the region
@@ -66,6 +70,9 @@ public class Dimension
 		setChunkHeight(size[1]);
 		chunkXOffset = size[2];
 		chunkZOffset = size[3];
+		
+		regionCache = new HashMap<>();
+		cacheCount = new HashMap<>();
 	}
 	
 	public Dimension(File dimDir, int maxX, int minX, int maxZ, int minZ)
@@ -78,6 +85,9 @@ public class Dimension
 		setChunkHeight(size[1]);
 		chunkXOffset = size[2];
 		chunkZOffset = size[3];
+		
+		regionCache = new HashMap<>();
+		cacheCount = new HashMap<>();
 	}
 	
 	public Dimension(File dimDir, int[] size)
@@ -87,6 +97,9 @@ public class Dimension
 		setChunkHeight(size[1]);
 		chunkXOffset = size[2];
 		chunkZOffset = size[3];
+		
+		regionCache = new HashMap<>();
+		cacheCount = new HashMap<>();
 	}
 	
 	/**
@@ -333,8 +346,8 @@ public class Dimension
 			Chunk chunk;
 			Chunk upChunk = null;
 			Chunk rightChunk = null;
-			File upFile;
-			File rightFile;
+			File upFile = null;
+			File rightFile = null;
 			String regionName;
 			String[] nameSplit;
 			Chunk[][] loadedChunks;
@@ -364,7 +377,7 @@ public class Dimension
 			if (Himeji.SHOW_ALL_EVENTS)
 				System.out.println("Reading " + regionName);
 			
-			region = new Region(regionFile);
+			region = loadRegion(regionFile);
 			
 			//Checks if the region file above the current file exists
 			for (String s : EXTENSIONS)
@@ -374,7 +387,7 @@ public class Dimension
 				
 				if (upFile.exists())
 				{
-					upRegion = new Region(upFile);
+					upRegion = loadRegion(upFile);
 					break;
 				}
 			}
@@ -387,7 +400,7 @@ public class Dimension
 				
 				if (rightFile.exists())
 				{
-					rightRegion = new Region(rightFile);
+					rightRegion = loadRegion(rightFile);
 					break;
 				}
 			}
@@ -501,6 +514,9 @@ public class Dimension
 			}
 			
 			updateOutput(regions.length, regionFile.getName());
+			unloadRegion(regionFile);
+			unloadRegion(upFile);
+			unloadRegion(rightFile);
 		}
 	}
 	
@@ -662,6 +678,57 @@ public class Dimension
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
+		}
+	}
+	
+	private Region loadRegion(File regionFile)
+	{
+		if (regionFile == null)
+			return null;
+		
+		synchronized(regionCacheKey)
+		{
+			String key = regionFile.getName();
+			
+			if (regionCache.containsKey(key))
+			{
+				cacheCount.put(key, cacheCount.get(key) + 1);
+				return regionCache.get(key);
+			}
+			
+			Region result = new Region(regionFile);
+			regionCache.put(key, result);
+			cacheCount.put(key, 1);
+			
+			return result;
+		}
+	}
+	
+	private void unloadRegion(File regionFile)
+	{
+		if (regionFile == null)
+			return;
+		
+		synchronized(regionCacheKey)
+		{
+			String key = regionFile.getName();
+			
+			if (!regionCache.containsKey(key))
+				return;
+			
+			int remaining = cacheCount.get(key) - 1;
+			
+			if (remaining == 0)
+			{
+				Region region = regionCache.get(key);
+				region.close();
+				cacheCount.remove(key);
+				regionCache.remove(key);
+			}
+			else
+			{
+				cacheCount.put(key, remaining);
+			}
 		}
 	}
 	
