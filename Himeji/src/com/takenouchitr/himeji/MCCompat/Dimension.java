@@ -45,6 +45,8 @@ public class Dimension
 	private int chunkZOffset;
 	private int completedFiles;
 	private int totalChunks;
+	private int totalRegions;
+	private int currentRegion;
 	private File directory;
 	private MapWorker worker;
 	private MapImage image;
@@ -53,6 +55,7 @@ public class Dimension
 	
 	private static Object outputKey = new Object();
 	private static Object regionCacheKey = new Object();
+	private static Object regionIndexKey = new Object();
 	
 	/**
 	 * Creates a Dimension with a size determined by the files in the region
@@ -221,6 +224,7 @@ public class Dimension
 	public void startRender(int startY, int endY, int threadCount)
 	{
 		completedFiles = 0;
+		currentRegion = 0;
 		File[] regions;
 		//Filter ONLY for .mcr and .mca files.
 		//TODO: Figure out how to handle folders with both files.
@@ -236,20 +240,21 @@ public class Dimension
 		};
 		
 		regions = directory.listFiles(mcaFilter);
+		totalRegions = regions.length;
 		int totalThreads = threadCount > regions.length ? regions.length : threadCount;
 		
 		Thread[] threads = new Thread[threadCount];
 		
-		for (int i = 0; i < threadCount; i++)
+		for (int i = 0; i < totalThreads; i++)
 		{
-			int startInd = i;
+			int startInd = getRegionIndex();
 			threads[i] = new Thread() 
 			{
 				@Override
 				public void run()
 				{
 					render(startY, endY, Integer.MAX_VALUE - 32, Integer.MIN_VALUE + 32,
-							Integer.MAX_VALUE - 32, Integer.MIN_VALUE + 32, startInd, totalThreads, regions);
+							Integer.MAX_VALUE - 32, Integer.MIN_VALUE + 32, startInd, regions);
 				}
 				
 			};
@@ -294,7 +299,7 @@ public class Dimension
 		
 		Thread[] threads = new Thread[threadCount];
 		
-		for (int i = 0; i < threadCount; i++)
+		for (int i = 0; i < totalThreads; i++)
 		{
 			int startInd = i;
 			threads[i] = new Thread() 
@@ -302,7 +307,7 @@ public class Dimension
 				@Override
 				public void run()
 				{
-					render(startY, endY, maxX, minX, maxZ, minZ, startInd, totalThreads, regions);
+					render(startY, endY, maxX, minX, maxZ, minZ, startInd, regions);
 				}
 				
 			};
@@ -326,7 +331,7 @@ public class Dimension
 	}
 	
 	private void render(int startY, int endY, int maxX, int minX, int maxZ, int minZ, int startInd, 
-			int threadCount, File[] regions)
+			File[] regions)
 	{
 		int currentRegion = 0;
 		
@@ -339,7 +344,7 @@ public class Dimension
 		Chunk[][] loadedChunks;
 		boolean[][] loadAttempts;
 		
-		for (int i = startInd; i < regions.length; i += threadCount)
+		for (int i = startInd; i != -1; i = getRegionIndex())
 		{
 			File regionFile = regions[i];
 			currentRegion = i;
@@ -734,6 +739,17 @@ public class Dimension
 			{
 				cacheCount.put(key, remaining);
 			}
+		}
+	}
+	
+	private int getRegionIndex()
+	{
+		synchronized(regionIndexKey)
+		{
+			if (currentRegion >= totalRegions)
+				return -1;
+			
+			return currentRegion++;
 		}
 	}
 	
