@@ -28,7 +28,6 @@ import java.util.HashMap;
 import com.mojang.nbt.*;
 import com.takenouchitr.himeji.Himeji;
 import com.takenouchitr.himeji.MapImage;
-import com.takenouchitr.himeji.MapWorker;
 import com.takenouchitr.himeji.Property;
 import com.takenouchitr.himeji.SessionProperties;
 
@@ -39,16 +38,12 @@ public class Dimension
 	
 	private int blockHeight;
 	private int blockWidth;
-	private int chunkHeight;
-	private int chunkWidth;
 	private int chunkXOffset;
 	private int chunkZOffset;
 	private int completedFiles;
-	private int totalChunks;
 	private int totalRegions;
 	private int currentRegion;
 	private File directory;
-	private MapWorker worker;
 	private MapImage image;
 	private HashMap<String, Region> regionCache;
 	private HashMap<String, Integer> cacheCount;
@@ -333,8 +328,6 @@ public class Dimension
 	private void render(int startY, int endY, int maxX, int minX, int maxZ, int minZ, int startInd, 
 			File[] regions)
 	{
-		int currentRegion = 0;
-		
 		//Adds one region's worth of chunks to the bounds to include the edge regions into the render
 		int minBoundsX = minX - 32;
 		int maxBoundsX = maxX + 32;
@@ -951,7 +944,6 @@ public class Dimension
 	 */
 	public void setChunkWidth(int chunkWidth) 
 	{
-		this.chunkWidth = chunkWidth;
 		blockWidth = chunkWidth * 16;
 	}
 	
@@ -962,7 +954,6 @@ public class Dimension
 	 */
 	public void setChunkHeight(int chunkHeight) 
 	{
-		this.chunkHeight = chunkHeight;
 		blockHeight = chunkHeight * 16;
 	}
 	
