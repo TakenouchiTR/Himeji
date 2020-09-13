@@ -266,7 +266,6 @@ public class Dimension
 			} 
 			catch (InterruptedException e)
 			{
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -346,7 +345,6 @@ public class Dimension
 			} 
 			catch (InterruptedException e)
 			{
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -689,7 +687,6 @@ public class Dimension
 		} 
 		catch (IOException e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
 		}
