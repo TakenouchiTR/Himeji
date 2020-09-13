@@ -361,8 +361,8 @@ public class Dimension
 		int minBoundsZ = minZ - 32;
 		int maxBoundsZ = maxZ + 32;
 		
-		Chunk[][] loadedChunks;
-		boolean[][] loadAttempts;
+		Chunk[][] loadedChunks = new Chunk[REGION_SIZE][REGION_SIZE];
+		boolean[][] loadAttempts = new boolean[REGION_SIZE][REGION_SIZE];
 		
 		for (int i = startInd; i != -1; i = getRegionIndex())
 		{
@@ -390,9 +390,6 @@ public class Dimension
 			nameSplit = regionName.split("[.]");
 			regionX = Integer.parseInt(nameSplit[1]);
 			regionZ = Integer.parseInt(nameSplit[2]);
-			
-			loadedChunks = new Chunk[REGION_SIZE][REGION_SIZE];
-			loadAttempts = new boolean[REGION_SIZE][REGION_SIZE];
 			
 			if (Himeji.SHOW_ALL_EVENTS)
 				System.out.println("Reading " + regionName);
