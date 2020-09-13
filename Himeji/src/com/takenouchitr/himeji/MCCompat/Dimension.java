@@ -24,6 +24,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 import com.mojang.nbt.*;
 import com.takenouchitr.himeji.Himeji;
@@ -259,7 +260,6 @@ public class Dimension
 		
 		for (Thread t : threads)
 		{
-			
 			try
 			{
 				t.join();
@@ -276,7 +276,9 @@ public class Dimension
 	{
 		completedFiles = 0;
 		currentRegion = 0;
+		List<File> rawRegions = new ArrayList<>();
 		File[] regions;
+		
 		//Filter ONLY for .mcr and .mca files.
 		//TODO: Figure out how to handle folders with both files.
 		//      Prompt the user? Add default in settings? Always use .mca? 
@@ -290,7 +292,30 @@ public class Dimension
 			}
 		};
 		
-		regions = directory.listFiles(mcaFilter);
+		
+		//Only selects files that are within the render area
+		int minBoundsX = minX - 32;
+		int maxBoundsX = maxX + 32;
+		int minBoundsZ = minZ - 32;
+		int maxBoundsZ = maxZ + 32;
+		
+		for (File f : directory.listFiles(mcaFilter))
+		{
+			String regionName = f.getName();
+			String[] nameSplit = regionName.split("[.]");
+			int regionX = Integer.parseInt(nameSplit[1]);
+			int regionZ = Integer.parseInt(nameSplit[2]);
+			
+			//Skips region files that are out of bounds
+			if (regionX * 32 < minBoundsX || regionX * 32 >= maxBoundsX)
+				continue;
+			if (regionZ * 32 < minBoundsZ || regionZ * 32 >= maxBoundsZ)
+				continue;
+			
+			rawRegions.add(f);
+		}
+		
+		regions = rawRegions.toArray(new File[rawRegions.size()]);
 		totalRegions = regions.length;
 		int totalThreads = threadCount > regions.length ? regions.length : threadCount;
 		
@@ -365,12 +390,6 @@ public class Dimension
 			nameSplit = regionName.split("[.]");
 			regionX = Integer.parseInt(nameSplit[1]);
 			regionZ = Integer.parseInt(nameSplit[2]);
-			
-			//Skips region files that are out of bounds
-			if (regionX * 32 < minBoundsX || regionX * 32 >= maxBoundsX)
-				continue;
-			if (regionZ * 32 < minBoundsZ || regionZ * 32 >= maxBoundsZ)
-				continue;
 			
 			loadedChunks = new Chunk[REGION_SIZE][REGION_SIZE];
 			loadAttempts = new boolean[REGION_SIZE][REGION_SIZE];
