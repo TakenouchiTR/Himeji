@@ -321,11 +321,6 @@ public class Himeji extends JFrame
 		//construct pre-components
         JMenu fileMenu = new JMenu("File");
         JMenu menu_config = new JMenu("Config");
-
-        //construct components
-        btn_setBounds = new JButton("Set Bounds");
-        btn_folder = new JButton("World");
-        txt_worldPath = new JTextField(400);
         bar_menu = new JMenuBar();
         bar_menu.add(fileMenu);
         
@@ -334,24 +329,9 @@ public class Himeji extends JFrame
         JMenuItem itm_settings = new JMenuItem("Settings");
         fileMenu.add(itm_settings);
         fileMenu.add(itm_exit);
-        
-        btn_start = new JButton("Start");
-
-        //adjust size and set layout
-        getContentPane().setLayout(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        //add components
-        getContentPane().add(btn_folder);
-        getContentPane().add(txt_worldPath);
-        getContentPane().add(bar_menu);
-        getContentPane().add(btn_start);
-
-        //set component bounds (only needed by Absolute Positioning)
-        btn_folder.setBounds(15, 35, 80, 25);
-        txt_worldPath.setBounds(105, 35, 370, 25);
-        bar_menu.setBounds(0, 0, 495, 25);
-        btn_start.setBounds(410, 107, 65, 23);
+        getContentPane().setLayout(new BorderLayout(0, 0));
+        getContentPane().add(bar_menu, BorderLayout.NORTH);
         
         bar_menu.add(menu_config);
         
@@ -376,32 +356,50 @@ public class Himeji extends JFrame
         JMenuItem itm_biome = new JMenuItem("New Biome");
         mnAdd.add(itm_biome);
         
-        btn_setBounds.setBounds(293, 107, 107, 23);
-        getContentPane().add(btn_setBounds);
-        
-        btn_output = new JButton("Output");
-        btn_output.setBounds(15, 72, 80, 25);
-        getContentPane().add(btn_output);
-        
-        txt_output = new JTextField();
-        txt_output.setBounds(105, 73, 370, 25);
-        getContentPane().add(txt_output);
-        txt_output.setColumns(10);
-        
         pnl_log = new JPanel();
         pnl_log.setBackground(SystemColor.activeCaptionBorder);
         pnl_log.setBorder(new LineBorder(new Color(0, 0, 0)));
         FlowLayout fl_pnl_log = (FlowLayout) pnl_log.getLayout();
         fl_pnl_log.setVgap(0);
         fl_pnl_log.setAlignment(FlowLayout.LEFT);
-        pnl_log.setBounds(-1, 137, 496, 17);
-        getContentPane().add(pnl_log);
+        getContentPane().add(pnl_log, BorderLayout.SOUTH);
         
         lbl_log = new JLabel("Welcome!");
         pnl_log.add(lbl_log);
         
-        //set listeners
-        btn_start.addActionListener((e) -> startRender());
+        JPanel pnl_main = new JPanel();
+        getContentPane().add(pnl_main);
+        pnl_main.setLayout(null);
+        
+        btn_output = new JButton("Output");
+        btn_output.setBounds(14, 47, 80, 25);
+        pnl_main.add(btn_output);
+        btn_folder = new JButton("World");
+        btn_folder.setBounds(14, 11, 80, 25);
+        pnl_main.add(btn_folder);
+        txt_worldPath = new JTextField(400);
+        txt_worldPath.setBounds(104, 11, 370, 25);
+        pnl_main.add(txt_worldPath);
+        
+        txt_output = new JTextField();
+        txt_output.setBounds(104, 47, 370, 25);
+        pnl_main.add(txt_output);
+        txt_output.setColumns(10);
+        
+                //construct components
+                btn_setBounds = new JButton("Set Bounds");
+                btn_setBounds.setBounds(292, 83, 107, 23);
+                pnl_main.add(btn_setBounds);
+                
+                btn_start = new JButton("Start");
+                btn_start.setBounds(409, 83, 65, 23);
+                pnl_main.add(btn_start);
+                
+                //set listeners
+                btn_start.addActionListener((e) -> startRender());
+                btn_setBounds.addActionListener((e) -> openBoundsFrame());
+        btn_folder.addActionListener((e) -> folderPress());
+        btn_output.addActionListener((e) -> outputPress());
         itm_colors.addActionListener((e) -> openColorPicker());
         itm_blockID.addActionListener((e) -> openAddBlockFrame());
         itm_biomeColors.addActionListener((e) -> openBiomeFrame());
@@ -409,10 +407,7 @@ public class Himeji extends JFrame
         itm_settings.addActionListener((e) -> openSettingsFrame());
         itm_biome.addActionListener((e) -> openAddBiomeFrame());
         itm_exit.addActionListener((e) -> dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING)));
-        btn_setBounds.addActionListener((e) -> openBoundsFrame());
         itm_setBounds.addActionListener((e) -> openBoundsFrame());
-        btn_folder.addActionListener((e) -> folderPress());
-        btn_output.addActionListener((e) -> outputPress());
         
         this.addWindowListener(new WindowListener() 
         {
@@ -464,7 +459,7 @@ public class Himeji extends JFrame
 		   
         applyProperties();
         
-        setSize(500, pnl_log.getY() + pnl_log.getHeight() + bar_menu.getHeight() + 3);
+        setSize(500, 193);
         setLocation(getX() - getWidth() / 2, getY() - getHeight() / 2);
 	}
 	
