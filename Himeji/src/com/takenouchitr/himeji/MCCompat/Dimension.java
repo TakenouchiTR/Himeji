@@ -355,12 +355,6 @@ public class Dimension
 	private void render(int startY, int endY, int maxX, int minX, int maxZ, int minZ, int startInd, 
 			File[] regions)
 	{
-		//Adds one region's worth of chunks to the bounds to include the edge regions into the render
-		int minBoundsX = minX - 32;
-		int maxBoundsX = maxX + 32;
-		int minBoundsZ = minZ - 32;
-		int maxBoundsZ = maxZ + 32;
-		
 		Chunk[][] loadedChunks = new Chunk[REGION_SIZE][REGION_SIZE];
 		boolean[][] loadAttempts = new boolean[REGION_SIZE][REGION_SIZE];
 		
