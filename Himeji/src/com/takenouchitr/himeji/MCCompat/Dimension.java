@@ -275,6 +275,7 @@ public class Dimension
 	public void startRender(int startY, int endY, int maxX, int minX, int maxZ, int minZ, int threadCount)
 	{
 		completedFiles = 0;
+		currentRegion = 0;
 		File[] regions;
 		//Filter ONLY for .mcr and .mca files.
 		//TODO: Figure out how to handle folders with both files.
@@ -290,13 +291,14 @@ public class Dimension
 		};
 		
 		regions = directory.listFiles(mcaFilter);
+		totalRegions = regions.length;
 		int totalThreads = threadCount > regions.length ? regions.length : threadCount;
 		
 		Thread[] threads = new Thread[threadCount];
 		
 		for (int i = 0; i < totalThreads; i++)
 		{
-			int startInd = i;
+			int startInd = getRegionIndex();
 			threads[i] = new Thread() 
 			{
 				@Override
@@ -340,7 +342,6 @@ public class Dimension
 		for (int i = startInd; i != -1; i = getRegionIndex())
 		{
 			File regionFile = regions[i];
-			currentRegion = i;
 			
 			Region region;
 			Region upRegion = null;
