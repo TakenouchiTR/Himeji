@@ -21,16 +21,10 @@
 package com.takenouchitr.himeji;
 
 import java.awt.Desktop;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import javax.swing.JOptionPane;
-import javax.swing.SwingWorker;
-
-import com.takenouchitr.himeji.MCCompat.Block;
-import com.takenouchitr.himeji.MCCompat.Dimension;
-import com.takenouchitr.himeji.MCCompat.World;
+import java.io.*;
+import java.util.*;
+import javax.swing.*;
+import com.takenouchitr.himeji.MCCompat.*;
 import com.takenouchitr.himeji.frames.MissingBiomesFrame;
 
 public class MapWorker extends SwingWorker<Void, String>

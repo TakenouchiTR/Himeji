@@ -2,18 +2,10 @@ package com.takenouchitr.himeji.frames;
 
 import javax.swing.JFrame;
 import javax.swing.JTextField;
-
 import com.takenouchitr.himeji.Himeji;
 import com.takenouchitr.himeji.MCCompat.Block;
-
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
-
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JSpinner;
+import java.awt.event.*;
+import javax.swing.*;
 
 @SuppressWarnings("serial")
 public class AddBiomeFrame extends JDialog

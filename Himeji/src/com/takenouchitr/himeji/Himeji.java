@@ -20,27 +20,15 @@
 
 package com.takenouchitr.himeji;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.Properties;
 import java.awt.event.*;
-import java.awt.SystemColor;
-import java.awt.Toolkit;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.FlowLayout;
+import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import com.takenouchitr.himeji.MCCompat.Block;
-import com.takenouchitr.himeji.MCCompat.World;
+import com.takenouchitr.himeji.MCCompat.*;
 import com.takenouchitr.himeji.frames.*;
 
 
@@ -100,16 +88,6 @@ public class Himeji extends JFrame
 		
 		Himeji window = new Himeji();
 		window.setVisible(true);
-		
-		/*SwingUtilities.invokeLater(new Runnable()
-		{
-			@Override
-			public void run() 
-			{
-				Himeji window = new Himeji();
-				window.setVisible(true);
-			}
-		});*/
 	}
 	
 	/**
@@ -333,7 +311,7 @@ public class Himeji extends JFrame
 		frame = this;
 		setIconImage(Toolkit.getDefaultToolkit().getImage(Himeji.class.getResource("/Resources/Icons/64_icon.png")));
 		
-		setResizable(false);
+		setResizable(true);
 		setLocationRelativeTo(null);
 		
 		colorFrame = new ColorPickerFrame();
