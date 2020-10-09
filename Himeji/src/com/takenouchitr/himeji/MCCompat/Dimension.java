@@ -260,6 +260,9 @@ public class Dimension
 		
 		for (Thread t : threads)
 		{
+			if (t == null)
+				continue;
+			
 			try
 			{
 				t.join();
@@ -269,6 +272,8 @@ public class Dimension
 				e.printStackTrace();
 			}
 		}
+		
+		render();
 	}
 	
 	public void startRender(int startY, int endY, int maxX, int minX, int maxZ, int minZ, int threadCount)
@@ -338,6 +343,8 @@ public class Dimension
 		
 		for (Thread t : threads)
 		{
+			if (t == null)
+				continue;
 			
 			try
 			{
@@ -348,6 +355,8 @@ public class Dimension
 				e.printStackTrace();
 			}
 		}
+		
+		render();
 	}
 	
 	private void render(int startY, int endY, int maxX, int minX, int maxZ, int minZ, int startInd, 
