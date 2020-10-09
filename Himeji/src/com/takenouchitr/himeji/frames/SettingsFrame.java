@@ -728,12 +728,6 @@ public class SettingsFrame extends JDialog
 		switch (tabIndex)
 		{
 			case 0:
-				rad_worldLast.setSelected(true);
-				rad_outputLast.setSelected(true);
-				rad_imageIgnore.setSelected(true);
-				break;
-				
-			case 1:
 				sld_brightness.setValue(Integer.parseInt(Property.NIGHT_BRIGHTNESS.defaultValue));
 				sld_biome.setValue(Integer.parseInt(Property.BIOME_INTENSITY.defaultValue));
 				sld_water.setValue(Integer.parseInt(Property.WATER_TRANSPARENCY.defaultValue));
@@ -743,13 +737,19 @@ public class SettingsFrame extends JDialog
 				setDefaultBiome(Property.DEFAULT_BIOME.defaultValue);
 				break;
 				
-			case 2:
+			case 1:
 				chk_missingBlock.setSelected(true);
 				chk_unknownBiome.setSelected(true);
 				chk_saveBlock.setSelected(true);
 				chk_saveBiome.setSelected(true);
 				chk_removeBlock.setSelected(true);
 				chk_removeBiome.setSelected(true);
+				break;
+				
+			case 2:
+				rad_worldLast.setSelected(true);
+				rad_outputLast.setSelected(true);
+				rad_imageIgnore.setSelected(true);
 				break;
 				
 			case 3:
