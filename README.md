@@ -11,6 +11,11 @@ Himeji Map Viewer is licensed under [General Public License version 3](https://w
 - Download the precompiled, executable .jar on [GitHub](https://github.com/TakenouchiTR/Himeji/blob/master/HMV.jar), or you can click [here](https://github.com/TakenouchiTR/Himeji/blob/master/HMV.jar?raw=true) for a direct download.
 - Clone the repo with `git clone https://github.com/TakenouchiTR/Himeji.git`
 
+## Documentation
+Please visit my [documentation page](https://takenouchitr.github.io/FCC-Web-Development-Projects/rwd/documentation.html) for in-depth instructions on how to use HMV.
+
+\*Currently under construction
+
 ## Usage
 1. Run the jar as you would any executable.
 2. Press the "World" button to select the root folder for a world
