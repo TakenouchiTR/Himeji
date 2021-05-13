@@ -70,7 +70,7 @@ public class BoundsFrame extends JDialog
 		
 		setTitle("Set Bounds");
 		setFont(new Font("Tahoma", Font.PLAIN, 11));
-		setSize(440, 195);
+		setSize(440, 204);
 		setResizable(false);
 		setModal(true);
 		getContentPane().setLayout(null);

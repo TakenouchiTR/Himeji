@@ -458,7 +458,7 @@ public class Himeji extends JFrame
 		   
         applyProperties();
         
-        setSize(500, 179);
+        setSize(500, 192);
         setLocation(getX() - getWidth() / 2, getY() - getHeight() / 2);
 	}
 	
