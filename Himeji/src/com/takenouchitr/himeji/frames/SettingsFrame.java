@@ -27,6 +27,8 @@ import javax.swing.JTextField;
 import javax.swing.JScrollPane;
 import javax.swing.JComboBox;
 import javax.swing.ScrollPaneConstants;
+import java.awt.Component;
+import javax.swing.Box;
 
 @SuppressWarnings("serial")
 public class SettingsFrame extends JDialog
@@ -78,17 +80,17 @@ public class SettingsFrame extends JDialog
 		setTitle("Settings");
 		setModal(true);
 		setResizable(false);
-		setSize(450, 390);
+		setSize(459, 395);
 		getContentPane().setLayout(null);
 		
 		JTabbedPane tab_pane = new JTabbedPane(JTabbedPane.TOP);
-		tab_pane.setBounds(0, 0, 444, 316);
+		tab_pane.setBounds(0, 0, 443, 316);
 		tab_pane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 		
 		getContentPane().add(tab_pane);
 		
 		JScrollPane scr_rendering = new JScrollPane();
-		scr_rendering.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		scr_rendering.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		tab_pane.addTab("Rendering", null, scr_rendering, null);
 		
 		ButtonGroup worldGroup = new ButtonGroup();
@@ -97,7 +99,7 @@ public class SettingsFrame extends JDialog
 		
 		JPanel pnl_render = new JPanel();
 		pnl_render.setLayout(null);
-		pnl_render.setPreferredSize(new Dimension(pnl_render.getMaximumSize().width, 330));
+		pnl_render.setPreferredSize(new Dimension(400, 330));
 		scr_rendering.setViewportView(pnl_render);
 		
 		JPanel pnl_popup = new JPanel();

@@ -72,6 +72,8 @@ public class MapWorker extends SwingWorker<Void, String>
 		publish("Getting image dimensions...");
 		
 		int threadCount = Integer.parseInt(Himeji.getProperty(Property.THREAD_COUNT));
+		
+		//If only a certain area is being rendered
 		if (Himeji.getProperty(Property.USE_AREA).equals("true"))
 		{
 			int startX = Integer.parseInt(Himeji.getProperty(Property.START_X));
@@ -97,6 +99,7 @@ public class MapWorker extends SwingWorker<Void, String>
 			publish("Getting blocks...");
 			dim.startRender(startY, endY, startX, endX, startZ, endZ, threadCount);
 		}
+		//If entire map is being rendered
 		else
 		{
 			int[] dimBounds = Dimension.calcDimSize(dimFile);

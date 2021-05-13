@@ -476,7 +476,6 @@ public class Chunk
 				
 				int color = Block.getBlockColor(blocks[x][dy][z], biomeID);
 				
-				
 				if (!Block.biomeExists(biomeID) && !unknownBiomes.containsKey(biomeID))
 				{
 					Block.addUnknownBiome(biomeID, new int[] {x, y, z});

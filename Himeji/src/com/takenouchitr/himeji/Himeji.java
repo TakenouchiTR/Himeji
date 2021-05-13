@@ -308,10 +308,9 @@ public class Himeji extends JFrame
 	private Himeji()
 	{
 		super("Himeji Map Viewer");
+		setResizable(false);
 		frame = this;
 		setIconImage(Toolkit.getDefaultToolkit().getImage(Himeji.class.getResource("/Resources/Icons/64_icon.png")));
-		
-		setResizable(true);
 		setLocationRelativeTo(null);
 		
 		colorFrame = new ColorPickerFrame();
@@ -386,28 +385,28 @@ public class Himeji extends JFrame
         pnl_main.add(txt_output);
         txt_output.setColumns(10);
         
-                //construct components
-                btn_setBounds = new JButton("Set Bounds");
-                btn_setBounds.setBounds(292, 83, 107, 23);
-                pnl_main.add(btn_setBounds);
-                
-                btn_start = new JButton("Start");
-                btn_start.setBounds(409, 83, 65, 23);
-                pnl_main.add(btn_start);
-                
-                //set listeners
-                btn_start.addActionListener((e) -> startRender());
-                btn_setBounds.addActionListener((e) -> openBoundsFrame());
-        btn_folder.addActionListener((e) -> folderPress());
-        btn_output.addActionListener((e) -> outputPress());
-        itm_colors.addActionListener((e) -> openColorPicker());
-        itm_blockID.addActionListener((e) -> openAddBlockFrame());
+        //construct components
+        btn_setBounds = new JButton("Set Bounds");
+        btn_setBounds.setBounds(292, 83, 107, 23);
+        pnl_main.add(btn_setBounds);
+        
+        btn_start = new JButton("Start");
+        btn_start.setBounds(409, 83, 65, 23);
+        pnl_main.add(btn_start);
+        
+        //set listeners
+        btn_start.addActionListener((e) ->       startRender());
+        btn_setBounds.addActionListener((e) ->   openBoundsFrame());
+        btn_folder.addActionListener((e) ->      folderPress());
+        btn_output.addActionListener((e) ->      outputPress());
+        itm_colors.addActionListener((e) ->      openColorPicker());
+        itm_blockID.addActionListener((e) ->     openAddBlockFrame());
         itm_biomeColors.addActionListener((e) -> openBiomeFrame());
-        itm_blockFlags.addActionListener((e) -> openFlagsFrame());
-        itm_settings.addActionListener((e) -> openSettingsFrame());
-        itm_biome.addActionListener((e) -> openAddBiomeFrame());
-        itm_exit.addActionListener((e) -> dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING)));
-        itm_setBounds.addActionListener((e) -> openBoundsFrame());
+        itm_blockFlags.addActionListener((e) ->  openFlagsFrame());
+        itm_settings.addActionListener((e) ->    openSettingsFrame());
+        itm_biome.addActionListener((e) ->       openAddBiomeFrame());
+        itm_exit.addActionListener((e) ->        dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING)));
+        itm_setBounds.addActionListener((e) ->   openBoundsFrame());
         
         this.addWindowListener(new WindowListener() 
         {
@@ -459,7 +458,7 @@ public class Himeji extends JFrame
 		   
         applyProperties();
         
-        setSize(500, 193);
+        setSize(500, 179);
         setLocation(getX() - getWidth() / 2, getY() - getHeight() / 2);
 	}
 	
@@ -580,6 +579,7 @@ public class Himeji extends JFrame
 	
 	private void startRender()
 	{
+		//Validates that the target folder is a world folder
 		if (!World.validateDir(new File(txt_worldPath.getText())))
 		{
 			JOptionPane.showMessageDialog(null,
@@ -589,6 +589,7 @@ public class Himeji extends JFrame
 				    JOptionPane.WARNING_MESSAGE);
 			return;
 		}
+		//Checks the output file to make sure that it isn't empty
 		if (txt_output.getText().isEmpty())
 		{
 			JOptionPane.showMessageDialog(null,
@@ -604,6 +605,7 @@ public class Himeji extends JFrame
 			setProperty(Property.WORLD_PATH, txt_worldPath.getText());
 			setProperty(Property.OUTPUT_PATH, txt_output.getText());
 			
+			//Sets the temporary properties for the render session
 			SessionProperties.setNightBrightness(
 				Integer.parseInt(props.getProperty(Property.NIGHT_BRIGHTNESS.key)) / 100f);
 			SessionProperties.setBiomeIntensity( 
