@@ -1,3 +1,5 @@
+# Himeji is no longer under development. I am in the process of porting what I currently have to another language.
+
 # Himeji
 Himeji Map Viewer (HMV) is an application used to create top-down renders of Minecraft Java Edition maps. HMV was created with the goal of being as accessible as possible, while still giving the user as many choices for map customization as possible. All beta and release versions of Minecraft are supported, though there may be issues in specific snapshots versions. Java was specifically chosen as users must already have it installed to play minecraft, greatly reducing the barrier to entry. HMV has many options for customizing map renders, including personalizing block colors, adjusting biome colors, and selecting specific regions of the map to render by themselves.
 
